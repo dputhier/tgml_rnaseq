@@ -1,0 +1,3 @@
+rule rulegraph:
+    output:"reports/rulegraph.png"
+    shell:"snakemake -s snakefiles/Snakefile --rulegraph | dot -T png > reports/rulegraph.png"

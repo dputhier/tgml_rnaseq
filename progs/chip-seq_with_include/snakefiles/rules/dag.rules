@@ -1,0 +1,3 @@
+rule dag:
+    output:"reports/dag.png"
+    shell:"snakemake -s snakefiles/Snakefile --dag | dot -T png > reports/dag.png"

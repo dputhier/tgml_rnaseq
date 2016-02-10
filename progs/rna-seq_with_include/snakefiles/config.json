@@ -1,0 +1,30 @@
+{
+	"workingdir": "/Users/puthier/MOUNT/sacapus/013_ariel_rnaseq",
+	"samples": "control treated",
+	"samples_type": "chip_seq input",
+	"qsub": "-V -m a -d /Users/puthier/MOUNT/sacapus/013_ariel_rnaseq",
+	"gtf": "/Users/puthier/MOUNT/sacapus/013_ariel_rnaseq/input/annotations/GRCm38.83.chr19_exon_only.gtf",
+	"sickle": { 
+        "qual_type": "sanger",
+        "threshold": "20",
+        "length": "25",
+        "qualtype": "sanger",
+	"options": ""
+	},
+	
+    "tophat": {
+        "index": "/Users/puthier/MOUNT/sacapus/013_ariel_rnaseq/input/indexes/chr19",
+        "args": "-g 1 --library-type fr-firststrand -x 1 -p 5",
+        "threads": 5
+    },
+
+    "cufflinks": {
+        "args": " --library-type fr-firststrand ",
+        "threads": 2
+    },
+        
+   	"samtools_view": {
+   	"quality": "30"
+   	}
+}
+

@@ -1,0 +1,9 @@
+"""
+    Definition of the index rule bam file
+"""
+
+rule index:
+        input: "results/mapped/{samples_type}/{samples}_mapped_sorted.bam"
+        output:"results/mapped/{samples_type}/{samples}_mapped_sorted.bam.bai"
+        message: """--- Indexing mapped reads with samtools."""
+        shell: "samtools index {input}"  

@@ -1,0 +1,12 @@
+"""
+    Trim reads required before alignment 
+
+"""
+
+rule trimming:
+        input: "samples/{samples_type}/{samples}.fq.gz"
+        output:"results/trimmed/{samples_type}/{samples}_trimmed.fq.gz"
+	params: threshold = config["sickle"]["threshold"], qual_type=config["sickle"]["qual_type"], options=config["sickle"]["options"] #, qsub=config["qsub"] + " -q long -e {data_dir}/{data_dir}_trim_qsub.err -o {data_dir}/{data_dir}_trim_qsub.out"
+	log: "results/trimmed/{samples_type}/{samples}_trimmed_thr" + config["sickle"]["threshold"] + ".log"
+        message: """--- Trimming single ends samples with a threshold of {params.threshold} in  sickle."""
+        shell: "sickle se {params.options} -g -q {params.threshold} -f {input} -t {params.qual_type} -o {output} > {log}"

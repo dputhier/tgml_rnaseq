@@ -1,0 +1,23 @@
+{
+    "workingdir": "/gpfs/tagc/home/puthier/013_ariel",
+    "samples": "siNT_ER_E2_r3_SRX176860_chr21_0.6_Noise MCF_input_r3_SRX176888_chr21_Noise",
+    "samples_type": "chip_seq input",
+    "qsub": "-V -m a -d /gpfs/tagc/home/puthier/013_ariel",
+    "sra": "no",
+    
+    "sickle": { 
+        "qual_type": "sanger",
+        "threshold": "20",
+    "options": ""
+    },
+    
+    "bowtie2": {
+        "index": "/gpfs/tagc/apps/genome/hg19/Bowtie2Index/genome",
+        "other_options": "--sensitive --phred33 -q -p 10"
+    },
+
+    "samtools_view": {
+    "quality": "30"
+    }
+    
+}

@@ -1,0 +1,6 @@
+rule select_mapped:
+        input: "results/mapped/{samples_type}/{samples}_mapped.bam"
+        output:"results/mapped/{samples_type}/{samples}_mapped_q30.bam"
+        params: quality = config["samtools_view"]["quality"]
+        message: """--- Selecting mapped reads with a quality over 30 with samtools."""
+        shell: "samtools view -bh -q {params.quality} {input} > {output}"  

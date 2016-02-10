@@ -1,0 +1,9 @@
+"""
+    Definition of the sorting rule bam file
+"""
+
+rule sorting_bam:
+    input:"results/mapped/{samples_type}/{samples}_mapped.bam"
+    output: "results/mapped/{samples_type}/{samples}_mapped_sorted.bam"
+    message: """--- Sorting mapped reads by position with samtools."""
+    shell:"samtools sort {input} results/mapped/{wildcards.samples_type}/{wildcards.samples}_mapped_sorted"
