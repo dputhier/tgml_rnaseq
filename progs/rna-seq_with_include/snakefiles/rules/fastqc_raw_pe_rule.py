@@ -2,6 +2,6 @@ rule fastqc_raw:
         input:  fwd="input/fastq/{smp}_R1.fq.gz", 
                 rev="input/fastq/{smp}_R2.fq.gz"
         threads: 1
-        output: fwd="output/fastqc_raw/{smp}/{smp}_R1.fq_fastqc.zip", rev="output/fastqc_raw/{smp}/{smp}_R2.fq_fastqc.zip"
+        output: fwd="output/fastqc_raw/{smp}/{smp}_R1.fq_fastqc.html", rev="output/fastqc_raw/{smp}/{smp}_R2.fq_fastqc.html"
         message: """--- Quality check of raw data with Fastqc."""
         shell: "fastqc --outdir  output/fastqc_raw/{wildcards.smp} --extract  -f fastq {input.fwd} {input.rev} &> {output}.log "

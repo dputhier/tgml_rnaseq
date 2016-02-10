@@ -1,9 +1,13 @@
 {
-	"workingdir": "/Users/puthier/MOUNT/sacapus/013_ariel_rnaseq",
+	"workingdir": "/Users/puthier/git/dp_worflows/",
+	"user": "D. Puthier",
 	"samples": "control treated",
 	"samples_type": "chip_seq input",
-	"qsub": "-V -m a -d /Users/puthier/MOUNT/sacapus/013_ariel_rnaseq",
-	"gtf": "/Users/puthier/MOUNT/sacapus/013_ariel_rnaseq/input/annotations/GRCm38.83.chr19_exon_only.gtf",
+	"qsub": "-V -m a -d /Users/puthier/git/dp_worflows/",
+	"gtf": "/Users/puthier/git/dp_worflows//input/annotations/GRCm38.83.chr19_exon_only.gtf",
+	"chr_size": "/Users/puthier/git/dp_worflows//input/annotations/mm9_chr_size.txt",
+	"fasta": "/Users/puthier/git/dp_worflows/input/indexes/chr19.fa",
+	"housekeeping": "/Users/puthier/git/dp_worflows/input/housekeeping/hg19.HouseKeepingGenes.bed",
 	"sickle": { 
         "qual_type": "sanger",
         "threshold": "20",
@@ -11,9 +15,10 @@
         "qualtype": "sanger",
 	"options": ""
 	},
+
 	
     "tophat": {
-        "index": "/Users/puthier/MOUNT/sacapus/013_ariel_rnaseq/input/indexes/chr19",
+        "index": "/Users/puthier/git/dp_worflows/input/indexes/chr19",
         "args": "-g 1 --library-type fr-firststrand -x 1 -p 5",
         "threads": 5
     },
@@ -22,7 +27,12 @@
         "args": " --library-type fr-firststrand ",
         "threads": 2
     },
-        
+    
+    "cuffmerge": {
+        "selected_class_code": "uxosj",
+        "threads": 2
+    },
+            
    	"samtools_view": {
    	"quality": "30"
    	}

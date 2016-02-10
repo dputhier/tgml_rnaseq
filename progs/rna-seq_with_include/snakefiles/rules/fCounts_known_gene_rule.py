@@ -1,4 +1,4 @@
-rule quantify_known_genes:
+rule fCounts_known_genes:
     input: gtf=config["gtf"], bam=expand("output/bam/{smp}.bam", smp=config["samples"].split()) 
     output: "output/quantification_known_genes/gene_counts.txt","output/quantification_known_genes/gene_counts_mini.txt"
     threads: 1
