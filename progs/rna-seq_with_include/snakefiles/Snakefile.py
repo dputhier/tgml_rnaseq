@@ -99,9 +99,9 @@ rule final:
             DAG_PNG,                        \
             RSEQC_COV,                      \
             DIAGNOSIS_PLOT,                 \
-            #MAPPING_STATS_R1,               \
-            #MAPPING_STATS_R2,               \
-            #MAPPING_STAT_PLOT,              \
+            MAPPING_STATS_R1,               \
+            MAPPING_STATS_R2,               \
+            MAPPING_STAT_PLOT,              \
             "output/report/report.html"
 
 #================================================================#
@@ -119,6 +119,8 @@ def report_numbered_list(list):
 
 
 def report_link_list(list):
+    if isinstance(list, str):
+        list = [list]
     result = ""
     n = 0
     for element in list:
@@ -204,17 +206,16 @@ rule report:
     """
     Generate a report with the list of datasets + summary of the results.
     """
-    input:  FASTQC_RAW, FASTQC_TRIM,        \  
+    input:  DAG_PNG, \
+            FASTQC_RAW, FASTQC_TRIM,        \  
             MAPPING,                        \
             BAM_BY_STRAND, BIGWIG,          \
             QUANTIF_KNOWN_GENES,            \
             QUANTIF_KNOWN_AND_NOVEL_GENES,  \
-            DAG_PNG,                        \
-            DIAGNOSIS_PLOT
-            
-            #MAPPING_STATS_R1,               \
-            #MAPPING_STATS_R2,               \
-            #MAPPING_STAT_PLOT
+            DIAGNOSIS_PLOT,                 \
+            MAPPING_STATS_R1,               \
+            MAPPING_STATS_R2,               \
+            MAPPING_STAT_PLOT
             
 
     params: wdir=config["workingdir"], \
@@ -256,7 +257,7 @@ rule report:
 
         - Sample processing file: {params.dag_png}
 
-        .. image:: ../../{input.dag_png}
+        .. image:: ../../{input[0]}
 
         -----------------------------------------------------
 
@@ -310,7 +311,7 @@ rule report:
         RSeQC genebody coverage
         =========================
         
-        - {RSEQC_COV_L}
+        {RSEQC_COV_L}
         
         -----------------------------------------------------
                 
@@ -323,4 +324,5 @@ rule report:
         Bigwig files
         ==============
         {BWIG_L}
+
         """, output.html, metadata="D. Puthier", **input)
