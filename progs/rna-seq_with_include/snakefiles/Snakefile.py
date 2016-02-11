@@ -36,34 +36,32 @@ include: "rules/dag_rule.py"
 workdir: config["workingdir"]
 
 SAMPLES = config["samples"].split()
-SAMPLES_TYPE = config["samples_type"].split()
-
 
 #================================================================#
 #                         Workflow                               #
 #================================================================#
 
-FASTQC_RAW = expand("output/fastqc_raw/{smp}/{smp}_R1.fq_fastqc.html", zip,  smp=SAMPLES)
+FASTQC_RAW = expand("output/fastqc_raw/{smp}/{smp}_R1.fq_fastqc.html", smp=SAMPLES)
 
-TRIMMING =  expand("output/trimmed/{smp}_R1_t.fq.gz", zip,  smp=SAMPLES)
+TRIMMING =  expand("output/trimmed/{smp}_R1_t.fq.gz", smp=SAMPLES)
 
-FASTQC_TRIM = expand("output/fastqc_trim/{smp}/{smp}_R1_t.fq_fastqc.html", zip,  smp=SAMPLES)
+FASTQC_TRIM = expand("output/fastqc_trim/{smp}/{smp}_R1_t.fq_fastqc.html", smp=SAMPLES)
 
-MAPPING = expand("output/bam/{smp}.bam", zip,  smp=SAMPLES)
+MAPPING = expand("output/bam/{smp}.bam", smp=SAMPLES)
 
-BAM_BY_STRAND = expand("output/bam/{smp}_min.bam", zip,  smp=SAMPLES)
+BAM_BY_STRAND = expand("output/bam/{smp}_min.bam", smp=SAMPLES)
 
-BAM_INDEX = expand("output/bam/{smp}.bam.bai", zip,  smp=SAMPLES)
+BAM_INDEX = expand("output/bam/{smp}.bam.bai", smp=SAMPLES)
 
-BIGWIG = expand("output/bwig/{smp}_min.bw", zip,  smp=SAMPLES)
+BIGWIG = expand("output/bwig/{smp}_min.bw", smp=SAMPLES)
 
-QUANTIF_KNOWN_GENES = expand("output/quantification_known_genes/gene_counts.txt", zip,  smp=SAMPLES)
+QUANTIF_KNOWN_GENES = expand("output/quantification_known_genes/gene_counts.txt", smp=SAMPLES)
 
-CUFFLINKS = expand("output/cufflinks/{smp}/transcripts.gtf", zip,  smp=SAMPLES)
+CUFFLINKS = expand("output/cufflinks/{smp}/transcripts.gtf", smp=SAMPLES)
 
 FASTA_INDEX = config["fasta"] + ".fai"
 
-CUFFMERGE = expand("output/cuffmerge/merged.gtf", zip,  smp=SAMPLES)
+CUFFMERGE = expand("output/cuffmerge/merged.gtf", smp=SAMPLES)
 
 NOVEL_SELECTED_TX = "output/cuffmerge/selected_novel_transcript_class_code_" + config["cuffmerge"]["selected_class_code"] + ".gtf"
 
@@ -76,18 +74,6 @@ QUANTIF_KNOWN_AND_NOVEL_GENES = "output/quantification_known_and_novel_genes/gen
 RSEQC_COV = "output/rseqc_coverage_diag/rseqc_cov.geneBodyCoverage.txt"
  
 DAG_PNG = "output/report/dag.png"
-
-MAPPING_Q30 =  expand("results/mapped/{smp}/{smp}_mapped_q30.bam", zip,  smp=SAMPLES)
-
-MAPPING_UNIQUE = expand("results/mapped/{smp}/{smp}_mapped_unique.bam", zip,  smp=SAMPLES)
-
-STAT = expand("results/stat/{smp}/{smp}_{stat_type}.txt", zip,  smp=SAMPLES, stat_type="mapped mapped".split())
-
-STAT_Q30 = expand("results/stat/{smp}/{smp}_{stat_type}.txt", zip,  smp=SAMPLES, stat_type="mapped_q30 mapped_q30".split())
-
-STAT_UNIQUE = expand("results/stat/{smp}/{smp}_{stat_type}.txt", zip,  smp=SAMPLES, stat_type="mapped_unique mapped_unique".split())
-
-INDEX = expand("results/mapped/{smp}/{smp}_mapped_sorted.bam.bai", zip,  smp=SAMPLES)
 
 
 rule final:
@@ -125,6 +111,10 @@ def report_link_list(list):
 
     return(result) 
 
+def report_bullet_list(alist):
+
+    return "\n".join(["- "+ x + "\n" for x in  alist])
+
 #================================================================#
 #           Variables  for report                                #
 #================================================================#
@@ -154,8 +144,8 @@ rule report:
             user=config["user"], \
             dag_png=os.path.basename(DAG_PNG), \
             nb_smp=str(len(config["samples"].split())),\
-            bwig_path="\n".join(["- "+ x + "\n" for x in  BIGWIG]), \
-            bam_path="\n".join(["- "+ x + "\n" for x in  MAPPING])
+            bwig_path=report_bullet_list(BIGWIG), \
+            bam_path=report_bullet_list(MAPPING)
 
     output: html="output/report/report.html"
 
@@ -192,7 +182,7 @@ rule report:
 
         - Sample processing file: {params.dag_png}
 
-        .. image:: ../../{input.rseqc}
+        .. image:: ../../{input.dag_png}
 
         -----------------------------------------------------
 
@@ -231,7 +221,7 @@ rule report:
         RSeQC genebody coverage
         =========================
         
-        .. image:: {params.dag_png}
+        - {input.rseqc}
         
         -----------------------------------------------------
                 
@@ -243,7 +233,5 @@ rule report:
                 
         Bigwig files
         ==============
-        
         {params.bwig_path}
-
         """, output.html, metadata="D. Puthier", **input)
