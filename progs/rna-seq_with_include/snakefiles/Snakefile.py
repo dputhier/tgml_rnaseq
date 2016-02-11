@@ -3,7 +3,10 @@
 #================================================================#
 
 import os
+import sys
+import re
 from snakemake.utils import report
+from snakemake.utils import R
 
 configfile: "snakefiles/config.json"
 
@@ -28,6 +31,10 @@ include: "rules/merge_novel_and_know_tx_rule.py"
 include: "rules/fCounts_known_and_novel_gene_rule.py"
 include: "rules/rseqc_cov_rule.py"
 include: "rules/dag_rule.py"
+include: "rules/pair_plot_rule.py"
+include: "rules/mapping_stat_file_R1_rule.py"
+include: "rules/mapping_stat_file_R2_rule.py"
+include: "rules/mapping_stats_plot_rule.py"
 
 #================================================================#
 #     Global variables                                           #
@@ -41,11 +48,11 @@ SAMPLES = config["samples"].split()
 #                         Workflow                               #
 #================================================================#
 
-FASTQC_RAW = expand("output/fastqc_raw/{smp}/{smp}_R1.fq_fastqc.html", smp=SAMPLES)
+FASTQC_RAW = expand("output/fastqc_raw/{smp}/{smp}_R1.fq_fastqc/fastqc_data.txt", smp=SAMPLES)
 
 TRIMMING =  expand("output/trimmed/{smp}_R1_t.fq.gz", smp=SAMPLES)
 
-FASTQC_TRIM = expand("output/fastqc_trim/{smp}/{smp}_R1_t.fq_fastqc.html", smp=SAMPLES)
+FASTQC_TRIM = expand("output/fastqc_trim/{smp}/{smp}_R1_t.fq_fastqc/fastqc_data.txt", smp=SAMPLES)
 
 MAPPING = expand("output/bam/{smp}.bam", smp=SAMPLES)
 
@@ -71,21 +78,30 @@ KNOWN_AND_NOVEL_TX = "output/inferred_gene_annotation/known_transcripts_and_sele
 
 QUANTIF_KNOWN_AND_NOVEL_GENES = "output/quantification_known_and_novel_genes/gene_counts_known_and_novel.txt"
 
-RSEQC_COV = "output/rseqc_coverage_diag/rseqc_cov.geneBodyCoverage.txt"
+RSEQC_COV = "output/rseqc_coverage_diag/rseqc_cov.geneBodyCoverage.curves.pdf.png"
  
 DAG_PNG = "output/report/dag.png"
 
+DIAGNOSIS_PLOT = "output/diagnostic_plot/diagnostic.pdf"
+
+MAPPING_STATS_R1 = expand("output/mapping_stats/{smp}_R1.stats", smp=SAMPLES)
+
+MAPPING_STATS_R2 = expand("output/mapping_stats/{smp}_R2.stats", smp=SAMPLES)
+
+MAPPING_STAT_PLOT = expand("output/mapping_stats/{smp}.stats.png", smp=SAMPLES)
 
 rule final:
-    input:  FASTQC_RAW,     \
-            FASTQC_TRIM,    \   
-            MAPPING,        \
-            BAM_BY_STRAND,  \
-            QUANTIF_KNOWN_GENES, \
-            QUANTIF_KNOWN_AND_NOVEL_GENES,\
-            DAG_PNG,        \
-            BIGWIG,         \
-            RSEQC_COV,      \
+    input:  FASTQC_RAW, FASTQC_TRIM,        \  
+            MAPPING,                        \
+            BAM_BY_STRAND, BIGWIG,          \
+            QUANTIF_KNOWN_GENES,            \
+            QUANTIF_KNOWN_AND_NOVEL_GENES,  \
+            DAG_PNG,                        \
+            RSEQC_COV,                      \
+            DIAGNOSIS_PLOT,                 \
+            #MAPPING_STATS_R1,               \
+            #MAPPING_STATS_R2,               \
+            #MAPPING_STAT_PLOT,              \
             "output/report/report.html"
 
 #================================================================#
@@ -107,25 +123,77 @@ def report_link_list(list):
     n = 0
     for element in list:
         n+=1
-        result += "    - `" + element + " <../../" + element + ">`_ \n\n" 
-
-    return(result) 
+        result += "- `" + element + " <../../" + element + ">`_ \n\n" 
+    
+    return(result + "\n") 
 
 def report_bullet_list(alist):
 
     return "\n".join(["- "+ x + "\n" for x in  alist])
 
 #================================================================#
-#           Variables  for report                                #
+#           Table of images                                      #
 #================================================================#
 
 
+def image_fastq(alist, prefix="a_"):
+
+    table ="""
++-------------------+-------------------+-------------------+      
++Per base Quality   +Duplication levels +      K-mers       +
++-------------------+-------------------+-------------------+"""
+
+    row = """   
++ |{p}pbq{n}|     +   |{p}dup{n}|   +     |{p}kmr{n}| +
++-------------------+-------------------+-------------------+"""
+
+    alist = [x.replace("output/","") for x in alist]
+    
+    pbq = [x.replace("fastqc_data.txt", "Images/per_base_quality.png") for x in alist]
+    dup = [x.replace("fastqc_data.txt", "Images/duplication_levels.png") for x in alist]
+    kmr = [x.replace("fastqc_data.txt", "Images/kmer_profiles.png") for x in alist]
+      
+    pbq = "\n".join([" .. |" + prefix + "pbq"  + str(p).zfill(3) + "| image:: ../" + x + "\n\n" for p,x in  enumerate(pbq)])
+    dup = "\n".join([" .. |" + prefix + "dup"  + str(p).zfill(3) + "| image:: ../" + x + "\n\n" for p,x in  enumerate(dup)])
+    kmr = "\n".join([" .. |" + prefix + "kmr"  + str(p).zfill(3) + "| image:: ../" + x + "\n\n" for p,x in  enumerate(kmr)])
+
+
+     
+    for i in range(len(alist)):
+        table += row.format(n=str(i).zfill(3), p=prefix)
+    
+    result = "\n\n" + pbq + "\n" + dup + "\n" + kmr + "\n" + table + "\n\n"
+    #sys.stderr.write(result)
+    return result
+
+#================================================================#
+#           Variables  for report                                #
+#================================================================#
+
+# numbered list
 SAMPLES_L = report_numbered_list(SAMPLES)
 TRIMMING_L = report_numbered_list(TRIMMING)
 
-FASTQC_RAW_L = report_link_list(FASTQC_RAW)
-FASTQC_TRIM_L = report_link_list(FASTQC_TRIM)
+# Links
+FASTQC_RAW_R1_L = report_link_list(FASTQC_RAW)
+FASTQC_RAW_R2_L = FASTQC_RAW_R1_L.replace("R1.fq_fastqc","R2.fq_fastqc")
 
+FASTQC_TRIM_R1_L = report_link_list(FASTQC_TRIM)
+FASTQC_TRIM_R2_L = FASTQC_TRIM_R1_L.replace("R1.fq_fastqc","R2.fq_fastqc")
+
+
+BAM_L = report_link_list(MAPPING)
+BWIG_L = report_link_list(BIGWIG)
+RSEQC_COV_L = report_link_list(RSEQC_COV)
+
+# Image tables
+FASTQC_RAW_SEQ_R1_QUAL_IT = image_fastq(FASTQC_RAW, prefix="a____")
+FASTQC_RAW_SEQ_R2_QUAL_IT = FASTQC_RAW_SEQ_R1_QUAL_IT.replace("R1.fq_fastqc","R2.fq_fastqc")
+FASTQC_RAW_SEQ_R2_QUAL_IT = FASTQC_RAW_SEQ_R2_QUAL_IT.replace("a____","b____")
+
+FASTQC_TRIM_SEQ_R1_QUAL_IT = image_fastq(FASTQC_TRIM, prefix="c____")
+FASTQC_TRIM_SEQ_R2_QUAL_IT = FASTQC_TRIM_SEQ_R1_QUAL_IT.replace("R1.fq_fastqc","R2.fq_fastqc")
+FASTQC_TRIM_SEQ_R2_QUAL_IT = FASTQC_TRIM_SEQ_R2_QUAL_IT.replace("c____","d____")
 
 #================================================================#
 #           Report                                               #
@@ -136,16 +204,23 @@ rule report:
     """
     Generate a report with the list of datasets + summary of the results.
     """
-    input:  dag_png=DAG_PNG, \
-            rseqc=RSEQC_COV
+    input:  FASTQC_RAW, FASTQC_TRIM,        \  
+            MAPPING,                        \
+            BAM_BY_STRAND, BIGWIG,          \
+            QUANTIF_KNOWN_GENES,            \
+            QUANTIF_KNOWN_AND_NOVEL_GENES,  \
+            DAG_PNG,                        \
+            DIAGNOSIS_PLOT
+            
+            #MAPPING_STATS_R1,               \
+            #MAPPING_STATS_R2,               \
+            #MAPPING_STAT_PLOT
             
 
     params: wdir=config["workingdir"], \
             user=config["user"], \
             dag_png=os.path.basename(DAG_PNG), \
-            nb_smp=str(len(config["samples"].split())),\
-            bwig_path=report_bullet_list(BIGWIG), \
-            bam_path=report_bullet_list(MAPPING)
+            nb_smp=str(len(config["samples"].split()))
 
     output: html="output/report/report.html"
 
@@ -165,16 +240,15 @@ rule report:
         
         - `Flowcharts`_
         - `Datasets description`_
-            - `Number of samples`_
-            - `Sample names`_
-        - `FastQC reports`_
-            - `FastQC raw reads`_
-            - `FastQC trimmed reads`_
+        - `FastQC raw reads (R1)`_
+        - `FastQC trimmed reads (R1)`_
+        - `FastQC raw reads (R2)`_
+        - `FastQC trimmed reads (R2)`_
         - `RSeQC genebody coverage`_
         - `BAM files`_
         - `Bigwig files`_
-        
 
+    
         -----------------------------------------------------
 
         Flowcharts
@@ -190,48 +264,63 @@ rule report:
         Datasets description
         =====================
         
-        Number of samples
-        ------------------
- 
-        - {params.nb_smp}
+        - Number of samples: {params.nb_smp}
 
-        Sample names
-        -------------
+        - Sample names
+            {SAMPLES_L}
 
-        {SAMPLES_L}
 
         -----------------------------------------------------
         
-        FastQC reports
-        ===============
+        FastQC raw reads (R1)
+        ======================
         
-        FastQC raw reads
-        ------------------
-        
-        {FASTQC_RAW_L}
-        
-        FastQC trimmed reads
-        ---------------------
-        
-        {FASTQC_TRIM_L}        
+        {FASTQC_RAW_SEQ_R1_QUAL_IT}
+           
+        {FASTQC_RAW_R1_L}
 
+
+        FastQC trimmed reads (R1)
+        ==========================
+        
+        {FASTQC_TRIM_SEQ_R1_QUAL_IT}
+             
+        {FASTQC_TRIM_R1_L}
+        
+
+        
+        FastQC raw reads (R2)
+        ======================
+
+        {FASTQC_RAW_SEQ_R2_QUAL_IT}
+             
+        {FASTQC_RAW_R2_L}
+
+
+
+        FastQC trimmed reads (R2)
+        ==========================
+                
+        {FASTQC_TRIM_SEQ_R2_QUAL_IT}
+           
+        {FASTQC_TRIM_R2_L}
         
         -----------------------------------------------------
 
         RSeQC genebody coverage
         =========================
         
-        - {input.rseqc}
+        - {RSEQC_COV_L}
         
         -----------------------------------------------------
                 
         BAM files
         ==============
         
-        {params.bam_path}
+        {BAM_L}
         -----------------------------------------------------
                 
         Bigwig files
         ==============
-        {params.bwig_path}
+        {BWIG_L}
         """, output.html, metadata="D. Puthier", **input)

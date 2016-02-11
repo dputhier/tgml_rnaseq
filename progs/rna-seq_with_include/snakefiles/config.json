@@ -7,7 +7,7 @@
 	"gtf": "/Users/puthier/git/dp_worflows//input/annotations/GRCm38.83.chr19_exon_only.gtf",
 	"chr_size": "/Users/puthier/git/dp_worflows//input/annotations/mm9_chr_size.txt",
 	"fasta": "/Users/puthier/git/dp_worflows/input/indexes/chr19.fa",
-	"housekeeping": "/Users/puthier/git/dp_worflows/input/housekeeping/hg19.HouseKeepingGenes.bed",
+	"housekeeping": "/Users/puthier/git/dp_worflows/input/housekeeping/mm9.HouseKeepingGenes.bed",
 	"sickle": { 
         "threshold": "20",
         "length": "25",
@@ -30,7 +30,7 @@
     "cuffmerge": {
         "selected_class_code": "uxosj",
         "threads": 2
-    },
+    }
             
 }
 
