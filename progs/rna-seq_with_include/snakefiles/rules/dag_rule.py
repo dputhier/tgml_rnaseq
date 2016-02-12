@@ -4,5 +4,6 @@ rule draw_dag:
     threads: 1
     shell: """
     cd progs/rna-seq_with_include/
-    snakemake -s snakefiles/Snakefile.py --rulegraph | dot -T png > ../../output/report/dag.png
+    snakemake -s snakefiles/Snakefile.py --rulegraph | dot -T png > ../../output/report/rulegraph.png
+    snakemake -s snakefiles/Snakefile.py --dag | dot -T png > ../../output/report/dag.png
     """

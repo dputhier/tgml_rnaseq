@@ -92,7 +92,6 @@ MAPPING_STAT_PLOT = expand("output/mapping_stats/{smp}.stats.png", smp=SAMPLES)
 
 rule final:
     input:  FASTQC_RAW, FASTQC_TRIM,        \  
-            MAPPING,                        \
             BAM_BY_STRAND, BIGWIG,          \
             QUANTIF_KNOWN_GENES,            \
             QUANTIF_KNOWN_AND_NOVEL_GENES,  \
@@ -113,7 +112,7 @@ def report_numbered_list(list):
     n = 0
     for element in list:
         n = n + 1
-        result = result + str(n) + ". " + element + "\n"
+        result = result + "   " + str(n) + ". " + element + "\n"
         
     return(result)
 
@@ -140,62 +139,99 @@ def report_bullet_list(alist):
 
 def image_fastq(alist, prefix="a_"):
 
+    if isinstance(alist, str):
+        alist = [alist]
+        
     table ="""
-+-------------------+-------------------+-------------------+      
-+Per base Quality   +Duplication levels +      K-mers       +
-+-------------------+-------------------+-------------------+"""
++---------+-------------------+-------------------+-------------------+      
++ Sample  +Per base Quality   +Duplication levels +      K-mers       +
++---------+-------------------+-------------------+-------------------+"""
 
     row = """   
-+ |{p}pbq{n}|     +   |{p}dup{n}|   +     |{p}kmr{n}| +
-+-------------------+-------------------+-------------------+"""
++    {s}  + |{p}pbq{n}|     +   |{p}dup{n}|   +     |{p}kmr{n}| +
++---------+-------------------+-------------------+-------------------+"""
 
     alist = [x.replace("output/","") for x in alist]
-    
+
     pbq = [x.replace("fastqc_data.txt", "Images/per_base_quality.png") for x in alist]
     dup = [x.replace("fastqc_data.txt", "Images/duplication_levels.png") for x in alist]
     kmr = [x.replace("fastqc_data.txt", "Images/kmer_profiles.png") for x in alist]
       
-    pbq = "\n".join([" .. |" + prefix + "pbq"  + str(p).zfill(3) + "| image:: ../" + x + "\n\n" for p,x in  enumerate(pbq)])
-    dup = "\n".join([" .. |" + prefix + "dup"  + str(p).zfill(3) + "| image:: ../" + x + "\n\n" for p,x in  enumerate(dup)])
-    kmr = "\n".join([" .. |" + prefix + "kmr"  + str(p).zfill(3) + "| image:: ../" + x + "\n\n" for p,x in  enumerate(kmr)])
-
-
+    pbq = "\n".join([" .. |" + prefix + "pbq"  + str(p).zfill(3) + "| image:: ../" + x + "\n" for p,x in  enumerate(pbq)])
+    dup = "\n".join([" .. |" + prefix + "dup"  + str(p).zfill(3) + "| image:: ../" + x + "\n" for p,x in  enumerate(dup)])
+    kmr = "\n".join([" .. |" + prefix + "kmr"  + str(p).zfill(3) + "| image:: ../" + x + "\n" for p,x in  enumerate(kmr)])
      
     for i in range(len(alist)):
-        table += row.format(n=str(i).zfill(3), p=prefix)
+        table += row.format(n=str(i).zfill(3), p=prefix, s=str(i + 1).zfill(3),)
     
     result = "\n\n" + pbq + "\n" + dup + "\n" + kmr + "\n" + table + "\n\n"
-    #sys.stderr.write(result)
+
     return result
 
+def image_mapp_stats(alist):
+
+    if isinstance(alist, str):
+        alist = [alist]
+
+    alist = [x.replace("output/","") for x in alist]
+        
+    table ="""
++---------+----------------------+      
++ Sample  + Mapping statistics   +
++---------+----------------------+"""
+
+    row = """   
++    {s}  + |mapstat{n}|         +
++---------+----------------------+"""
+
+    mapstat = "\n".join([" .. |" + "mapstat"  + str(p).zfill(3) + "| image:: ../" + x + "\n" for p,x in  enumerate(alist)])
+
+    for i in range(len(alist)):
+        table += row.format(n=str(i).zfill(3), s=str(i + 1).zfill(3),)
+
+    result = "\n\n" + mapstat + "\n" + table + "\n\n"
+
+    return result
+    
 #================================================================#
 #           Variables  for report                                #
 #================================================================#
 
-# numbered list
+## info
 SAMPLES_L = report_numbered_list(SAMPLES)
-TRIMMING_L = report_numbered_list(TRIMMING)
 
-# Links
-FASTQC_RAW_R1_L = report_link_list(FASTQC_RAW)
-FASTQC_RAW_R2_L = FASTQC_RAW_R1_L.replace("R1.fq_fastqc","R2.fq_fastqc")
+## dag
+DAG_PNG_L = os.path.basename(DAG_PNG)
 
-FASTQC_TRIM_R1_L = report_link_list(FASTQC_TRIM)
-FASTQC_TRIM_R2_L = FASTQC_TRIM_R1_L.replace("R1.fq_fastqc","R2.fq_fastqc")
-
+SINGLE_DAG_PNG_L = os.path.basename(DAG_PNG.replace("dag","rulegraph"))
+ 
+## BAM
 
 BAM_L = report_link_list(MAPPING)
 BWIG_L = report_link_list(BIGWIG)
-RSEQC_COV_L = report_link_list(RSEQC_COV)
 
-# Image tables
+## FASTQC
+# link
+FASTQC_RAW_R1_L = report_link_list(FASTQC_RAW)
+FASTQC_RAW_R2_L = FASTQC_RAW_R1_L.replace("R1.fq_fastqc","R2.fq_fastqc")
+# images
+FASTQC_TRIM_R1_L = report_link_list(FASTQC_TRIM)
+FASTQC_TRIM_R2_L = FASTQC_TRIM_R1_L.replace("R1_t.fq_fastqc","R2_t.fq_fastqc")
+
 FASTQC_RAW_SEQ_R1_QUAL_IT = image_fastq(FASTQC_RAW, prefix="a____")
 FASTQC_RAW_SEQ_R2_QUAL_IT = FASTQC_RAW_SEQ_R1_QUAL_IT.replace("R1.fq_fastqc","R2.fq_fastqc")
 FASTQC_RAW_SEQ_R2_QUAL_IT = FASTQC_RAW_SEQ_R2_QUAL_IT.replace("a____","b____")
 
 FASTQC_TRIM_SEQ_R1_QUAL_IT = image_fastq(FASTQC_TRIM, prefix="c____")
-FASTQC_TRIM_SEQ_R2_QUAL_IT = FASTQC_TRIM_SEQ_R1_QUAL_IT.replace("R1.fq_fastqc","R2.fq_fastqc")
+FASTQC_TRIM_SEQ_R2_QUAL_IT = FASTQC_TRIM_SEQ_R1_QUAL_IT.replace("R1_t.fq_fastqc","R2_t.fq_fastqc")
 FASTQC_TRIM_SEQ_R2_QUAL_IT = FASTQC_TRIM_SEQ_R2_QUAL_IT.replace("c____","d____")
+
+## Mapping statistics
+MAPPING_STAT_PLOT_I = image_mapp_stats(MAPPING_STAT_PLOT)
+MAPPING_STAT_PLOT_L = report_link_list([x.replace(".png","") for x in MAPPING_STAT_PLOT])
+## RSEQC
+RSEQC_COV_L = report_link_list(RSEQC_COV.replace(".curves.pdf.png",".txt"))
+RSEQC_COV_I =  ".. image:: " + RSEQC_COV.replace("output/","../") + "\n\n"
 
 #================================================================#
 #           Report                                               #
@@ -213,8 +249,6 @@ rule report:
             QUANTIF_KNOWN_GENES,            \
             QUANTIF_KNOWN_AND_NOVEL_GENES,  \
             DIAGNOSIS_PLOT,                 \
-            MAPPING_STATS_R1,               \
-            MAPPING_STATS_R2,               \
             MAPPING_STAT_PLOT
             
 
@@ -231,7 +265,8 @@ rule report:
         RNA-Seq analysis summary
         =========================
         
-        :Analysis workflow:
+        About
+        ======
         
         - User name : {params.user}
         - Directory path : {params.wdir}
@@ -246,6 +281,7 @@ rule report:
         - `FastQC raw reads (R2)`_
         - `FastQC trimmed reads (R2)`_
         - `RSeQC genebody coverage`_
+        - `Mapping statistics`_
         - `BAM files`_
         - `Bigwig files`_
 
@@ -255,9 +291,16 @@ rule report:
         Flowcharts
         ==========
 
-        - Sample processing file: {params.dag_png}
+        - Layout
 
-        .. image:: ../../{input[0]}
+        .. image:: {SINGLE_DAG_PNG_L}
+        
+        - Sample-wise worflow
+
+        .. image:: {DAG_PNG_L}
+        
+        
+
 
         -----------------------------------------------------
 
@@ -268,7 +311,8 @@ rule report:
         - Number of samples: {params.nb_smp}
 
         - Sample names
-            {SAMPLES_L}
+
+        {SAMPLES_L}
 
 
         -----------------------------------------------------
@@ -311,7 +355,18 @@ rule report:
         RSeQC genebody coverage
         =========================
         
+        {RSEQC_COV_I}
+        
         {RSEQC_COV_L}
+        
+        -----------------------------------------------------
+
+        Mapping statistics
+        =========================
+        
+        {MAPPING_STAT_PLOT_I}
+        
+        {MAPPING_STAT_PLOT_L}
         
         -----------------------------------------------------
                 
