@@ -3,6 +3,11 @@
 #================================================================#
 
 import os
+import sys
+import re
+from snakemake.utils import report
+from snakemake.utils import R
+
 configfile: "snakefiles/config.json"
 
 #================================================================#
@@ -10,15 +15,15 @@ configfile: "snakefiles/config.json"
 #================================================================#
 
 include: "rules/fastqc_rules.py"
-include: "rules/trimming.rules"
-include: "rules/mapping.rules"
-include: "rules/sorting_bam.rules"
-include: "rules/indexing.rules"
-include: "rules/flagstat.rules"
-include: "rules/select_mapped.rules"
-include: "rules/delete_replicats.rules"
-include: "rules/rulegraph.rules"
-include: "rules/dag.rules"
+include: "rules/trimming_se_rules.py"
+include: "rules/fastqc_trim_se_rules.py"
+include: "rules/bowtie2_rules.py"
+include: "rules/mapping_stat_chipSeq_rule.py"
+include: "rules/delete_duplicate_read_rules.py"
+include: "rules/mapping_quality_rules.py"
+include: "rules/samtools_sort_rules.py"
+include: "rules/dag_rule.py"
+include: "rules/mapping_stats_plot_chip_seq_rule.py"
 
 #================================================================#
 #     Global variables                                           #
@@ -27,163 +32,275 @@ include: "rules/dag.rules"
 workdir: config["workingdir"]
 
 SAMPLES = config["samples"].split()
-SAMPLES_TYPE = config["samples_type"].split() 
+
 
 #================================================================#
-#     Data should be downloaded from SRA (or not)                                           #
+#                         TARGETS                                #
 #================================================================#
 
-if config["sra"] ==  "yes":
+FASTQC_RAW = expand("output/fastqc_raw/{smp}/{smp}.fq_fastqc/fastqc_data.txt", smp=SAMPLES)
+
+TRIMMING =  expand("output/trimmed/{smp}_t.fq.gz", smp=SAMPLES)
+
+FASTQC_TRIM = expand("output/fastqc_trim/{smp}/{smp}_t.fq_fastqc/fastqc_data.txt", smp=SAMPLES)
+
+MAPPING = expand("output/bam/{smp}.bam", smp=SAMPLES)
+
+MAPPING_SORT = expand("output/bam/{smp}_srt.bam", smp=SAMPLES)
+
+MAPPING_QUAL =  expand("output/bam/{smp}_q30.bam", smp=SAMPLES)
+
+MAPPING_DUP = expand("output/bam/{smp}_q30_rmDup.bam", smp=SAMPLES)
+
+MAPPING_STATS=expand("output/mapping_stats/{smp}q30_rmDup.flagstat", smp=SAMPLES)
+
+MAPPING_STAT_PLOT = expand( "output/mapping_stats/{smp}.stats.png", smp=SAMPLES)
+
+
+DAG_PNG = "output/report/dag.png"
 
 #================================================================#
-#                         Workflow                               #
+#                         LAST RULES                             #
 #================================================================#
-
-FASTQC = expand("results/fastqc/{samples_type}/{samples}.fq_fastqc.zip", zip, samples_type=SAMPLES_TYPE, samples=SAMPLES)
-
-TRIMMING =  expand("results/trimmed/{samples_type}/{samples}_trimmed.fq.gz", zip, samples_type=SAMPLES_TYPE, samples=SAMPLES)
-
-MAPPING = expand("results/mapped/{samples_type}/{samples}_mapped.bam", zip, samples_type=SAMPLES_TYPE, samples=SAMPLES)
-
-MAPPING_Q30 =  expand("results/mapped/{samples_type}/{samples}_mapped_q30.bam", zip, samples_type=SAMPLES_TYPE, samples=SAMPLES)
-
-MAPPING_UNIQUE = expand("results/mapped/{samples_type}/{samples}_mapped_unique.bam", zip, samples_type=SAMPLES_TYPE, samples=SAMPLES)
-
-STAT = expand("results/stat/{samples_type}/{samples}_{stat_type}.txt", zip, samples_type=SAMPLES_TYPE, samples=SAMPLES, stat_type="mapped mapped".split())
-
-STAT_Q30 = expand("results/stat/{samples_type}/{samples}_{stat_type}.txt", zip, samples_type=SAMPLES_TYPE, samples=SAMPLES, stat_type="mapped_q30 mapped_q30".split())
-
-STAT_UNIQUE = expand("results/stat/{samples_type}/{samples}_{stat_type}.txt", zip, samples_type=SAMPLES_TYPE, samples=SAMPLES, stat_type="mapped_unique mapped_unique".split())
-
-INDEX = expand("results/mapped/{samples_type}/{samples}_mapped_sorted.bam.bai", zip, samples_type=SAMPLES_TYPE, samples=SAMPLES)
 
 
 rule all:
-    input: FASTQC , \
-      STAT, \
-      STAT_Q30, \
-      STAT_UNIQUE,\
-      INDEX,\
-      "reports/rulegraph.png",\
-      "reports/dag.png",\
-      "reports/report.html"
-    
+    input: "output/report/report.html"
 
-
+rule final:
+    input:  FASTQC_RAW, FASTQC_TRIM, MAPPING_STATS, MAPPING_STAT_PLOT, DAG_PNG
+    output: "output/code/Snakefile.py"
+    params: wdir = config["workingdir"] + "progs/chip_seq_se/snakefiles/Snakefile.py"
+    shell: """
+    cp {params.wdir} {output}
+    """
 
 #================================================================#
-#                          Report                                #
+#            functions for Report                                #
 #================================================================#
-
-from snakemake.utils import report
-
-WD = config["workingdir"]
 
 def report_numbered_list(list):
     result = ""
     n = 0
     for element in list:
         n = n + 1
-        result = result + str(n) + ". " + element + "\n"
+        result = result + "   " + str(n) + ". " + element + "\n"
         
     return(result)
 
 
 def report_link_list(list):
+    if isinstance(list, str):
+        list = [list]
     result = ""
     n = 0
     for element in list:
         n+=1
-        result += "`" + element + " <../" + element + ">`_ \n" 
+        result += "- `" + element + " <../../" + element + ">`_ \n\n" 
+    
+    return(result + "\n") 
 
-    return(result) 
+def report_bullet_list(alist):
 
-SAMPLES_TYPE_L = report_numbered_list(SAMPLES_TYPE)
+    return "\n".join(["- "+ x + "\n" for x in  alist])
+
+#================================================================#
+#           Table of images                                      #
+#================================================================#
+
+
+def image_fastq(alist, prefix="a_"):
+
+    if isinstance(alist, str):
+        alist = [alist]
+        
+    table ="""
++---------+-------------------+-------------------+-------------------+      
++ Sample  +Per base Quality   +Duplication levels +      K-mers       +
++---------+-------------------+-------------------+-------------------+"""
+
+    row = """   
++    {s}  + |{p}pbq{n}|     +   |{p}dup{n}|   +     |{p}kmr{n}| +
++---------+-------------------+-------------------+-------------------+"""
+
+    alist = [x.replace("output/","") for x in alist]
+
+    pbq = [x.replace("fastqc_data.txt", "Images/per_base_quality.png") for x in alist]
+    dup = [x.replace("fastqc_data.txt", "Images/duplication_levels.png") for x in alist]
+    kmr = [x.replace("fastqc_data.txt", "Images/kmer_profiles.png") for x in alist]
+      
+    pbq = "\n".join([" .. |" + prefix + "pbq"  + str(p).zfill(3) + "| image:: ../" + x + "\n" for p,x in  enumerate(pbq)])
+    dup = "\n".join([" .. |" + prefix + "dup"  + str(p).zfill(3) + "| image:: ../" + x + "\n" for p,x in  enumerate(dup)])
+    kmr = "\n".join([" .. |" + prefix + "kmr"  + str(p).zfill(3) + "| image:: ../" + x + "\n" for p,x in  enumerate(kmr)])
+     
+    for i in range(len(alist)):
+        table += row.format(n=str(i).zfill(3), p=prefix, s=str(i + 1).zfill(3),)
+    
+    result = "\n\n" + pbq + "\n" + dup + "\n" + kmr + "\n" + table + "\n\n"
+
+    return result
+
+def image_mapp_stats(alist):
+
+    if isinstance(alist, str):
+        alist = [alist]
+
+    alist = [x.replace("output/","") for x in alist]
+        
+    table ="""
++---------+----------------------+      
++ Sample  + Mapping statistics   +
++---------+----------------------+"""
+
+    row = """   
++    {s}  + |mapstat{n}|         +
++---------+----------------------+"""
+
+    mapstat = "\n".join([" .. |" + "mapstat"  + str(p).zfill(3) + "| image:: ../" + x + "\n" for p,x in  enumerate(alist)])
+
+    for i in range(len(alist)):
+        table += row.format(n=str(i).zfill(3), s=str(i + 1).zfill(3),)
+
+    result = "\n\n" + mapstat + "\n" + table + "\n\n"
+
+    return result
+    
+#================================================================#
+#           Variables  for report                                #
+#================================================================#
+
+
+## info
 SAMPLES_L = report_numbered_list(SAMPLES)
-TRIMMING_L = report_numbered_list(TRIMMING)
-INDEX_L = report_numbered_list(INDEX)
-STAT_L = report_link_list(STAT)
-STAT_Q30_L = report_link_list(STAT_Q30)
-STAT_UNIQUE_L = report_link_list(STAT_UNIQUE)
+
+## dag
+DAG_PNG_L = os.path.basename(DAG_PNG)
+
+SINGLE_DAG_PNG_L = os.path.basename(DAG_PNG.replace("dag","rulegraph"))
+
+## BAM
+
+BAM_L = report_link_list(MAPPING_DUP)
+
+
+## FASTQC
+# link
+FASTQC_RAW_L = report_link_list(FASTQC_RAW)
+FASTQC_TRIM_L = report_link_list(FASTQC_TRIM)
+
+# images
+
+FASTQC_RAW_SEQ_QUAL_IT = image_fastq(FASTQC_RAW, prefix="a____")
+
+FASTQC_TRIM_SEQ_QUAL_IT = image_fastq(FASTQC_TRIM, prefix="c____")
+
+## Mapping statistics
+MAPPING_STAT_PLOT_I = image_mapp_stats(MAPPING_STAT_PLOT)
+MAPPING_STAT_PLOT_L = report_link_list([x.replace(".png","") for x in MAPPING_STAT_PLOT])
+
+
+#================================================================#
+#                         REPORT                                 #
+#================================================================#
 
 rule report:
     """
     Generate a report with the list of datasets + summary of the results.
     """
-    input:  dag_png="reports/dag.png", \
-            rulegraph_png="reports/rulegraph.png"
-    output: html="reports/report.html"
+    input:  code="output/code/Snakefile.py"
+            
+
+    params: wdir=config["workingdir"], \
+            user=config["user"], \
+            dag_png=os.path.basename(DAG_PNG), \
+            nb_smp=str(len(config["samples"].split()))
+
+    output: html="output/report/report.html"
+
     run:
         report("""
-        ==================
-        Chip-seq analysis
-        ==================
+        =========================
+        ChIP-Seq analysis summary
+        =========================
         
-        :Analysis workflow:    Justine Long, Jeanne Chèneby
+        About
+        ======
         
+        - User name : {params.user}
+        - Directory path : {params.wdir}
+
         Contents
         ========
         
         - `Flowcharts`_
-        - `Datasets`_
-             - `Sample types`_
-             - `Sample names`_
+        - `Datasets description`_
+        - `FastQC raw reads`_
+        - `FastQC trimmed reads`_
+        - `Mapping statistics`_
+        - `BAM files`_
+        - `Bigwig files`_
 
+    
         -----------------------------------------------------
 
         Flowcharts
         ==========
 
-        - Sample treatment: dag_png_
-        - Workflow: rulegraph_png_
+        - Layout
 
-        .. image:: rulegraph.png
+        .. image:: {SINGLE_DAG_PNG_L}
+        
+        - Sample-wise worflow
+
+        .. image:: {DAG_PNG_L}
 
         -----------------------------------------------------
 
-        Datasets
-        ========
         
-        Sample types
-        -------------------
-        {SAMPLES_TYPE_L}
+        Datasets description
+        =====================
+        
+        - Number of samples: {params.nb_smp}
 
-        Sample names
-        ------------------
+        - Sample names
+
         {SAMPLES_L}
 
-        Result files
-        ============
-
-        Quality control (raw reads)
-        ---------------------------
-
-        .. |logo| image:: ../results/fastqc/chip_seq/siNT_ER_E2_r3_SRX176860_chr21_0.6_Noise.fq_fastqc/Images/per_base_quality.png
-
-
-
-        TRIMMING
-        -------------
-        {TRIMMING_L}
-
-        INDEX
-        --------
-        Files to visualize with a genome browser \n
-
-        {INDEX_L}
-
-        STAT
-        --------
-        {STAT_L}
-
-        STAT_Q30
-        ----------
-        {STAT_Q30_L}
-
-        STAT_UNIQUE
-        -------------
-        {STAT_UNIQUE_L}
+        -----------------------------------------------------
+        
+        FastQC raw reads
+        ======================
+        
+        {FASTQC_RAW_SEQ_QUAL_IT}
+           
+        {FASTQC_RAW_L}
 
 
+        FastQC trimmed reads (R2)
+        ==========================
+                
+        {FASTQC_TRIM_SEQ_QUAL_IT}
+           
+        {FASTQC_TRIM_L}
 
-        """, output.html, metadata="Jeanne Chèneby and Justine Long", **input)
+        Mapping statistics
+        =========================
+        
+        {MAPPING_STAT_PLOT_I}
+        
+        {MAPPING_STAT_PLOT_L}
+        
+        -----------------------------------------------------
+                
+        BAM files
+        ==============
+        
+        {BAM_L}
+        -----------------------------------------------------
+                
+        Bigwig files
+        ==============
+
+
+        """, output.html, metadata="D. Puthier", **input)
+        

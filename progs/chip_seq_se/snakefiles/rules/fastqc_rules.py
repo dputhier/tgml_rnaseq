@@ -4,8 +4,8 @@
 """
 
 rule fastqc:
-        input: "samples/{samples_type}/{samples}.fq.gz"
-        output:"results/fastqc/{samples_type}/{samples}.fq_fastqc.zip"
+        input: "input/fastq/{smp}.fq.gz"
+        output: "output/fastqc_raw/{smp}/{smp}.fq_fastqc/fastqc_data.txt"
         message: """--- Quality check of raw data with Fastqc."""
-        shell: "fastqc --outdir results/fastqc/{wildcards.samples_type}/ fastqc/control --extract {input}"
+        shell: "fastqc --outdir output/fastqc_raw/{wildcards.smp} --extract  -f fastq {input} &> {output}.log "
                         
