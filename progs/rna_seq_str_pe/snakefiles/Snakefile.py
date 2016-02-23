@@ -90,6 +90,12 @@ MAPPING_STATS_R2 = expand("output/mapping_stats/{smp}_R2.stats", smp=SAMPLES)
 
 MAPPING_STAT_PLOT = expand("output/mapping_stats/{smp}.stats.png", smp=SAMPLES)
 
+
+ruleorder:
+
+rule all:
+    input: "output/report/report.html"
+
 rule final:
     input:  FASTQC_RAW, FASTQC_TRIM,        \  
             BAM_BY_STRAND, BIGWIG,          \
@@ -100,8 +106,12 @@ rule final:
             DIAGNOSIS_PLOT,                 \
             MAPPING_STATS_R1,               \
             MAPPING_STATS_R2,               \
-            MAPPING_STAT_PLOT,              \
-            "output/report/report.html"
+            MAPPING_STAT_PLOT
+    output: "output/code/Snakefile"
+    params: wdir = config["workingdir" + "progs/rna_seq_str_pe/snakefiles/"
+    shell: """
+    cp {params.wdir} {output}
+    """
 
 #================================================================#
 #            functions for Report                                #
@@ -229,6 +239,7 @@ FASTQC_TRIM_SEQ_R2_QUAL_IT = FASTQC_TRIM_SEQ_R2_QUAL_IT.replace("c____","d____")
 ## Mapping statistics
 MAPPING_STAT_PLOT_I = image_mapp_stats(MAPPING_STAT_PLOT)
 MAPPING_STAT_PLOT_L = report_link_list([x.replace(".png","") for x in MAPPING_STAT_PLOT])
+
 ## RSEQC
 RSEQC_COV_L = report_link_list(RSEQC_COV.replace(".curves.pdf.png",".txt"))
 RSEQC_COV_I =  ".. image:: " + RSEQC_COV.replace("output/","../") + "\n\n"
@@ -238,18 +249,12 @@ RSEQC_COV_I =  ".. image:: " + RSEQC_COV.replace("output/","../") + "\n\n"
 #================================================================#
 
 
+
 rule report:
     """
     Generate a report with the list of datasets + summary of the results.
     """
-    input:  DAG_PNG, \
-            FASTQC_RAW, FASTQC_TRIM,        \  
-            MAPPING,                        \
-            BAM_BY_STRAND, BIGWIG,          \
-            QUANTIF_KNOWN_GENES,            \
-            QUANTIF_KNOWN_AND_NOVEL_GENES,  \
-            DIAGNOSIS_PLOT,                 \
-            MAPPING_STAT_PLOT
+    input:  code="output/code/Snakefile"
             
 
     params: wdir=config["workingdir"], \
@@ -298,8 +303,6 @@ rule report:
         - Sample-wise worflow
 
         .. image:: {DAG_PNG_L}
-        
-        
 
 
         -----------------------------------------------------
@@ -342,14 +345,14 @@ rule report:
         {FASTQC_RAW_R2_L}
 
 
-
         FastQC trimmed reads (R2)
         ==========================
                 
         {FASTQC_TRIM_SEQ_R2_QUAL_IT}
            
         {FASTQC_TRIM_R2_L}
-        
+
+
         -----------------------------------------------------
 
         RSeQC genebody coverage
@@ -379,5 +382,4 @@ rule report:
         Bigwig files
         ==============
         {BWIG_L}
-
         """, output.html, metadata="D. Puthier", **input)
