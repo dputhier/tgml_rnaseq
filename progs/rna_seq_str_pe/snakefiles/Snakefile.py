@@ -90,7 +90,6 @@ MAPPING_STATS_R2 = expand("output/mapping_stats/{smp}_R2.stats", smp=SAMPLES)
 
 MAPPING_STAT_PLOT = expand("output/mapping_stats/{smp}.stats.png", smp=SAMPLES)
 
-
 ruleorder:
 
 rule all:
@@ -107,8 +106,8 @@ rule final:
             MAPPING_STATS_R1,               \
             MAPPING_STATS_R2,               \
             MAPPING_STAT_PLOT
-    output: "output/code/Snakefile"
-    params: wdir = config["workingdir" + "progs/rna_seq_str_pe/snakefiles/"
+    output: "output/code/Snakefile.py"
+    params: wdir = config["workingdir"] + "progs/rna_seq_str_pe/snakefiles/*nake*"
     shell: """
     cp {params.wdir} {output}
     """
@@ -254,7 +253,7 @@ rule report:
     """
     Generate a report with the list of datasets + summary of the results.
     """
-    input:  code="output/code/Snakefile"
+    input:  code="output/code/Snakefile.py"
             
 
     params: wdir=config["workingdir"], \

@@ -1,5 +1,5 @@
 rule cufflinks:
-    input:  bam="output/bam/{smp}.bam", bai="output/bam/{smp}.bam.bai"
+    input:  bam="output/bam/{smp}.bam"
     output: gtf="output/cufflinks/{smp}/transcripts.gtf"
     params: gtf=config["gtf"], args=config["cufflinks"]["args"]
     threads: config["cufflinks"]["threads"]
