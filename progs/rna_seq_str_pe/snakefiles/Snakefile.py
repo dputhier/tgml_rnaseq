@@ -107,7 +107,7 @@ rule final:
             MAPPING_STATS_R2,               \
             MAPPING_STAT_PLOT
     output: "output/code/Snakefile.py"
-    params: wdir = config["workingdir"] + "progs/rna_seq_str_pe/snakefiles/*nake*"
+    params: wdir = config["workingdir"] + "/progs/rna_seq_str_pe/snakefiles/*nake*"
     shell: """
     cp {params.wdir} {output}
     """
