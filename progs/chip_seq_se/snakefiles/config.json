@@ -1,23 +1,35 @@
 {
-    "workingdir": "/gpfs/tagc/home/puthier/013_ariel",
-    "samples": "siNT_ER_E2_r3_SRX176860_chr21_0.6_Noise MCF_input_r3_SRX176888_chr21_Noise",
-    "samples_type": "chip_seq input",
-    "qsub": "-V -m a -d /gpfs/tagc/home/puthier/013_ariel",
-    "sra": "no",
-    
-    "sickle": { 
-        "qual_type": "sanger",
-        "threshold": "20",
-    "options": ""
-    },
-    
-    "bowtie2": {
-        "index": "/gpfs/tagc/apps/genome/hg19/Bowtie2Index/genome",
-        "other_options": "--sensitive --phred33 -q -p 10"
-    },
+	"workingdir": "/Users/puthier/git/dp_worflows/",
+	"user": "D. Puthier",
+	"samples": "siNT_ER_E2_r3_SRX176860_chr21_0.6_Noise MCF_input_r3_SRX176888_chr21_Noise",
+	"input": "MCF_input_r3_SRX176888_chr21_Noise",
+	"fragment_size": "300",
+	"qsub": "-V -m a -d /Users/puthier/git/dp_worflows/",
+	"fasta": "/Users/puthier/git/dp_worflows/input/indexes/chr21_hg38.fa",
 
-    "samtools_view": {
-    "quality": "30"
-    }
-    
+	"sickle": { 
+        "threshold": "20",
+        "length": "25",
+        "qualtype": "sanger",
+	"options": ""
+	},
+
+    "bowtie2": { 
+        "other_options": " --sensitive ",
+        "threads": 5,
+        "index": "/Users/puthier/git/dp_worflows/input/indexes/chr21_hg38"
+    },
+            
+    "samtools_sort": { 
+        "threads": 5
+    },
+    "samtools_view": { 
+        "quality": "30"
+    },
+    "macs14": { 
+        "genome_size": "hs"
+    }              
+            
+
 }
+

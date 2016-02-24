@@ -1,5 +1,5 @@
 rule mapping_stats:
-        input: raw="output/fastqc_raw/{smp}/{smp}.fq_fastqc/fastqc_data.txt", \
+        input:  raw="output/fastqc_raw/{smp}/{smp}.fq_fastqc/fastqc_data.txt", \
                 trim="output/fastqc_trim/{smp}/{smp}_t.fq_fastqc/fastqc_data.txt", \
                 bam="output/bam/{smp}_srt.bam", \
                 bamq30="output/bam/{smp}_q30.bam", \

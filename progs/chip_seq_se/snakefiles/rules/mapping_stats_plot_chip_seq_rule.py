@@ -1,4 +1,4 @@
-rule hist_mapping_stats:
+rule mapping_stats_plot:
     input: "output/mapping_stats/{smp}.stats"
     output: "output/mapping_stats/{smp}.stats.png"
     threads: 1
@@ -20,10 +20,8 @@ rule hist_mapping_stats:
          
       }}
      png("{output[0]}", width = 350, hei=350)
-     barplot(m, beside=T, col=col.pal, cex.names=0.7 , las=2)
+     barplot(m, beside=T, col=col.pal, cex.names=0.7)
      abline(h=seq(10e6,1e9, 10e6), col="gray", lty=2)
      legend("bottomleft", leg=c("Raw", "Trimmed", "Mapped", "Qual_filt", "Rm_dup"), fill=col.pal)
-     dev.off()
-
-          
+     dev.off()    
     """)

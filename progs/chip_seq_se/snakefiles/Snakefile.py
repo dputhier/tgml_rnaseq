@@ -19,11 +19,16 @@ include: "rules/trimming_se_rules.py"
 include: "rules/fastqc_trim_se_rules.py"
 include: "rules/bowtie2_rules.py"
 include: "rules/mapping_stat_chipSeq_rule.py"
-include: "rules/delete_duplicate_read_rules.py"
+include: "rules/rm_duplicate_read_rules.py"
 include: "rules/mapping_quality_rules.py"
 include: "rules/samtools_sort_rules.py"
 include: "rules/dag_rule.py"
 include: "rules/mapping_stats_plot_chip_seq_rule.py"
+include: "rules/macs_rule.py"
+include: "rules/merge_peak_rule.py"
+include: "rules/multiBamSummary_rule.py"
+include: "rules/bam_corr_scatter_rules.py"
+include: "rules/plotFingerprint_rule.py"
 
 #================================================================#
 #     Global variables                                           #
@@ -32,7 +37,8 @@ include: "rules/mapping_stats_plot_chip_seq_rule.py"
 workdir: config["workingdir"]
 
 SAMPLES = config["samples"].split()
-
+CHIP = list(SAMPLES)
+CHIP.remove(config["input"])
 
 #================================================================#
 #                         TARGETS                                #
@@ -56,6 +62,16 @@ MAPPING_STATS=expand("output/mapping_stats/{smp}q30_rmDup.flagstat", smp=SAMPLES
 
 MAPPING_STAT_PLOT = expand( "output/mapping_stats/{smp}.stats.png", smp=SAMPLES)
 
+MACS_PEAKS = expand("output/macs/{smp}/{smp}_sorted_peaks.bed",  smp=CHIP)
+
+MERGE_PEAKS = "output/merged_peaks/merged_peaks.bed"
+
+BAM_SUMMARY = "output/multiBamSummary/merge_peaks_coverage.npz"
+
+BAM_CORR_SCATTER = ["output/multiBamSummary/scatterplot_spearman.png", \
+                    "output/multiBamSummary/heatmap_spearman.png", \
+                    "output/multiBamSummary/pca.png"]
+FINGER_PRINT = "output/plotFingerprint/fingerprint.png"
 
 DAG_PNG = "output/report/dag.png"
 
@@ -68,7 +84,9 @@ rule all:
     input: "output/report/report.html"
 
 rule final:
-    input:  FASTQC_RAW, FASTQC_TRIM, MAPPING_STATS, MAPPING_STAT_PLOT, DAG_PNG
+    input:  FASTQC_RAW, FASTQC_TRIM, MAPPING_STATS, \
+            MAPPING_STAT_PLOT, DAG_PNG, MACS_PEAKS, \
+            MERGE_PEAKS, BAM_SUMMARY, BAM_CORR_SCATTER, FINGER_PRINT
     output: "output/code/Snakefile.py"
     params: wdir = config["workingdir"] + "progs/chip_seq_se/snakefiles/Snakefile.py"
     shell: """
@@ -140,7 +158,7 @@ def image_fastq(alist, prefix="a_"):
 
     return result
 
-def image_mapp_stats(alist):
+def image_other(alist, name="mapstat"):
 
     if isinstance(alist, str):
         alist = [alist]
@@ -153,27 +171,27 @@ def image_mapp_stats(alist):
 +---------+----------------------+"""
 
     row = """   
-+    {s}  + |mapstat{n}|         +
++    {s}  + |{name}{n}|         +
 +---------+----------------------+"""
 
-    mapstat = "\n".join([" .. |" + "mapstat"  + str(p).zfill(3) + "| image:: ../" + x + "\n" for p,x in  enumerate(alist)])
+    mapstat = "\n".join([" .. |" + name  + str(p).zfill(3) + "| image:: ../" + x + "\n" for p,x in  enumerate(alist)])
 
     for i in range(len(alist)):
-        table += row.format(n=str(i).zfill(3), s=str(i + 1).zfill(3),)
+        table += row.format(n=str(i).zfill(3), s=str(i + 1).zfill(3),name=name)
 
     result = "\n\n" + mapstat + "\n" + table + "\n\n"
 
     return result
-    
+
 #================================================================#
 #           Variables  for report                                #
 #================================================================#
 
 
-## info
+## SAMPLE INFO
 SAMPLES_L = report_numbered_list(SAMPLES)
 
-## dag
+## WORFLOW DAG
 DAG_PNG_L = os.path.basename(DAG_PNG)
 
 SINGLE_DAG_PNG_L = os.path.basename(DAG_PNG.replace("dag","rulegraph"))
@@ -182,23 +200,24 @@ SINGLE_DAG_PNG_L = os.path.basename(DAG_PNG.replace("dag","rulegraph"))
 
 BAM_L = report_link_list(MAPPING_DUP)
 
-
 ## FASTQC
+
 # link
 FASTQC_RAW_L = report_link_list(FASTQC_RAW)
 FASTQC_TRIM_L = report_link_list(FASTQC_TRIM)
-
 # images
-
 FASTQC_RAW_SEQ_QUAL_IT = image_fastq(FASTQC_RAW, prefix="a____")
-
 FASTQC_TRIM_SEQ_QUAL_IT = image_fastq(FASTQC_TRIM, prefix="c____")
 
 ## Mapping statistics
-MAPPING_STAT_PLOT_I = image_mapp_stats(MAPPING_STAT_PLOT)
+MAPPING_STAT_PLOT_I = image_other(MAPPING_STAT_PLOT, name="mapstat")
 MAPPING_STAT_PLOT_L = report_link_list([x.replace(".png","") for x in MAPPING_STAT_PLOT])
 
+## BAM CORR SCATTERPLOT
+BAM_CORR_SCATTER_I = image_other(BAM_CORR_SCATTER, name="bamcorr")
 
+## FINGERPRINTS
+FINGER_PRINT_I = image_other(FINGER_PRINT, name="fingerp")
 #================================================================#
 #                         REPORT                                 #
 #================================================================#
@@ -276,7 +295,7 @@ rule report:
         {FASTQC_RAW_L}
 
 
-        FastQC trimmed reads (R2)
+        FastQC trimmed reads
         ==========================
                 
         {FASTQC_TRIM_SEQ_QUAL_IT}
@@ -291,7 +310,17 @@ rule report:
         {MAPPING_STAT_PLOT_L}
         
         -----------------------------------------------------
-                
+    
+        BAM correlation and PCA plot
+        =============================
+        
+        {BAM_CORR_SCATTER_I}
+        
+        Finger prints
+        ==============
+        
+        {FINGER_PRINT_I}
+        
         BAM files
         ==============
         
