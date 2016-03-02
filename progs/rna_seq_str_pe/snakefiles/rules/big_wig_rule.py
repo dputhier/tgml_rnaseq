@@ -3,6 +3,7 @@ rule do_bigwig:
             minbai="output/bam/{smp}_min.bam.bai", plusbai="output/bam/{smp}_plus.bam.bai"
     output: min="output/bwig/{smp}_min.bw", plus="output/bwig/{smp}_plus.bw"
     params: chr=config["chr_size"]
+    threads: 1
     shell: """
         bam2wig.py -i {input.plus} -s {params.chr} -o output/bwig/{wildcards.smp}_plus &> {output.plus}.log
         wigToBigWig -clip output/bwig/{wildcards.smp}_plus.wig {params.chr} {output.plus} 2>&1 >> {output.plus}.log
