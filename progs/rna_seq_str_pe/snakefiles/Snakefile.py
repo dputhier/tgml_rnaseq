@@ -38,6 +38,8 @@ include: "rules/mapping_stats_plot_rule.py"
 include: "rules/deseq2_rule.py"
 include: "rules/pca_rule.py"
 include: "rules/cor_plot_rule.py"
+include: "rules/stat_cuffmerge_rule.py"
+include: "rules/prep_stat_cuffmerge_rule.py"
 
 #================================================================#
 #     Global variables                                           #
@@ -72,6 +74,8 @@ CUFFLINKS = expand("output/cufflinks/{smp}/transcripts.gtf", smp=SAMPLES)
 FASTA_INDEX = config["fasta"] + ".fai"
 
 CUFFMERGE = expand("output/cuffmerge/merged.gtf", smp=SAMPLES)
+
+STAT_CUFFMERGE = "output/cuffmerge/cuffmerge_stats.png"
 
 NOVEL_SELECTED_TX = "output/cuffmerge/selected_novel_transcript_class_code_" + config["cuffmerge"]["selected_class_code"] + ".gtf"
 
@@ -146,7 +150,8 @@ rule final:
             MAPPING_STAT_PLOT,              \
             DESEQ2,                         \
             PCA_MDS,                        \
-            CORR_PLOT
+            CORR_PLOT,                      \
+            STAT_CUFFMERGE
 
     output: "output/code/Snakefile.py"
     params: wdir = config["workingdir"] + "/progs/rna_seq_str_pe/snakefiles/*nake*"
@@ -301,6 +306,8 @@ CORR_PLOT_I = image_other(CORR_PLOT, name="corrplo", addheader=False)
 ## PCA and MDS
 PCA_MDS_I = image_other(PCA_MDS, name="pcaplot", addheader=False)
 
+## Statistics cuffmerge
+STAT_CUFFMERGE_I = image_other(STAT_CUFFMERGE, name="cuffmer", addheader=False)
 
 #================================================================#
 #           Report                                               #
@@ -448,6 +455,11 @@ rule report:
         {CORR_PLOT_I}
 
         -----------------------------------------------------
+
+        Cuffmerge statistics
+        =====================
+        
+        {STAT_CUFFMERGE_I}
 
         DESeq2 output
         ==============

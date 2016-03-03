@@ -12,8 +12,8 @@
 		options:
 		-i <INFILE>		the input file (genes as row, samples as column).
 		-o <OUTPREFIX>		A prefix for output (e.g. /tmp/prefix) [default: ./].
-		-w <WIDTH>      png width [default: 480].
-		-y <HEIGHT>    	png height [default: 480].
+		-w <WIDTH>      png width [default: 6].
+		-y <HEIGHT>    	png height [default: 6].
 		-x <EXPANSION>		Character expansion [default: 1]
 		-l <LABEL>		Sample labels (A,B,C,...).
 		-t <LOG>    Perform log2 transformation (and add 1 as pseudo-count) [default: 0]
@@ -86,8 +86,6 @@ pngwidth <- as.numeric(my_opts$"-w")
 label <- my_opts$"-l"
 label <- unlist(strsplit(label, ","))
 
-
-
 ## -----------------------------------------------------------------------------
 ## Loading files
 ## -----------------------------------------------------------------------------
@@ -110,45 +108,51 @@ if(my_opts$"-t" == "1"){
 ## Parameters
 ## -----------------------------------------------------------------------------
 
-
 colnames(d) <- label
 
 corr <- cor(d, method="pearson")
 
-png(file.path(outprefix,"CoorPlot_circle.png"), width=pngwidth, height=pngheigth)
+png(file.path(outprefix,"CoorPlot_circle.png"), 
+		units = 'in', res = 300, width=pngwidth, height=pngheigth)
 corrplot(corr, method = "circle", order = "hclust", hclust.method ="average", type="lower", tl.cex=expansion,
 		tl.col="black", tl.srt = 45)
 devnull <- dev.off()
 
 
-png(file.path(outprefix,"CoorPlot_square.png"), width=pngwidth, height=pngheigth)
+png(file.path(outprefix,"CoorPlot_square.png"), 
+		units = 'in', res = 300, width=pngwidth, height=pngheigth)
 corrplot(corr, method = "square", order = "hclust", hclust.method ="average", type="lower", tl.cex=expansion,
 		tl.col="black", tl.srt = 45)
 devnull <- dev.off()
 
-png(file.path(outprefix,"CoorPlot_ellipe.png"), width=pngwidth, height=pngheigth)
+png(file.path(outprefix,"CoorPlot_ellipe.png"), 
+		units = 'in', res = 300, width=pngwidth, height=pngheigth)
 corrplot(corr, method = "ellipse", order = "hclust", hclust.method ="average", type="lower", tl.cex=expansion,
 		tl.col="black", tl.srt = 45)
 devnull <- dev.off()
 
-png(file.path(outprefix,"CoorPlot_square.png"), width=pngwidth, height=pngheigth)
+png(file.path(outprefix,"CoorPlot_square.png"), 
+		units = 'in', res = 300, width=pngwidth, height=pngheigth)
 corrplot(corr, method = "number", order = "hclust", hclust.method ="average", type="lower", tl.cex=expansion,
 		tl.col="black", tl.srt = 45)
 devnull <- dev.off()
 
-png(file.path(outprefix,"CoorPlot_pie.png"), width=pngwidth, height=pngheigth)
+png(file.path(outprefix,"CoorPlot_pie.png"), 
+		units = 'in', res = 300, width=pngwidth, height=pngheigth)
 corrplot(corr, method = "pie", order = "hclust", hclust.method ="average", type="lower", tl.cex=expansion,
 		tl.col="black", tl.srt = 45)
 devnull <- dev.off()
 
 wb <- c("white","black")
 
-png(file.path(outprefix,"CoorPlot_piewb.png"), width=pngwidth, height=pngheigth)
+png(file.path(outprefix,"CoorPlot_piewb.png"), 
+		units = 'in', res = 300, width=pngwidth, height=pngheigth)
 corrplot(corr, method = "pie", col = wb, bg="gold2", order = "hclust", hclust.method ="average", type="lower", 
 		tl.cex=expansion, tl.col="black", tl.srt = 45)
 devnull <- dev.off()
 
-png(file.path(outprefix,"Pairs_plot.png"), width=pngwidth, height=pngheigth)
+png(file.path(outprefix,"Pairs_plot.png"), 
+		units = 'in', res = 300, width=pngwidth, height=pngheigth)
 plotFun <- function(x,y){ dns <- densCols(x,y); points(x,y, col=dns, pch=".") }
 pairs(d, upper.panel=plotFun, lower.panel = NULL)
 devnull <- dev.off()

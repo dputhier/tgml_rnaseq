@@ -98,7 +98,8 @@ res <- results(dds)
 ## Diagnostic plots
 ## -----------------------------------------------------------------------------
 
-png(file.path(opt$outdir,"DESeq2_diagnostic_disp.png"))
+png(file.path(opt$outdir,"DESeq2_diagnostic_disp.png"), 
+		width = 6, height = 6, units = 'in', res = 300)
 
 ## Dispersion plot
 
@@ -109,7 +110,8 @@ dev.off()
 ## MA plot
 
 cat("Producing MA plot.\n")
-png(file.path(opt$outdir,"DESeq2_diagnostic_MA.png"))
+png(file.path(opt$outdir,"DESeq2_diagnostic_MA.png"),
+		width = 6, height = 6, units = 'in', res = 300)
 plotMA(	res, 
 		main="MA plot of Two conditions",
 		ylim=c(-2,2)

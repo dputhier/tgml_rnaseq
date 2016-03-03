@@ -22,8 +22,8 @@ options:
  -v       		Run in verbose mode.
  -q     		Perform TMM normalization.
  -z      	  	Compute log2(data+1).
- -w <WIDTH>    	png width [default: 480].
- -y <HEIGHT>    	png height [default: 480].
+ -w <WIDTH>    	png width [default: 6].
+ -y <HEIGHT>    	png height [default: 6].
  -P <PALETTE>    	A palette: rob (red, orange, blue), rwb YlOrBr, jet, or rainbow. (need -f whitout third column) [default: rob].
 " -> doc
 
@@ -343,7 +343,8 @@ acp <- dudi.pca(t(d),  scannf=FALSE, nf=2)
 
 if(ncol(acp$li) >= 2){
 	# With Sample names
-	png(file.path(outprefix, "PCA_dim_genes_2D_samples.png"), width=pngwidth, height=pngheigth)
+	png(file.path(outprefix, "PCA_dim_genes_2D_samples.png"), 
+			units = 'in', res = 300, width=pngwidth, height=pngheigth)
 	
 	head(acp$li)
 	if(ncol(acp$li) > 2){
@@ -369,7 +370,8 @@ if(ncol(acp$li) >= 2){
 
 
 # Ellipse Star and class name
-	png(file.path(outprefix, "PCA_dim_genes_2D_classes.png"), width=pngwidth, height=pngheigth)
+	png(file.path(outprefix, "PCA_dim_genes_2D_classes.png"), 
+			units = 'in', res = 300, width=pngwidth, height=pngheigth)
 	
 	
 		s.class(centroids[ ,c("x","y")],
@@ -412,7 +414,8 @@ if(ncol(acp$li) >= 2){
 
 
 	# Ebouli Val propre
-	png(file.path(outprefix,"PCA_Eigen_val.png"), width=pngwidth, height=pngheigth)
+	png(file.path(outprefix,"PCA_Eigen_val.png"), 
+			units = 'in', res = 300, width=pngwidth, height=pngheigth)
 		barplot(cumsum(acp$eig)/sum(acp$eig))
 	devnull <- dev.off()
 
@@ -554,7 +557,8 @@ if(ncol(acp$li) >= 2){
 	cat(" --> Performing PCA with ggplot2.\n")
 	cat(" -->  --> With Sample Names.\n")
 	
-	png(file.path(outprefix,"PCA_ggplot_sampleName.png"), width=pngwidth, height=pngheigth)
+	png(file.path(outprefix,"PCA_ggplot_sampleName.png"), 
+			units = 'in', res = 300, width=pngwidth, height=pngheigth)
 
 		p <- ggplot(df, aes(x = x, y = y)) + geom_blank()
 		p <- p + theme_bw()
@@ -578,7 +582,8 @@ if(ncol(acp$li) >= 2){
 
 	cat(" -->  --> With Class Names.\n")
 	
-	png(file.path(outprefix,"PCA_ggplot_ClassName.png"), width=pngwidth, height=pngheigth)
+	png(file.path(outprefix,"PCA_ggplot_ClassName.png"), 
+			units = 'in', res = 300, width=pngwidth, height=pngheigth)
 
 		p <- ggplot(df, aes(x = x, y = y)) + geom_blank()
 		p <- p + theme_bw()
@@ -689,7 +694,8 @@ if(ncol(acp$li) >= 2){
 
 
 
-	png(file.path(outprefix,"MDS_ggplot_ClassName.png"), width=pngwidth, height=pngheigth)
+	png(file.path(outprefix,"MDS_ggplot_ClassName.png"), 
+			units = 'in', res = 300, width=pngwidth, height=pngheigth)
 
 	p <- ggplot(df, aes(x = x, y = y)) + geom_blank()
 	p <- p + theme_bw()
@@ -731,35 +737,43 @@ if(ncol(acp$li) >= 2){
 	devnull <- dev.off()
 }else{
 	
-	png(file.path(outprefix, "PCA_dim_genes_2D_samples.png"), width=pngwidth, height=pngheigth)
+	png(file.path(outprefix, "PCA_dim_genes_2D_samples.png"), 
+			units = 'in', res = 300, width=pngwidth, height=pngheigth)
 	plot.new()
 	text(0.5,0.5, "not enough sample")
 	dev.off()
-	png(file.path(outprefix, "PCA_dim_genes_2D_classes.png"), width=pngwidth, height=pngheigth)
+	png(file.path(outprefix, "PCA_dim_genes_2D_classes.png"), 
+			units = 'in', res = 300, width=pngwidth, height=pngheigth)
 	plot.new()
 	text(0.5,0.5, "not enough sample")
 	dev.off()	
-	png(file.path(outprefix, "PCA_dim_genes_2D_overlay.png"), width=pngwidth, height=pngheigth)
+	png(file.path(outprefix, "PCA_dim_genes_2D_overlay.png"), 
+			units = 'in', res = 300, width=pngwidth, height=pngheigth)
 	plot.new()
 	text(0.5,0.5, "not enough sample")
 	dev.off()	
-	png(file.path(outprefix,"PCA_Eigen_val.png"), width=pngwidth, height=pngheigth)
+	png(file.path(outprefix,"PCA_Eigen_val.png"), 
+			units = 'in', res = 300, width=pngwidth, height=pngheigth)
 	plot.new()
 	text(0.5,0.5, "not enough sample")
 	dev.off()	
-	png(file.path(outprefix,"PCA_ggplot_sampleName.png"), width=pngwidth, height=pngheigth)
+	png(file.path(outprefix,"PCA_ggplot_sampleName.png"), 
+			units = 'in', res = 300, width=pngwidth, height=pngheigth)
 	plot.new()
 	text(0.5,0.5, "not enough sample")
 	dev.off()	
-	png(file.path(outprefix,"PCA_ggplot_ClassName.png"), width=pngwidth, height=pngheigth)
+	png(file.path(outprefix,"PCA_ggplot_ClassName.png"), 
+			units = 'in', res = 300, width=pngwidth, height=pngheigth)
 	plot.new()
 	text(0.5,0.5, "not enough sample")
 	dev.off()	
-	png(file.path(outprefix,"MDS_ggplot_sampleName.png"), width=pngwidth, height=pngheigth)
+	png(file.path(outprefix,"MDS_ggplot_sampleName.png"), 
+			units = 'in', res = 300, width=pngwidth, height=pngheigth)
 	plot.new()
 	text(0.5,0.5, "not enough sample")
 	dev.off()
-	png(file.path(outprefix,"MDS_ggplot_ClassName.png"), width=pngwidth, height=pngheigth)
+	png(file.path(outprefix,"MDS_ggplot_ClassName.png"), 
+			units = 'in', res = 300, width=pngwidth, height=pngheigth)
 	plot.new()
 	text(0.5,0.5, "not enough sample")
 	dev.off()	

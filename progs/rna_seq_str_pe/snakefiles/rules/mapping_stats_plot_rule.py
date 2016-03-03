@@ -15,7 +15,7 @@ rule hist_mapping_stats:
          m[2,i] <- d[4,"V3"]
          m[3,i] <- as.numeric(as.character(d[6,1]))
       }}
-     png("{output[0]}", width = 350, hei=350)
+     png("{output[0]}", width=6, height=6, units = 'in', res = 300)
      barplot(m, beside=T, col=c("#FDD369", "#F98D32", "#1BBBDA"), cex.names=0.7 , las=2)
      abline(h=seq(10e6,1e9, 10e6), col="gray", lty=2)
      legend("bottomleft", leg=c("Raw", "Trimmed", "Mapped"), fill=c("#FDD369", "#F98D32", "#1BBBDA"))
