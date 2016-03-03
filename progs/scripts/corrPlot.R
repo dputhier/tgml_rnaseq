@@ -32,6 +32,7 @@ load.fun <- function(x) {
 		suppressWarnings(eval(parse(text=paste("require(", x, ")", sep=""))))
 	} else { 
 		eval(parse(text=paste("install.packages('", x, "', repos = 'http://cran.us.r-project.org')", sep=""))) 
+		suppressWarnings(eval(parse(text=paste("require(", x, ")", sep=""))))
 	} 
 } 
 
@@ -42,13 +43,14 @@ load.bioc <- function(x) {
 	} else { 
 		eval(parse(text="source('http://bioconductor.org/biocLite.R'"))
 		eval(parse(text=paste("biocLite('", x, "')", sep="")))
+		suppressWarnings(eval(parse(text=paste("require(", x, ")", sep=""))))
 	} 
 } 
 
 suppressMessages(load.bioc("geneplotter"))
 
 suppressMessages(load.fun("docopt"))
-suppressMessages(load.fun("corrplot"))
+
 
 ## -----------------------------------------------------------------------------
 ## Arg parsing
