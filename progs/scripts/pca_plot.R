@@ -344,7 +344,7 @@ acp <- dudi.pca(t(d),
 					scannf=FALSE, 
 					nf=2)
 
-if(ncol(acp$li) > 2){
+if(ncol(acp$li) >= 2){
 	# With Sample names
 	png(file.path(outprefix, "PCA_dim_genes_2D_samples.png"), width=pngwidth, height=pngheigth)
 	
@@ -386,7 +386,7 @@ if(ncol(acp$li) > 2){
 	devnull <- dev.off()
 	
 	# Ellipse Star and class name and sample name
-	png(file.path(outprefix, "PCA_dim_genes_2D_overlay.png"), useDingbats=FALSE)
+	png(file.path(outprefix, "PCA_dim_genes_2D_overlay.png"), width=pngwidth, height=pngheigth)
 
 
 
@@ -573,7 +573,7 @@ if(ncol(acp$li) > 2){
 		}
 		
 		p <- p + geom_text(label=rownames(df),colour = "white", size=expansion)
-		p	
+		print(p)
 
 	devnull <-  dev.off()
 
@@ -617,7 +617,7 @@ if(ncol(acp$li) > 2){
 		
 		p <- p + geom_text(data = centroids, aes(x = x, y = y), label = as.character(centroids$group), colour = "white", size=expansion)
 	
-		p
+		print(p)
 
 	devnull <- dev.off()
 
@@ -686,7 +686,7 @@ if(ncol(acp$li) > 2){
 	}
 	
 	p <- p + geom_text(label=rownames(df),colour = "white", size = expansion)
-	p	
+	print(p)	
 	devnull <-  dev.off()
 
 
@@ -727,7 +727,7 @@ if(ncol(acp$li) > 2){
 	
 	p <- p + geom_text(data = centroids, aes(x = x, y = y), label = as.character(centroids$group), colour = "white", size=expansion)
 	
-	p
+	print(p)
 
 	
 	devnull <- dev.off()
