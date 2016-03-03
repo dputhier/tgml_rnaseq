@@ -48,6 +48,7 @@ load.bioc <- function(x) {
 suppressMessages(load.bioc("geneplotter"))
 
 suppressMessages(load.fun("docopt"))
+suppressMessages(load.fun("corrplot"))
 
 ## -----------------------------------------------------------------------------
 ## Arg parsing
