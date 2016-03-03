@@ -35,6 +35,9 @@ include: "rules/pair_plot_rule.py"
 include: "rules/mapping_stat_file_R1_rule.py"
 include: "rules/mapping_stat_file_R2_rule.py"
 include: "rules/mapping_stats_plot_rule.py"
+include: "rules/deseq2_rule.py"
+include: "rules/pca_rule.py"
+include: "rules/cor_plot_rule.py"
 
 #================================================================#
 #     Global variables                                           #
@@ -76,7 +79,8 @@ GENE_NAME_FOR_NOVEL_TX = "output/cuffmerge/selected_novel_transcript_class_code_
 
 KNOWN_AND_NOVEL_TX = "output/inferred_gene_annotation/known_transcripts_and_selected_class_code_" + config["cuffmerge"]["selected_class_code"] + ".gtf"
 
-QUANTIF_KNOWN_AND_NOVEL_GENES = "output/quantification_known_and_novel_genes/gene_counts_known_and_novel.txt"
+QUANTIF_KNOWN_AND_NOVEL_GENES = ["output/quantification_known_and_novel_genes/gene_counts_known_and_novel.txt", \
+                                "output/quantification_known_and_novel_genes/gene_counts_known_and_novel_mini.txt"]
 
 RSEQC_COV = "output/rseqc_coverage_diag/rseqc_cov.geneBodyCoverage.curves.pdf.png"
  
@@ -90,6 +94,22 @@ MAPPING_STATS_R2 = expand("output/mapping_stats/{smp}_R2.stats", smp=SAMPLES)
 
 MAPPING_STAT_PLOT = expand("output/mapping_stats/{smp}.stats.png", smp=SAMPLES)
 
+DESEQ2 = [  "output/diff_call_deseq2/DESeq2_diagnostic_MA.png",         \
+            "output/diff_call_deseq2/DESeq2_diagnostic_disp.png",       \ 
+            "output/diff_call_deseq2/DESeq2_norm_count_table_lin.txt",  \
+            "output/diff_call_deseq2/DESeq2_norm_count_table_log2.txt", \
+            "output/diff_call_deseq2/DESeq2_norm_count_table_rld.txt",  \
+            "output/diff_call_deseq2/DESeq2_norm_count_table_vsd.txt",  \ 
+            "output/diff_call_deseq2/DESeq2_raw_count_table.txt"]
+PCA_MDS = "output/pca_mds/done"
+
+CORR_PLOT= [ "output/corr_plot/CoorPlot_circle.png", \
+            "output/corr_plot/CoorPlot_ellipe.png", \
+            "output/corr_plot/CoorPlot_pie.png",    \
+            "output/corr_plot/CoorPlot_piewb.png",  \ 
+            "output/corr_plot/CoorPlot_square.png", \
+            "output/corr_plot/Pairs_plot.png"]
+
 ruleorder:
 
 rule all:
@@ -100,12 +120,17 @@ rule final:
             BAM_BY_STRAND, BIGWIG,          \
             QUANTIF_KNOWN_GENES,            \
             QUANTIF_KNOWN_AND_NOVEL_GENES,  \
+            KNOWN_AND_NOVEL_TX,             \
             DAG_PNG,                        \
             RSEQC_COV,                      \
             DIAGNOSIS_PLOT,                 \
             MAPPING_STATS_R1,               \
             MAPPING_STATS_R2,               \
-            MAPPING_STAT_PLOT
+            MAPPING_STAT_PLOT,              \
+            DESEQ2,                         \
+            PCA_MDS,                        \
+            CORR_PLOT
+
     output: "output/code/Snakefile.py"
     params: wdir = config["workingdir"] + "/progs/rna_seq_str_pe/snakefiles/*nake*"
     shell: """
@@ -177,7 +202,7 @@ def image_fastq(alist, prefix="a_"):
 
     return result
 
-def image_mapp_stats(alist):
+def image_other(alist, name="mapstat"):
 
     if isinstance(alist, str):
         alist = [alist]
@@ -190,13 +215,13 @@ def image_mapp_stats(alist):
 +---------+----------------------+"""
 
     row = """   
-+    {s}  + |mapstat{n}|         +
++    {s}  + |{name}{n}|         +
 +---------+----------------------+"""
 
-    mapstat = "\n".join([" .. |" + "mapstat"  + str(p).zfill(3) + "| image:: ../" + x + "\n" for p,x in  enumerate(alist)])
+    mapstat = "\n".join([" .. |" + name  + str(p).zfill(3) + "| image:: ../" + x + "\n" for p,x in  enumerate(alist)])
 
     for i in range(len(alist)):
-        table += row.format(n=str(i).zfill(3), s=str(i + 1).zfill(3),)
+        table += row.format(n=str(i).zfill(3), s=str(i + 1).zfill(3),name=name)
 
     result = "\n\n" + mapstat + "\n" + table + "\n\n"
 
@@ -236,13 +261,19 @@ FASTQC_TRIM_SEQ_R2_QUAL_IT = FASTQC_TRIM_SEQ_R1_QUAL_IT.replace("R1_t.fq_fastqc"
 FASTQC_TRIM_SEQ_R2_QUAL_IT = FASTQC_TRIM_SEQ_R2_QUAL_IT.replace("c____","d____")
 
 ## Mapping statistics
-MAPPING_STAT_PLOT_I = image_mapp_stats(MAPPING_STAT_PLOT)
+MAPPING_STAT_PLOT_I = image_other(MAPPING_STAT_PLOT)
 MAPPING_STAT_PLOT_L = report_link_list([x.replace(".png","") for x in MAPPING_STAT_PLOT])
 
 ## RSEQC
 RSEQC_COV_L = report_link_list(RSEQC_COV.replace(".curves.pdf.png",".txt"))
 RSEQC_COV_I =  ".. image:: " + RSEQC_COV.replace("output/","../") + "\n\n"
 
+
+## DESEQ2
+DESEQ2_I = image_other([x for x in DESEQ2 if x.endswith("png")], name="deseq2_")
+
+## CORR_PLOT
+CORR_PLOT_I = image_other(CORR_PLOT, name="corrplo")
 #================================================================#
 #           Report                                               #
 #================================================================#
@@ -381,4 +412,18 @@ rule report:
         Bigwig files
         ==============
         {BWIG_L}
+        -----------------------------------------------------
+
+        Correlation plot
+        ================
+
+        {CORR_PLOT_I}
+
+        -----------------------------------------------------
+
+        DESeq2 output
+        ==============
+
+        {DESEQ2_I}
+        
         """, output.html, metadata="D. Puthier", **input)

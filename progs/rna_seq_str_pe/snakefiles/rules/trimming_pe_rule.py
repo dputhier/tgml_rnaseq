@@ -8,6 +8,5 @@ rule trimming_pe:
   message: """--- Trimming."""
   shell: """
         sickle pe -g -f {input.fwd} -r {input.rev}  -l {params.len} -q {params.qual} -t {params.qt}  -o {output.fwd} -p {output.rev} -s {output.single} &> {input.fwd}.log 
-
   """
   
