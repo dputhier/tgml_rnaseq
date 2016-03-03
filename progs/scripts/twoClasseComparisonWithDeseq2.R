@@ -174,3 +174,8 @@ write.table(vsd,
 		sep='\t', quote=F, 
 		col.names=NA) 
 
+res <- results(dds)
+resOrdered <- res[order(res$padj),]
+write.table(as.data.frame(resOrdered), 
+			file.path(opt$outdir,
+			"DESeq2_diff_genes.txt"), sep="\t", col.names=NA, quote=F)
