@@ -339,10 +339,7 @@ s.class2 <- function (dfxy, fac, wt = rep(1, length(fac)), xax = 1, yax = 2,
 
 cat(" --> Performing PCA with ADE4.\n")
 
-
-acp <- dudi.pca(t(d), 
-					scannf=FALSE, 
-					nf=2)
+acp <- dudi.pca(t(d),  scannf=FALSE, nf=2)
 
 if(ncol(acp$li) >= 2){
 	# With Sample names
@@ -359,6 +356,7 @@ if(ncol(acp$li) >= 2){
 				col="white",
 				bg=mycolor)
 	}
+
 	devnull <- dev.off()
 	
 	

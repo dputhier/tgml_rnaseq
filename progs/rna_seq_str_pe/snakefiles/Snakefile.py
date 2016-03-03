@@ -101,6 +101,8 @@ DESEQ2 = [  "output/diff_call_deseq2/DESeq2_diagnostic_MA.png",         \
             "output/diff_call_deseq2/DESeq2_norm_count_table_rld.txt",  \
             "output/diff_call_deseq2/DESeq2_norm_count_table_vsd.txt",  \ 
             "output/diff_call_deseq2/DESeq2_raw_count_table.txt"]
+DESEQ2_F = "output/diff_call_deseq2/DESeq2_diff_genes.txt"
+
 PCA_MDS =   ["output/pca_mds/PCA_dim_genes_2D_samples.png",\
             "output/pca_mds/PCA_dim_genes_2D_classes.png",\
             "output/pca_mds/PCA_dim_genes_2D_overlay.png",\
@@ -291,6 +293,7 @@ RSEQC_COV_I =  ".. image:: " + RSEQC_COV.replace("output/","../") + "\n\n"
 
 ## DESEQ2
 DESEQ2_I = image_other([x for x in DESEQ2 if x.endswith("png")], name="deseq2_", addheader=False)
+DESEQ2_F = report_link_list(DESEQ2_F)
 
 ## CORR_PLOT
 CORR_PLOT_I = image_other(CORR_PLOT, name="corrplo", addheader=False)
@@ -450,7 +453,8 @@ rule report:
         ==============
 
         {DESEQ2_I}
-        
+        {DESEQ2_F}
+
         PCA and MDS: various representations
         ====================================
         

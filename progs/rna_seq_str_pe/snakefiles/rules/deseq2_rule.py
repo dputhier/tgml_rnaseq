@@ -12,11 +12,11 @@ rule deseq2:
             "output/diff_call_deseq2/DESeq2_norm_count_table_log2.txt", \
             "output/diff_call_deseq2/DESeq2_norm_count_table_rld.txt",  \
             "output/diff_call_deseq2/DESeq2_norm_count_table_vsd.txt",  \ 
-            "output/diff_call_deseq2/DESeq2_raw_count_table.txt"
+            "output/diff_call_deseq2/DESeq2_raw_count_table.txt",       \
+            "output/diff_call_deseq2/DESeq2_diff_genes.txt"
     params: pheno=pheno, script=script
     threads: 1
     message: "--- Performing DESeq analysis."
     shell:  """
         {params.script} -i {input} -p {params.pheno} -o output/diff_call_deseq2/ 2> {output[0]}.log
-        touch {output}
     """
