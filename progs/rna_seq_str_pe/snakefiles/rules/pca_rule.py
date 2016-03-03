@@ -40,7 +40,7 @@ rule pca_mds:
     threads: 1
     message: "--- Performing PCA and MDS analysis."
     shell:  """
-        {params.script} -i {input} -f output/pheno.txt -o output/pca_mds  -q -z 2> {output[0]}.log
+        {params.script} -i {input} -f output/pheno.txt -o output/pca_mds  -q -z &> {output[0]}.log
         touch {output}
         mv {params.pheno} output/pca_mds
     """

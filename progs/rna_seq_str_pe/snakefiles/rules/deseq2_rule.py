@@ -18,5 +18,5 @@ rule deseq2:
     threads: 1
     message: "--- Performing DESeq analysis."
     shell:  """
-        {params.script} -i {input} -p {params.pheno} -o output/diff_call_deseq2/ 2> {output[0]}.log
+        {params.script} -i {input} -p {params.pheno} -o output/diff_call_deseq2/ &> {output[0]}.log
     """
