@@ -1,8 +1,8 @@
 {
 	"workingdir": "/Users/puthier/git/dp_worflows/",
 	"user": "D. Puthier",
-	"samples": "control control1 treated treated1",
-	"pheno": "control control treated treated",
+	"samples": "control treated",
+	"pheno": "control treated",
 	"qsub": "-V -m a -d /Users/puthier/git/dp_worflows/",
 	"gtf": "/Users/puthier/git/dp_worflows//input/annotations/GRCm38.83.chr19_exon_only.gtf",
 	"chr_size": "/Users/puthier/git/dp_worflows//input/annotations/mm9_chr_size.txt",

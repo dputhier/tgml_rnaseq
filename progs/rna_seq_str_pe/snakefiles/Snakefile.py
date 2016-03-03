@@ -31,7 +31,7 @@ include: "rules/merge_novel_and_know_tx_rule.py"
 include: "rules/fCounts_known_and_novel_gene_rule.py"
 include: "rules/rseqc_cov_rule.py"
 include: "rules/dag_rule.py"
-include: "rules/pair_plot_rule.py"
+#include: "rules/pair_plot_rule.py"
 include: "rules/mapping_stat_file_R1_rule.py"
 include: "rules/mapping_stat_file_R2_rule.py"
 include: "rules/mapping_stats_plot_rule.py"
@@ -86,7 +86,7 @@ RSEQC_COV = "output/rseqc_coverage_diag/rseqc_cov.geneBodyCoverage.curves.pdf.pn
  
 DAG_PNG = "output/report/dag.png"
 
-DIAGNOSIS_PLOT = "output/diagnostic_plot/diagnostic.pdf"
+#DIAGNOSIS_PLOT = "output/diagnostic_plot/diagnostic.pdf"
 
 MAPPING_STATS_R1 = expand("output/mapping_stats/{smp}_R1.stats", smp=SAMPLES)
 
@@ -101,7 +101,22 @@ DESEQ2 = [  "output/diff_call_deseq2/DESeq2_diagnostic_MA.png",         \
             "output/diff_call_deseq2/DESeq2_norm_count_table_rld.txt",  \
             "output/diff_call_deseq2/DESeq2_norm_count_table_vsd.txt",  \ 
             "output/diff_call_deseq2/DESeq2_raw_count_table.txt"]
-PCA_MDS = "output/pca_mds/done"
+PCA_MDS =   ["output/pca_mds/PCA_dim_genes_2D_samples.png",\
+            "output/pca_mds/PCA_dim_genes_2D_classes.png",\
+            "output/pca_mds/PCA_dim_genes_2D_overlay.png",\
+            "output/pca_mds/PCA_Eigen_val.png",\
+            "output/pca_mds/PCA_ggplot_sampleName.png",\
+            "output/pca_mds/PCA_ggplot_ClassName.png",\
+            "output/pca_mds/MDS_ggplot_sampleName.png",\
+            "output/pca_mds/MDS_ggplot_ClassName.png",\
+            "output/pca_mds/PCA_dim_genes_2D_samples.png",\
+            "output/pca_mds/PCA_dim_genes_2D_classes.png",\
+            "output/pca_mds/PCA_dim_genes_2D_overlay.png",\
+            "output/pca_mds/PCA_Eigen_val.png",\
+            "output/pca_mds/PCA_ggplot_sampleName.png",\
+            "output/pca_mds/PCA_ggplot_ClassName.png",\
+            "output/pca_mds/MDS_ggplot_sampleName.png",\
+            "output/pca_mds/MDS_ggplot_ClassName.png"]
 
 CORR_PLOT= [ "output/corr_plot/CoorPlot_circle.png", \
             "output/corr_plot/CoorPlot_ellipe.png", \
@@ -123,7 +138,7 @@ rule final:
             KNOWN_AND_NOVEL_TX,             \
             DAG_PNG,                        \
             RSEQC_COV,                      \
-            DIAGNOSIS_PLOT,                 \
+#            DIAGNOSIS_PLOT,                 \
             MAPPING_STATS_R1,               \
             MAPPING_STATS_R2,               \
             MAPPING_STAT_PLOT,              \
@@ -202,21 +217,26 @@ def image_fastq(alist, prefix="a_"):
 
     return result
 
-def image_other(alist, name="mapstat"):
+def image_other(alist, name="mapstat", addheader=True):
 
     if isinstance(alist, str):
         alist = [alist]
 
     alist = [x.replace("output/","") for x in alist]
-        
-    table ="""
+
+    header="""
 +---------+----------------------+      
-+ Sample  + Mapping statistics   +
++ Sample  + Mapping statistics   +"""
+
+    table ="""
 +---------+----------------------+"""
 
     row = """   
 +    {s}  + |{name}{n}|         +
 +---------+----------------------+"""
+
+    if addheader:
+        table = header + table
 
     mapstat = "\n".join([" .. |" + name  + str(p).zfill(3) + "| image:: ../" + x + "\n" for p,x in  enumerate(alist)])
 
@@ -270,10 +290,15 @@ RSEQC_COV_I =  ".. image:: " + RSEQC_COV.replace("output/","../") + "\n\n"
 
 
 ## DESEQ2
-DESEQ2_I = image_other([x for x in DESEQ2 if x.endswith("png")], name="deseq2_")
+DESEQ2_I = image_other([x for x in DESEQ2 if x.endswith("png")], name="deseq2_", addheader=False)
 
 ## CORR_PLOT
-CORR_PLOT_I = image_other(CORR_PLOT, name="corrplo")
+CORR_PLOT_I = image_other(CORR_PLOT, name="corrplo", addheader=False)
+
+## PCA and MDS
+PCA_MDS_I = image_other(PCA_MDS, name="pcaplot", addheader=False)
+
+
 #================================================================#
 #           Report                                               #
 #================================================================#
@@ -425,5 +450,10 @@ rule report:
         ==============
 
         {DESEQ2_I}
+        
+        PCA and MDS: various representations
+        ====================================
+        
+        {PCA_MDS_I}
         
         """, output.html, metadata="D. Puthier", **input)
