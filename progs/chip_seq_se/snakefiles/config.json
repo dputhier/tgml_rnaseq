@@ -1,6 +1,7 @@
 {
 	"workingdir": "/Users/puthier/git/dp_worflows/",
 	"user": "D. Puthier",
+	"genome_size": "2150570000",
 	"samples": "siNT_ER_E2_r3_SRX176860_chr21_0.6_Noise MCF_input_r3_SRX176888_chr21_Noise",
 	"input": "MCF_input_r3_SRX176888_chr21_Noise",
 	"fragment_size": "300",
@@ -27,8 +28,14 @@
         "quality": "30"
     },
     "macs14": { 
-        "genome_size": "hs"
-    }              
+        "genome_size": "hs",
+        "band_width": "300"
+    },
+ 
+     "bam_coverage": { 
+        "threads": 2
+    }
+                    
             
 
 }

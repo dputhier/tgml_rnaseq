@@ -29,6 +29,8 @@ include: "rules/merge_peak_rule.py"
 include: "rules/multiBamSummary_rule.py"
 include: "rules/bam_corr_scatter_rules.py"
 include: "rules/plotFingerprint_rule.py"
+include: "rules/plotCoverage_rules.py"
+include: "rules/bwig_chipSeq_rule.py"
 
 #================================================================#
 #     Global variables                                           #
@@ -68,12 +70,20 @@ MERGE_PEAKS = "output/merged_peaks/merged_peaks.bed"
 
 BAM_SUMMARY = "output/multiBamSummary/merge_peaks_coverage.npz"
 
+BWIG = expand("output/bwig/{smp}_q30_rmDup.bigwig", smp=SAMPLES)
+
 BAM_CORR_SCATTER = ["output/multiBamSummary/scatterplot_spearman.png", \
                     "output/multiBamSummary/heatmap_spearman.png", \
                     "output/multiBamSummary/pca.png"]
+
 FINGER_PRINT = "output/plotFingerprint/fingerprint.png"
 
+COVERAGE = "output/plotCoverage/coverage.png"
+
 DAG_PNG = "output/report/dag.png"
+
+BWIG = expand("output/bwig/{smp}_q30_rmDup.bigwig", smp=SAMPLES)
+
 
 #================================================================#
 #                         LAST RULES                             #
@@ -86,7 +96,8 @@ rule all:
 rule final:
     input:  FASTQC_RAW, FASTQC_TRIM, MAPPING_STATS, \
             MAPPING_STAT_PLOT, DAG_PNG, MACS_PEAKS, \
-            MERGE_PEAKS, BAM_SUMMARY, BAM_CORR_SCATTER, FINGER_PRINT
+            MERGE_PEAKS, BAM_SUMMARY, BAM_CORR_SCATTER, \
+            FINGER_PRINT, COVERAGE, BWIG
     output: "output/code/Snakefile.py"
     params: wdir = config["workingdir"] + "progs/chip_seq_se/snakefiles/Snakefile.py"
     shell: """
@@ -218,6 +229,11 @@ BAM_CORR_SCATTER_I = image_other(BAM_CORR_SCATTER, name="bamcorr")
 
 ## FINGERPRINTS
 FINGER_PRINT_I = image_other(FINGER_PRINT, name="fingerp")
+
+## BAM COVERAGE
+
+COVERAGE_I = image_other(COVERAGE, name="coverag")
+
 #================================================================#
 #                         REPORT                                 #
 #================================================================#
@@ -315,12 +331,23 @@ rule report:
         =============================
         
         {BAM_CORR_SCATTER_I}
-        
+
+        -----------------------------------------------------
+            
         Finger prints
         ==============
         
         {FINGER_PRINT_I}
         
+        -----------------------------------------------------
+    
+        Coverage statistics
+        ====================
+        
+        {COVERAGE_I}
+        
+        -----------------------------------------------------
+            
         BAM files
         ==============
         
