@@ -4,4 +4,4 @@ rule cufflinks:
     params: gtf=config["gtf"], args=config["cufflinks"]["args"]
     threads: config["cufflinks"]["threads"]
     message: "--- Searching novel transcript with cufflinks."
-    shell:  """cufflinks -g {params.gtf} -p {threads}  -o output/cufflinks/{wildcards.smp} {input.bam} 2>output/cufflinks/{wildcards.smp}/transcripts.gtf.log"""
+    shell:  """cufflinks {params.args}  -g {params.gtf} -p {threads}  -o output/cufflinks/{wildcards.smp} {input.bam} 2>output/cufflinks/{wildcards.smp}/transcripts.gtf.log"""
