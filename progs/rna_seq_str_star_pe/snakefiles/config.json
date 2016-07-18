@@ -1,0 +1,41 @@
+{
+	
+	"_INFO_1": "Keep in mind that star needs 30Go for a human genome. So adapt the number of threads accordingly...",
+	"_INFO_2": "Did you check that your GTF only contains 'exon' lines ?",
+	"_INFO_3": "Did you check that your STAR index is compatible with your start version ?",
+	"_INFO_4": "Sample name should not contain the '_plus.' or '_min.' character string.",
+	"_INFO_5": "To create STAR index use:",
+	"workingdir": "/Users/puthier/git/dp_worflows/",
+	"user": "D. Puthier",
+	"samples": "control treated",
+	"pheno": "control treated",
+	"qsub": "-V -m a -d /Users/puthier/git/dp_worflows/",
+	"gtf": "/Users/puthier/git/dp_worflows/input/annotations/GRCm38.83.chr19_exon_only.gtf",
+	"chr_size": "/Users/puthier/git/dp_worflows/input/annotations/mm9_chr_size.txt",
+	"fasta": "/Users/puthier/git/dp_worflows/input/indexes/chr19.fa",
+	"housekeeping": "/Users/puthier/git/dp_worflows/input/housekeeping/mm9.HouseKeepingGenes.bed",
+	"sickle": { 
+        "threshold": "20",
+        "length": "25",
+        "qualtype": "sanger",
+	"options": ""
+	},
+
+    "star": {
+        "index": "/Users/puthier/git/dp_worflows/input/indexes",
+        "args": " --outFilterMismatchNoverLmax 0.08 --outSAMstrandField intronMotif --outSAMtype BAM SortedByCoordinate --outFilterMultimapNmax 1 --genomeLoad NoSharedMemory  --readFilesCommand gunzip -c ",
+        "threads": 15
+    },
+
+    "cufflinks": {
+        "args": " --library-type fr-firststrand ",
+        "threads": 15
+    },
+    
+    "cuffmerge": {
+        "selected_class_code": "u",
+        "threads": 15
+    }
+            
+}
+

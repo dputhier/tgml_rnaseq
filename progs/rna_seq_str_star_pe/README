@@ -1,0 +1,8 @@
+# Go into indexes dir
+cd ../../input/indexes/
+# Build star index
+STAR --runThreadN 15 --runMode genomeGenerate --genomeDir . --genomeFastaFiles chr19.fa
+
+# Start the workflow
+cd -
+snakemake -s snakefiles/Snakefile.py
