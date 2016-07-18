@@ -18,17 +18,17 @@
     "tophat": {
         "index": "/Users/puthier/git/dp_worflows/input/indexes/chr19",
         "args": "-g 1 --library-type fr-firststrand -x 1 ",
-        "threads": 5
+        "threads": 3
     },
 
     "cufflinks": {
         "args": " --library-type fr-firststrand ",
-        "threads": 2
+        "threads": 3
     },
     
     "cuffmerge": {
         "selected_class_code": "uxosj",
-        "threads": 2
+        "threads": 15
     }
             
 }
