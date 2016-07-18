@@ -23,18 +23,18 @@
 
     "star": {
         "index": "/Users/puthier/git/dp_worflows/input/indexes",
-        "args": " --outFilterMismatchNoverLmax 0.08 --outSAMstrandField intronMotif --outSAMtype BAM SortedByCoordinate --outFilterMultimapNmax 1 --genomeLoad NoSharedMemory  --readFilesCommand gunzip -c ",
-        "threads": 15
+        "args": " --outFilterMismatchNoverLmax 0.08 --outSAMtype BAM SortedByCoordinate --outFilterMultimapNmax 1 --genomeLoad NoSharedMemory  --readFilesCommand gunzip -c ",
+        "threads": 7
     },
 
     "cufflinks": {
         "args": " --library-type fr-firststrand ",
-        "threads": 15
+        "threads": 7
     },
     
     "cuffmerge": {
         "selected_class_code": "u",
-        "threads": 15
+        "threads": 7
     }
             
 }
