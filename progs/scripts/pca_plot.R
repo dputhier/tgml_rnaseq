@@ -55,7 +55,7 @@ my_opts <- docopt(doc)
 ## -----------------------------------------------------------------------------
 ## Loading libs
 ## -----------------------------------------------------------------------------
-suppressMessages(load.fun(affy))
+suppressMessages(library(affy))
 suppressMessages(load.fun(ade4))
 suppressMessages(load.fun(rgl))
 suppressMessages(load.fun(ggplot2))
