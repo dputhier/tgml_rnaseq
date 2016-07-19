@@ -6,3 +6,5 @@ STAR --runThreadN 15 --runMode genomeGenerate --genomeDir . --genomeFastaFiles c
 # Start the workflow
 cd -
 snakemake -s snakefiles/Snakefile.py  -c 'qsub -V  -q tgml -l nodes=1:ppn={threads}' --rerun-incomplete  -j 
+
+
