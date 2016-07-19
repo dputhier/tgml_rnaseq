@@ -4,7 +4,7 @@
 	"_INFO_2": "Did you check that your GTF only contains 'exon' lines ?",
 	"_INFO_3": "Did you check that your STAR index is compatible with your start version ?",
 	"_INFO_4": "Sample name should not contain the '_plus.' or '_min.' character string.",
-	"_INFO_5": "To create STAR index use:",
+	"_INFO_5": "THE SAMPLE NAMES SHOULD ONLY CONTAIN ALPHANUMERIC and '_' CHARACTERS.",
 	"workingdir": "/Users/puthier/git/dp_worflows/",
 	"user": "D. Puthier",
 	"samples": "control treated",
