@@ -8,8 +8,8 @@ rule star_pe:
   shell:    """
         mkdir -p output/star/{wildcards.smp}
         cd output/star/{wildcards.smp}               
-        STAR --genomeDir {params.index} --readFilesIn ../../../{input.fwd} ../../../{input.rev} --runThreadN {threads} \
-        --sjdbGTFfile {params.gtf} {params.args} 
+        STAR  --genomeDir {params.index} --readFilesIn ../../../{input.fwd} ../../../{input.rev} --runThreadN {threads} \
+        --sjdbGTFfile {params.gtf}  {params.args} 
         mv Aligned.sortedByCoord.out.bam ../../bam/{wildcards.smp}.bam
         samtools index ../../bam/{wildcards.smp}.bam
         rm -f Aligned.out.bam Aligned.out.bam
