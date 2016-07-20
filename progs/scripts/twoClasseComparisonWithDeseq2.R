@@ -38,13 +38,12 @@ suppressMessages(load.fun("getopt"))
 ## -----------------------------------------------------------------------------
 
 spec = matrix(c(
-    'help',           	'h', 0, "logical",	"Help about the program",
-    'input_file',     	'i', 1, "character",	"REQUIRED: tabulated flate file). E.g output from featureCounts.",
-    'pheno',		'p', 1, "character", 	"REQUIRED: comma separated list of phenotypes.",
-    'outdir',           'o', 1, "character", 	"Output directory. Default to current working directory.",
-    'skip',		's', 1, "integer", 	"The number of line to skip in the matrix files.",
-    'del',		'd', 1, "character",	"The comma separated list of column to delete in the matrix file."
-			), byrow=TRUE, ncol=5);
+    'help',        'h', 0, "logical",	"Help about the program",
+    'input_file',  'i', 1, "character",	"REQUIRED: tabulated flate file). E.g output from featureCounts.",
+    'outdir',      'o', 1, "character", 	"Output directory. Default to current working directory.",
+    'skip',			's', 1, "integer", 	"The number of line to skip in the matrix files.",
+    'class1',			'c', 1, "character",	"The sample to select for class 1.",
+	'class2',			'd', 1, "character",	"The sample to select for class 2."), byrow=TRUE, ncol=5);
 
 opt = getopt(spec)
 
@@ -54,7 +53,7 @@ opt = getopt(spec)
 # if help was asked, print a friendly message
 # and exit with a non-zero error code
 args <- commandArgs()
-if ( !is.null(opt$help) | length(args) < 5) {
+if ( !is.null(opt$help) | is.null(opt$class1) | is.null(opt$class2)) {
         cat("Perform differential expression call with DESeq2\n")
 	cat(getopt(spec, usage=TRUE))
 	q(status=1)
@@ -76,21 +75,28 @@ if(is.null(opt$outdir))
 dir.create(opt$outdir, showWarnings=FALSE)
 
 ## phenotype
-pheno <- unlist(strsplit(opt$pheno, ","))
+class1 <- unlist(strsplit(opt$class1, ","))
+class2 <- unlist(strsplit(opt$class2, ","))
+pheno <- c(rep("class1", length(class1)),
+			rep("class2", length(class2)))
 
-## columns to delete
-if(!is.null(opt$del)){
-	to_del <- as.integer(unlist(strsplit(opt$del, ",")))
-	to_del <- to_del - 1 # row names is not counted 
-	m  <- read.table(opt$input_file, sep='\t', head=TRUE, row=1, quote='', comment.char="", skip=1, )[,-to_del]
-}else{
-	m  <- read.table(opt$input_file, sep='\t', head=TRUE, row=1, quote='', comment.char="", skip=1, )
+
+## Gete selected samples
+
+m  <- read.table(opt$input_file, sep='\t', 
+		head=TRUE, row=1, quote='', 
+		comment.char="")
+
+if(!all(c(class1, class2) %in% colnames(m))){
+	cat("ERROR: Check column names. Unknow sample selected.\n")
+	q(status=1)
 }
 
+m <- m[,c(class1, class2)]
 
 cat("Calling differentially expressed genes (DESeq2\n")
 des <- DESeqDataSetFromMatrix(m, as.data.frame(pheno), design=formula(~pheno))
-dds <- DESeq(des, fitType='local')
+dds <- DESeq(des)
 resMLE<- results(dds, addMLE=TRUE)
 res <- results(dds)
 
@@ -112,6 +118,7 @@ dev.off()
 cat("Producing MA plot.\n")
 png(file.path(opt$outdir,"DESeq2_diagnostic_MA.png"),
 		width = 6, height = 6, units = 'in', res = 300)
+
 plotMA(	res, 
 		main="MA plot of Two conditions",
 		ylim=c(-2,2)
@@ -130,15 +137,13 @@ df <- data.frame(	resMLE$baseMean,
 ## Output
 ## -----------------------------------------------------------------------------
 
-
+print(colnames(m))
 cat("Writing tables (raw counts).\n")
 write.table(m, 
 		file.path(opt$outdir,
 		"DESeq2_raw_count_table.txt"), 
 		sep='\t', quote=F, 
 		col.names=NA) 
-
-		
 
 cat("Writing tables (normalized counts).\n")
 norm.counts <- counts(dds, normalized=TRUE)
@@ -178,6 +183,8 @@ write.table(vsd,
 
 res <- results(dds)
 resOrdered <- res[order(res$padj),]
-write.table(as.data.frame(resOrdered), 
+out <- as.data.frame(resOrdered)
+
+write.table(data.frame(out, log2.counts[rownames(out),]), 
 			file.path(opt$outdir,
-			"DESeq2_diff_genes.txt"), sep="\t", col.names=NA, quote=F)
+			"DESeq2_pval_and_norm_count_log2.txt"), sep="\t", col.names=NA, quote=F)
