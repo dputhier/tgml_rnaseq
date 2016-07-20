@@ -1,14 +1,19 @@
 {
 	
-	"_INFO_1": "Keep in mind that star needs 30Go for a human genome. So adapt the number of threads accordingly...",
-	"_INFO_2": "Did you check that your GTF only contains 'exon' lines ?",
-	"_INFO_3": "Did you check that your STAR index is compatible with your start version ?",
-	"_INFO_4": "Sample name should not contain the '_plus.' or '_min.' character string.",
-	"_INFO_5": "THE SAMPLE NAMES SHOULD ONLY CONTAIN ALPHANUMERIC and '_' CHARACTERS.",
+	"_INFO_1": "->>> INFO: Keep in mind that star needs 30Go for a human genome. So adapt the number of threads accordingly...",
+	"_INFO_2": "->>> INFO: Did you check that your GTF only contains 'exon' lines ?",
+	"_INFO_3": "->>> INFO: Did you check that your STAR index is compatible with your STAR version ?",
+	"_INFO_4": "->>> INFO: Sample name should not contain the '_plus.' or '_min.' character string.",
+	"_INFO_5": "->>> INFO: THE SAMPLE NAMES SHOULD ONLY CONTAIN ALPHANUMERIC and '_' CHARACTERS.",
+	"_INFO_6": "->>> INFO: For 'comparison' indicate classes like this (space stands for 'versus'): control,control1 treated1,treated2.",
 	"workingdir": "/Users/puthier/git/dp_worflows/",
 	"user": "D. Puthier",
 	"samples": "control treated",
-	"pheno": "control treated",
+	"comparison": {
+	  "cont_vs_treated": "control treated",
+	  "treated_vs_cont": "treated control"
+	},
+	"pheno": "control  control control treated treated treated",
 	"qsub": "-V -m a -d /Users/puthier/git/dp_worflows/",
 	"gtf": "/Users/puthier/git/dp_worflows/input/annotations/GRCm38.83.chr19_exon_only.gtf",
 	"chr_size": "/Users/puthier/git/dp_worflows/input/annotations/mm9_chr_size.txt",
