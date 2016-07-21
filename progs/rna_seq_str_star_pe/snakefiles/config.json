@@ -8,6 +8,7 @@
 	"_INFO_6": "->>> INFO: For 'comparison' indicate classes like this (space stands for 'versus'): control,control1 treated1,treated2.",
 	"workingdir": "/Users/puthier/git/dp_worflows/",
 	"user": "D. Puthier",
+	"exp_title": "A two sample test case.",
 	"samples": "control treated",
 	"comparison": {
 	  "cont_vs_treated": "control treated",

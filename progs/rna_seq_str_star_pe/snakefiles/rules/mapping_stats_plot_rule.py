@@ -3,7 +3,7 @@ rule hist_mapping_stats:
     output: "output/mapping_stats/{smp}.stats.png", "output/mapping_stats/{smp}.stats.pdf"
     threads: 1
     run: R("""
-      f <- Sys.glob("*/mapping_stats/{wildcards.smp}_R*.stats")
+      f <- Sys.glob("output/mapping_stats/{wildcards.smp}_R*.stats")
       m <- matrix(NA, nc=length(f), nr=3)
       colnames(m) <- basename(f)
       colnames(m) <- gsub(".stats","",colnames(m))
@@ -26,5 +26,5 @@ rule hist_mapping_stats:
      abline(h=seq(10e6,1e9, 10e6), col="gray", lty=2)
      legend("bottomleft", leg=c("Raw", "Trimmed", "Mapped"), fill=c("#FDD369", "#F98D32", "#1BBBDA"))
      dev.off()
-          
+    write.table(m, "output/mapping_stats/{wildcards.smp}.stats.txt", sep="\t", quote=F, col.names=NA)   
     """)
