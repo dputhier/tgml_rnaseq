@@ -5,11 +5,12 @@
 	"_INFO_3": "->>> INFO: Did you check that your STAR index is compatible with your STAR version ?",
 	"_INFO_4": "->>> INFO: Sample name should not contain the '_plus.' or '_min.' character string.",
 	"_INFO_5": "->>> INFO: THE SAMPLE NAMES SHOULD ONLY CONTAIN ALPHANUMERIC and '_' CHARACTERS.",
-	"_INFO_6": "->>> INFO: For 'comparison' indicate classes like this (space stands for 'versus'): control,control1 treated1,treated2.",
+	"_INFO_6": "->>> INFO: For 'comparison' indicate sample like this (space stands for 'versus'): control,control1 treated1,treated2.",
 	"workingdir": "/Users/puthier/git/dp_worflows/",
 	"user": "D. Puthier",
 	"exp_title": "A two sample test case.",
 	"samples": "control treated",
+	"pheno": "ctrl trtd",
 	"comparison": {
 	  "cont_vs_treated": "control treated",
 	  "treated_vs_cont": "treated control"
