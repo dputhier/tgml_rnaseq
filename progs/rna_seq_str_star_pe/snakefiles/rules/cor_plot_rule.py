@@ -14,6 +14,6 @@ rule corrplot:
     threads: 1
     message: "--- Producing correlation plots."
     shell:  """
-        {params.script} -i {input} -o output/corr_plot  -l {params.smp} -t 1 2> {output[0]}.log
+        {params.script} -i {input} -o output/corr_plot  -t 1 2> {output[0]}.log
         touch {output}
     """

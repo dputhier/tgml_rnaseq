@@ -7,7 +7,8 @@ rule report:
     params: wdir=config["workingdir"], \
             user=config["user"], \
             title = config["exp_title"],
-            smp = config["samples"]
+            smp = config["samples"],
+            comp = config["comparison"]
 
     output: html="output/report/report.html",
             rmd="output/report/report.html"
@@ -204,8 +205,93 @@ cat(img_html)
         """
 
 
-        ALL +=CORRELATION
-   
+        ALL += CORRELATION
+ 
+        #-----------------------------------------------------------------------
+        # MA PLOT
+        #-----------------------------------------------------------------------
+
+        MAPLOT = """
+
+
+### MA plot by sample
+
+These plots are intented to highlight genes that may be specific of each samples. For two samples A and B, the $M$ and $A$ values are computed as follow for each gene $g$.
+
+$$M_{g} = log(A_{g}) - log(B_{g})$$
+$$A_{g} = (log(A_{g}) + log(B_{g}))/2$$
+
+When more than two samples are available, each sample (e.g $A$) is compared to a 
+representative pseudo-sample that is computed from the row (gene) medians.
+
+**Hint**: Warn with the list of differential expressed genes when no replicates are available. When working with polyA selected RNA, a classical bias is to observed histone genes that are known to be non-polyadenylated and that underline selection issues.
+
+```{r, echo=FALSE, results='asis'}
+
+img_list <- list()
+dir.create("../maplot", showWarnings = FALSE)
+
+d <- read.table("../../output/quantification_known_and_novel_genes/gene_counts_known_and_novel_mini.txt",
+                sep="\t",head=T,row=1)
+
+
+d <- log2(d+1)
+
+if(ncol(d) <= 2){
+
+    p <- maplot(d[,1], d[,2], 
+                gene_names=rownames(d), 
+        title=paste(colnames(d)[1], "vs" , colnames(d)[2]))
+    print(p)
+    
+}else{
+
+    B <- apply(d,1,median)
+    for(i in 1:ncol(d)){
+        p <- maplot(d[,i], B, 
+                    gene_names=rownames(d), 
+                    title=paste(colnames(d)[i], "vs reference (median gene expression)"))
+        nm <- paste(colnames(d)[i], "vs reference", ".png", sep="")
+        path <- file.path("../maplot/",nm)
+        png(path, width = 1500, height = 1200, res=250)
+        print(p)
+        dev.off()
+    }
+}
+
+find_img_and_dotable(glob="../maplot/*.png",
+                    title="MA plot",
+                    ncol=2)
+
+```
+
+        """
+
+
+        ALL += MAPLOT 
+
+        #-----------------------------------------------------------------------
+        # MA plots by class
+        #-----------------------------------------------------------------------
+
+        MAPLOT = """
+        
+### PCA diagram
+
+Principal component analysis (PCA) is a statistical procedure that uses an orthogonal transformation to convert a set of observations of possibly correlated variables into a set of values of linearly uncorrelated variables called principal components.
+The objective is to use a this newly discovered coordinate system to represents objects in through a limited number of dimension. Most of the time one consider that dimension choose for representation should capture 90% of the intrinsic variance.
+
+
+
+        """
+
+        #-----------------------------------------------------------------------
+        # PCA PLOT
+        #-----------------------------------------------------------------------
+
+
+
+
         #-----------------------------------------------------------------------
         # Write
         #-----------------------------------------------------------------------
