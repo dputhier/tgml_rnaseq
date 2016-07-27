@@ -85,7 +85,7 @@ pheno <- c(rep("class1", length(class1)),
 
 m  <- read.table(opt$input_file, sep='\t', 
 		head=TRUE, row=1, quote='', 
-		comment.char="")
+		comment.char="", check.names=FALSE)
 
 if(!all(c(class1, class2) %in% colnames(m))){
 	cat("ERROR: Check column names. Unknow sample selected.\n")
