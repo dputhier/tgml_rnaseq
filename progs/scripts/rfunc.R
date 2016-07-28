@@ -15,10 +15,12 @@ vector2_md_link <- function(x, chunknb=3){
 	return(v)
 }
 
-vector2_html_img <- function(x, pos=5, width=100){
+vector2_html_img <- function(x, pos=5, width=100, nm=NULL){
 	v <- c()
 	for(i in x){
-		nm <- unlist(strsplit(i, "/"))[pos]
+		if(is.null(nm))
+			nm <- unlist(strsplit(i, "/"))[pos]
+		
 		v <- append(v, paste("<img src='", 
 							i, "' width=",
 							width, " alt='",

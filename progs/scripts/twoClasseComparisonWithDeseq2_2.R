@@ -183,7 +183,7 @@ write.table(vsd,
 
 res <- results(dds)
 resOrdered <- res[order(res$padj),]
-
+#save.image("image.Rdata")
 out <- as.data.frame(resOrdered)
 
 write.table(data.frame(out, log2.counts[rownames(out),]), 
