@@ -117,7 +117,7 @@ MAPPING_STAT_PLOT = expand("output/mapping_stats/{smp}.stats.png", smp=SAMPLES)
 
 DESEQ2 = expand("output/comparison/{comp}/DESeq2_pval_and_norm_count_log2.txt", 
                 comp=COMPARISON)
-
+"""
 PCA_MDS =   ["output/pca_mds/PCA_dim_genes_2D_samples.png",\
             "output/pca_mds/PCA_dim_genes_2D_classes.png",\
             "output/pca_mds/PCA_dim_genes_2D_overlay.png",\
@@ -134,6 +134,7 @@ PCA_MDS =   ["output/pca_mds/PCA_dim_genes_2D_samples.png",\
             "output/pca_mds/PCA_ggplot_ClassName.png",\
             "output/pca_mds/MDS_ggplot_sampleName.png",\
             "output/pca_mds/MDS_ggplot_ClassName.png"]
+"""
 
 CORR_PLOT= [ "output/corr_plot/CoorPlot_circle.png", \
             "output/corr_plot/CoorPlot_ellipe.png", \
@@ -161,7 +162,7 @@ rule final:
             MAPPING_STATS_R2,               \
             MAPPING_STAT_PLOT,              \
             DESEQ2,                         \
-            PCA_MDS,                        \
+            #PCA_MDS,                        \
             CORR_PLOT,                      \
             STAT_CUFFMERGE
 

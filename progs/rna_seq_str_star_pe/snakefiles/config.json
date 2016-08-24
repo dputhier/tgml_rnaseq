@@ -1,25 +1,27 @@
 {
 	
-	"_INFO_1": "->>> INFO: Keep in mind that star needs 30Go for a human genome. So adapt the number of threads accordingly...",
-	"_INFO_2": "->>> INFO: Did you check that your GTF only contains 'exon' lines ?",
-	"_INFO_3": "->>> INFO: Did you check that your STAR index is compatible with your STAR version ?",
-	"_INFO_4": "->>> INFO: Sample name should not contain the '_plus.' or '_min.' character string.",
-	"_INFO_5": "->>> INFO: THE SAMPLE NAMES SHOULD ONLY CONTAIN ALPHANUMERIC and '_' CHARACTERS.",
-	"_INFO_6": "->>> INFO: For 'comparison' indicate sample like this (space stands for 'versus'): control,control1 treated1,treated2.",
+	"_INFO_1": "->>> CHECK: Keep in mind that star needs 30Go for a human genome. So adapt the number of threads accordingly...",
+	"_INFO_2": "->>> CHECK: Did you check that your GTF only contains 'exon' lines ?",
+	"_INFO_3": "->>> CHECK: Did you check that your STAR index is compatible with your STAR version ?",
+	"_INFO_4": "->>> CHECK: Sample name should not contain the '_plus.' or '_min.' character string.",
+	"_INFO_5": "->>> CHECK: THE SAMPLE NAMES SHOULD ONLY CONTAIN ALPHANUMERIC and '_' CHARACTERS.",
+	"_INFO_6": "->>> CHECK: For 'comparison' indicate sample like this (space stands for 'versus'): control,control1 treated1,treated2.",
+    "_INFO_7": "->>> CHECK: ChromInfo (chrom size) file should have no header.",
+    "_INFO_7": "->>> CHECK: Use cufflinks 2.1.1 if you encounter segfault.",
+    "_INFO_7": "->>> CHECK: Better to set gene_name attribute of gtf file to 'gene_id|gene_name'.",
 	"workingdir": "/Users/puthier/git/dp_worflows/",
 	"user": "D. Puthier",
 	"exp_title": "A two sample test case.",
-	"samples": "control treated",
-	"pheno": "ctrl trtd",
+	"samples": "DM2_chr18-20Mto50M DM1_chr18-20Mto50M DM3_chr18-20Mto50M PI1_chr18-20Mto50M PI2_chr18-20Mto50M PI3_chr18-20Mto50M",
+	"classes": "DM DM DM PI PI PI",
 	"comparison": {
-	  "cont_vs_treated": "control treated",
-	  "treated_vs_cont": "treated control"
+	    "DMvsPI": "DM2_chr18-20Mto50M,DM1_chr18-20Mto50M,DM3_chr18-20Mto50M PI1_chr18-20Mto50M,PI2_chr18-20Mto50M,PI3_chr18-20Mto50M",
+	    "DMvsPI_2": "PI1_chr18-20Mto50M,PI2_chr18-20Mto50M,PI3_chr18-20Mto50M DM2_chr18-20Mto50M,DM1_chr18-20Mto50M,DM3_chr18-20Mto50M"
 	},
-	"pheno": "control  control control treated treated treated",
 	"qsub": "-V -m a -d /Users/puthier/git/dp_worflows/",
-	"gtf": "/Users/puthier/git/dp_worflows/input/annotations/GRCm38.83.chr19_exon_only.gtf",
+	"gtf": "/Users/puthier/git/dp_worflows/input/annotations/chr18_20M-50M_gencode_vM1.gtf",
 	"chr_size": "/Users/puthier/git/dp_worflows/input/annotations/mm9_chr_size.txt",
-	"fasta": "/Users/puthier/git/dp_worflows/input/indexes/chr19.fa",
+	"fasta": "/Users/puthier/git/dp_worflows/input/indexes/chr18/chr18_mm9.fa",
 	"housekeeping": "/Users/puthier/git/dp_worflows/input/housekeeping/mm9.HouseKeepingGenes.bed",
 	"sickle": { 
         "threshold": "20",
@@ -29,7 +31,7 @@
 	},
 
     "star": {
-        "index": "/Users/puthier/git/dp_worflows/input/indexes",
+        "index": "/Users/puthier/git/dp_worflows/input/indexes/chr18",
         "args": " --outFilterMismatchNoverLmax 0.08 --outSAMtype BAM SortedByCoordinate --outFilterMultimapNmax 1 --genomeLoad NoSharedMemory  --readFilesCommand gunzip -c ",
         "threads": 7
     },
@@ -42,7 +44,9 @@
     "cuffmerge": {
         "selected_class_code": "u",
         "threads": 7
-    }
-            
+    },
+    "report": {
+        "threshold_maplot": "0.001"
+    }            
 }
 
