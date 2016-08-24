@@ -5,7 +5,7 @@ if not os.path.exists(dir_base):
     os.makedirs(dir_base)
 pheno_file = open(os.path.join(dir_base, "pheno.txt"), "w")
 
-cfg_pheno = config["pheno"].split(" ")
+cfg_pheno = config["classes"].split(" ")
 cfg_smp = config["samples"].split(" ")
 
 for smp,cnd  in zip(cfg_smp, cfg_pheno):
@@ -15,7 +15,7 @@ pheno_file.close()
 
 script = os.path.join(config["workingdir"], "progs", "scripts", "pca_plot.R")
 
-pheno = config["pheno"].split()
+pheno = config["classes"].split()
 pheno=",".join(pheno)
 
 rule pca_mds:
