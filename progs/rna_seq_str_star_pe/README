@@ -1,10 +1,18 @@
 # Go into indexes dir
-cd ../../input/indexes/
+cd ../../input/indexes/chr18
+
+# Download the genome
+wget http://hgdownload.cse.ucsc.edu/goldenPath/mm9/chromosomes/chr18.fa.gz
+gunzip chr18.fa.gz
+mv chr18.fa  chr18_mm9.fa
+samtools faidx chr18_mm9.fa
+
 # Build star index
+
 STAR --runThreadN 15 --runMode genomeGenerate --genomeDir . --genomeFastaFiles chr19.fa
 
 # Start the workflow
 cd -
-snakemake -s snakefiles/Snakefile.py  -c 'qsub -V  -q tgml -l nodes=1:ppn={threads}' --rerun-incomplete  -j 
+snakemake -s snakefiles/Snakefile.py  -c 'qsub -V  -q tgml -l nodes=1:ppn={threads}' --rerun-incomplete  -j
 
 
