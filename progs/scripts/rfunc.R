@@ -84,6 +84,37 @@ maplot <- function(R,G, title="bla", M_pts_lim=2, M_txt_lim=2.5, gene_names=NULL
 	
 }
 
+maplot_pval <- function(R,G, title="bla", pval=NULL, thresh=0.05, gene_names=NULL){
+	
+	M <- R-G
+	A <- R+G
+
+	
+	pval <- ifelse(pval < thresh, TRUE,FALSE)
+	pval.save <- pval
+
+	d <- data.frame(M=M, A=A, 
+			pval=factor(pval, levels=c("TRUE", "FALSE")), 
+			gene_names=gene_names)
+	plot <- ggplot(data=d, aes(A, M, color=pval))
+	plot <- plot + geom_point(size=0.8, alpha=0.5,na.rm=T) 
+	plot <- plot + labs(title=title)
+	
+
+	plot <- plot + geom_text_repel(data=d[pval,], 
+				                   aes(label=gene_names[pval.save]),
+				color = 'gray25')
+
+	plot <- plot + theme_minimal()
+	plot <- plot + theme_bw()
+	plot <- plot + geom_hline(aes(yintercept = 0), color="gray")
+	plot <- plot + geom_hline(aes(yintercept = 1), color="gray")
+	plot <- plot + geom_hline(aes(yintercept = -1), color="gray")
+	plot <- plot + stat_smooth(se = FALSE, color="violet")
+	plot <- plot + theme(legend.position="none")
+	return(plot)
+	
+}
 
 estimSf <- function (cts){
 	

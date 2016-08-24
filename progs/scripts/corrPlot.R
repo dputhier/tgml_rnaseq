@@ -84,7 +84,7 @@ outprefix <- my_opts$"-o"
 pngheigth <- as.numeric(my_opts$"-y")
 pngwidth <- as.numeric(my_opts$"-w")
 label <- my_opts$"-l"
-label <- unlist(strsplit(label, ","))
+
 
 ## -----------------------------------------------------------------------------
 ## Loading files
@@ -96,6 +96,9 @@ d <- read.table(myfile, sep="\t",
 		comment.char="", row=1)
 d <- d[apply(d,1,sum) > 0, ]
 
+if(is.null(label)){
+	label <- colnames(d)	
+}
 
 if(my_opts$"-t" == "1"){
 	cat("Performing log2 transformation")
