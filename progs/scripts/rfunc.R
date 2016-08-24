@@ -29,7 +29,7 @@ vector2_html_img <- function(x, pos=5, width=100, nm=NULL){
 	return(v)
 }
 
-find_img_and_dotable <- function(glob=NULL, width=200, ncol=3, pos=3, title="None"){
+find_img_and_dotable <- function(glob=NULL, width=200, ncol=3, pos=3, title=NULL){
 	table_list <- list()
 	nb_table <- 1
 	img <- Sys.glob(glob)

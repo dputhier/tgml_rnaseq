@@ -347,8 +347,8 @@ if(ncol(acp$li) >= 2){
 	png(file.path(outprefix, "PCA_dim_genes_2D_samples.png"), 
 			units = 'in', res = 300, width=pngwidth, height=pngheigth)
 	
-	head(acp$li)
-	if(ncol(acp$li) > 2){
+
+	if(ncol(acp$li) >= 2){
 		s.class2(acp$li,
 				as.factor(1:length(label)),
 				cellipse=1.5,
@@ -387,9 +387,11 @@ if(ncol(acp$li) >= 2){
 	devnull <- dev.off()
 	
 	# Ellipse Star and class name and sample name
-	png(file.path(outprefix, "PCA_dim_genes_2D_overlay.png"), width=pngwidth, height=pngheigth)
+	png(file.path(outprefix, "PCA_dim_genes_2D_overlay.png"), 
+		units = 'in', res = 300, width=pngwidth, height=pngheigth)
 
 
+		save.image("image.RData")
 
 		s.class2(acp$li,
 			as.factor(1:length(label)),
@@ -413,6 +415,15 @@ if(ncol(acp$li) >= 2){
 	devnull <- dev.off()
 
 
+	# Ellipse Star and class name and sample name
+	png(file.path(outprefix, "PCA_cocircle.png"), 
+			units = 'in', res = 300, width=pngwidth, height=pngheigth)
+	
+	g2 <- s.corcircle(acp$co)
+	
+	devnull <- dev.off()
+	
+	
 
 	# Ebouli Val propre
 	png(file.path(outprefix,"PCA_Eigen_val.png"), 

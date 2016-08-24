@@ -186,6 +186,6 @@ resOrdered <- res[order(res$padj),]
 #save.image("image.Rdata")
 out <- as.data.frame(resOrdered)
 
-write.table(data.frame(out, log2.counts[rownames(out),]), 
+write.table(data.frame(out, log2.counts[rownames(out),], check.names = FALSE), 
 			file.path(opt$outdir,
 			"DESeq2_pval_and_norm_count_log2.txt"), sep="\t", col.names=NA, quote=F)
