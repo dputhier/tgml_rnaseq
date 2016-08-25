@@ -9,9 +9,10 @@
     "_INFO_7": "->>> CHECK: ChromInfo (chrom size) file should have no header.",
     "_INFO_7": "->>> CHECK: Use cufflinks 2.1.1 if you encounter segfault.",
     "_INFO_7": "->>> CHECK: Better to set gene_name attribute of gtf file to 'gene_id|gene_name'.",
+    "_INFO_7": "->>> NOTE: The 'classes' key is used for PCA diagram.",
 	"workingdir": "/Users/puthier/git/dp_worflows/",
 	"user": "D. Puthier",
-	"exp_title": "A two sample test case.",
+	"exp_title": "This is a test case.",
 	"samples": "DM2_chr18-20Mto50M DM1_chr18-20Mto50M DM3_chr18-20Mto50M PI1_chr18-20Mto50M PI2_chr18-20Mto50M PI3_chr18-20Mto50M",
 	"classes": "DM DM DM PI PI PI",
 	"comparison": {
