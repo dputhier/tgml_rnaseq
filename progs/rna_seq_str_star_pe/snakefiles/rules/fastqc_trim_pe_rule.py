@@ -4,4 +4,4 @@ rule fastqc_trim_pe:
         output: fwd="output/fastqc_trim/{smp}/{smp}_R1_t.fq_fastqc/fastqc_data.txt", \
                 rev="output/fastqc_trim/{smp}/{smp}_R2_t.fq_fastqc/fastqc_data.txt"
         message: """--- Quality check of trimmed data with Fastqc."""
-        shell: "fastqc --outdir  output/fastqc_trim/{wildcards.smp} --extract  -f fastq {input.fwd} {input.rev} &> {output}.log "
+        shell: "fastqc --outdir  output/fastqc_trim/{wildcards.smp} --extract  -f fastq {input.fwd} {input.rev} &> {output.fwd}.log "
