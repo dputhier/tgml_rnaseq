@@ -50,6 +50,7 @@ load.bioc <- function(x) {
 suppressMessages(load.bioc("geneplotter"))
 
 suppressMessages(load.fun("docopt"))
+suppressMessages(load.fun("lattice"))
 
 
 ## -----------------------------------------------------------------------------
@@ -154,8 +155,18 @@ corrplot(corr, method = "pie", col = wb, bg="gold2", order = "hclust", hclust.me
 		tl.cex=expansion, tl.col="black", tl.srt = 45)
 devnull <- dev.off()
 
+png(file.path(outprefix,"CoorPlot_heatmap.png"), 
+		units = 'in', res = 300, width=pngwidth, height=pngheigth)
+pear <- cor(d, method="pearson")
+palette <-colorRampPalette(c("yellow", "black","blueviolet"))
+levelplot(pear,col.regions=palette, scales=list(cex=0.4))
+devnull <- dev.off()
+
 png(file.path(outprefix,"Pairs_plot.png"), 
 		units = 'in', res = 300, width=pngwidth, height=pngheigth)
 plotFun <- function(x,y){ dns <- densCols(x,y); points(x,y, col=dns, pch=".") }
 pairs(d, upper.panel=plotFun, lower.panel = NULL)
 devnull <- dev.off()
+
+
+

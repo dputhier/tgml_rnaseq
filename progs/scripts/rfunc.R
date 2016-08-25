@@ -6,11 +6,15 @@ library(knitr)
 # Create a markdown links ![name](link) from a path
 # pos  define the place 'name' when the path is splitted using
 # "/'
-vector2_md_link <- function(x, chunknb=3){
+vector2_md_link <- function(x, chunknb=3, insert=T){
 	v <- c()
 	for(i in x){
 		nm <- unlist(strsplit(i, "/"))[chunknb]
-		v <- append(v, paste("![", nm ,"](", i, ")", sep=""))
+		if(insert){
+			v <- append(v, paste("![", nm ,"](", i, ")", sep=""))
+		}else{
+			v <- append(v, paste("[", nm ,"](", i, ")", sep=""))
+		}
 	}
 	return(v)
 }
@@ -29,11 +33,11 @@ vector2_html_img <- function(x, pos=5, width=100, nm=NULL){
 	return(v)
 }
 
-find_img_and_dotable <- function(glob=NULL, width=200, ncol=3, pos=3, title=NULL){
+find_img_and_dotable <- function(glob=NULL, width=300, ncol=3, pos=3, title=NULL){
 	table_list <- list()
 	nb_table <- 1
 	img <- Sys.glob(glob)
-	img_html <- vector2_html_img(img, pos=pos, width=300)
+	img_html <- vector2_html_img(img, pos=pos, width=width)
 	
 	while(length(img_html) >= ncol){{
 			tmp_html <- img_html[1:ncol]; 
@@ -55,8 +59,8 @@ find_img_and_dotable <- function(glob=NULL, width=200, ncol=3, pos=3, title=NULL
 
 maplot <- function(R,G, title="bla", M_pts_lim=2, M_txt_lim=2.5, gene_names=NULL){
 
-	M <- R-G
-	A <- R+G
+	M <- G - R
+	A <- G + R
 	M_pts_lim <- abs(M) > M_pts_lim
 	M_txt_lim <- abs(M) > M_txt_lim
 
@@ -84,10 +88,10 @@ maplot <- function(R,G, title="bla", M_pts_lim=2, M_txt_lim=2.5, gene_names=NULL
 	
 }
 
-maplot_pval <- function(R,G, title="bla", pval=NULL, thresh=0.05, gene_names=NULL){
+maplot_pval <- function(R,G, title="bla", pval=NULL, thresh=0.05, gene_names=NULL, cex=5){
 	
-	M <- R-G
-	A <- R+G
+	M <- G - R
+	A <- G + R
 
 	
 	pval <- ifelse(pval < thresh, TRUE,FALSE)
@@ -103,7 +107,8 @@ maplot_pval <- function(R,G, title="bla", pval=NULL, thresh=0.05, gene_names=NUL
 
 	plot <- plot + geom_text_repel(data=d[pval,], 
 				                   aes(label=gene_names[pval.save]),
-				color = 'gray25')
+								   color = 'gray25',
+								   size=cex)
 
 	plot <- plot + theme_minimal()
 	plot <- plot + theme_bw()
