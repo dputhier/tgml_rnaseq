@@ -1,4 +1,5 @@
 # Download the data
+
 cd ../../input/fastq
 wget http://pedagogix-tagc.univ-mrs.fr/courses/data/ngs/dmvspi/DM1_chr18_R1.fq.gz
 wget http://pedagogix-tagc.univ-mrs.fr/courses/data/ngs/dmvspi/DM1_chr18_R2.fq.gz
