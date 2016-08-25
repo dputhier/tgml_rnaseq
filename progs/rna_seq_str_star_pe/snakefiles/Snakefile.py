@@ -70,11 +70,11 @@ COMPARISON = config["comparison"].keys()
 #                         Workflow                               #
 #================================================================#
 
-FASTQC_RAW = expand("output/fastqc_raw/{smp}/{smp}_R1.fq_fastqc/fastqc_data.txt", smp=SAMPLES)
+FASTQC_RAW = expand("output/fastqc_raw/{smp}/{smp}_R1_fastqc/fastqc_data.txt", smp=SAMPLES)
 
 TRIMMING =  expand("output/trimmed/{smp}_R1_t.fq.gz", smp=SAMPLES)
 
-FASTQC_TRIM = expand("output/fastqc_trim/{smp}/{smp}_R1_t.fq_fastqc/fastqc_data.txt", smp=SAMPLES)
+FASTQC_TRIM = expand("output/fastqc_trim/{smp}/{smp}_R1_t_fastqc/fastqc_data.txt", smp=SAMPLES)
 
 MAPPING = expand("output/bam/{smp}.bam", smp=SAMPLES)
 
