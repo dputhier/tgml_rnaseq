@@ -72,7 +72,7 @@ source("../../progs/scripts/rfunc.R")
 library(knitr)
 suppressMessages(library(ade4))
 suppressMessages(library(adegraphics))
-
+suppressMessages(library(lattice))
 
 ```
         """.format(title=params.title,
@@ -85,18 +85,38 @@ suppressMessages(library(adegraphics))
 
 
         #-----------------------------------------------------------------------
-        # Graph
+        # Graph (global)
         #-----------------------------------------------------------------------
-        WF= """
-### The global workflow
+        
+        WF_1= """
+### The template workflow
 
-```{{r , echo=FALSE, results='asis'}}
+```{r , echo=FALSE, results='asis'}
 
 find_img_and_dotable(glob="../../output/report/rulegraph.png", 
                     title="Worklow (global level)",
+                    width=800,
                     ncol=1)
-                    
+```         
         """
+        
+        ALL += WF_1
+
+        WF_2= """
+###  The complete workflow (sample-wise)
+
+```{r , echo=FALSE, results='asis'}
+
+find_img_and_dotable(glob="../../output/report/dag.png", 
+                    title="Worklow (global level)",
+                    width=800,
+                    ncol=1)
+```         
+        """
+        
+        ALL += WF_2
+
+
         #-----------------------------------------------------------------------
         # fastq quality control
         #-----------------------------------------------------------------------
@@ -264,25 +284,10 @@ cat(img_html)
 table_list <- list()
 nb_table <- 1
 img <- Sys.glob("../../output/corr_plot/*png")
-img_html <- vector2_html_img(img, pos=3, width=300)
 
-while(length(img_html) >= 3){{
-    tmp_html <- img_html[1:3]; 
-    img_html <- img_html[-c(1,2,3)]
-    tmp_mat <- matrix(tmp_html, ncol=3, byrow=T)
-    colnames(tmp_mat) <- rep("Correlation diagram", 3)
-    table_list [[nb_table]] <- tmp_mat
-    nb_table <- nb_table + 1
-}}
-
-tmp_mat <- matrix(img_html, ncol=length(img_html), byrow=T)
-colnames(tmp_mat) <- rep("Correlation diagram", length(img_html))
-table_list [[nb_table]] <- tmp_mat
-
-for(i in 1:length(table_list)){{
-    print(kable(table_list[[i]]))
-}}
-
+find_img_and_dotable(glob="../../output/corr_plot/*png", 
+                    title="Correlation diagram",
+                    ncol=3)
 
 img <- Sys.glob("../../output/corr_plot/Pairs_plot.png")
 img_html <- vector2_html_img(img, pos=3, width=900)
@@ -344,11 +349,11 @@ if(ncol(d) <= 2){
         p <- maplot(d[,i], B, 
                     gene_names=rownames(d), 
                     title=paste(colnames(d)[i], "vs reference (median gene expression)"))
-        nm <- paste(colnames(d)[i], "vs reference", ".png", sep="")
+        nm <- paste(colnames(d)[i], "vs_reference", ".png", sep="")
         path <- file.path("../maplot/",nm)
         png(path, width = 1500, height = 1200, res=250)
         print(p)
-        dev.off()
+
     }
 }
 
@@ -410,17 +415,17 @@ if(ncol(acp$li) >= 2){{
     s.class(acp$li, fac = as.factor(pheno), 
             pellipses.lwd = 2, pellipses.border = 2:5, 
             pellipses.col = 2:5)
-    dev.off()
+
     png("../../output/pca_mds/PCA_ade_g_label.png", 
             units = 'in', res = 300, width=6, height=6)
     
     s.label(acp$li, ppoints.col = "red", plabels = list(box = list(draw = FALSE), optim = TRUE), plot = T)
-    dev.off()        
+      
     png("../../output/pca_mds/PCA_ade_g_eigen.png", 
             units = 'in', res = 300, width=6, height=6)
         (kip <- 100 * acp$eig/sum(acp$eig))
         barplot(cumsum(kip), xlab="PC", ylab="Cumulative sum (%)")
-    dev.off()
+
 
     png("../../output/pca_mds/PCA_ade_g_corr_circle.png", 
             units = 'in', res = 300, width=6, height=6)
@@ -430,7 +435,7 @@ if(ncol(acp$li) >= 2){{
     l <- rownames(tail(acp$co[order(acp$co$Comp2),],20))
     adegpar(list(plabels.cex=0.5))
     s.corcircle(acp$co[unique(c(i,j,k,l)),])
-    dev.off()    
+   
 }}
 
 
@@ -475,7 +480,7 @@ pheno <- strsplit(pheno, ",")[[1]]
 dissimilarity <- 1 - cor(d)
 distance <- as.dist(dissimilarity)
     
-fit <- suppressMessages(isoMDS(distance, k=2)) # k is the number of dim
+fit <- suppressWarnings(isoMDS(distance, k=2)) # k is the number of dim
 
 x <- fit$points[,1]
 y <- fit$points[,2]
@@ -491,7 +496,7 @@ p <- p + geom_point(size=0.8, alpha=0.5,na.rm=T)
 p <- p + geom_text_repel(data=df, aes(label=name), color = 'gray25')
 png("../../output/pca_mds/MDS.png", width = 1500, height = 1200, res=250)
 print(p)
-dev.off()
+
 
 find_img_and_dotable(glob="../../output/pca_mds/MDS.png", 
                 width=250, ncol=2, pos=3, title="MDS")
@@ -509,20 +514,12 @@ find_img_and_dotable(glob="../../output/pca_mds/MDS.png",
         MAPLOTBYCLASS = """
 ### Differential analysis ({comp})
 
-#### DESeq2 fit ({comp})
-
-```{{r , echo=FALSE, results='asis'}}
-
-find_img_and_dotable(glob="../../output/comparison/{comp}/DESeq2_diagnostic_disp.png", 
-                    title="DESeq2 fit ({comp})",
-                    ncol=1)
-```
-
-
 - **Tested samples**: {sample}
+    - **class 1 contains**: {cls1}
+    - **class 2 contains**: {cls2}
 
-- **class 1 contains**: {cls1}
-- **class 2 contains**: {cls2}
+- **P-value threshold**
+    - {thresh}
 
 ```{{r , echo=FALSE, results='asis'}}
 
@@ -545,24 +542,47 @@ p <- maplot_pval(rowMeans(d[,class1]),
                  gene_names=rownames(d),
                  thresh={thresh},
                  pval=d.save$padj, 
-                 title="{comp}")
+                 title="{comp}",
+                 cex=1.5)
 
-path <- file.path("../../output/comparison/{comp}/maplot.png")
+path <- file.path("../../output/comparison/{comp}/maplot_{comp}_report.png")
 png(path, width = 1500, height = 1200, res=250)
-print(p)
-dev.off()
+suppressWarnings(print(p))
 
-find_img_and_dotable(glob="../../output/comparison/{comp}/maplot.png", 
-                    title="MA-plot comparison ({comp})",
-                    ncol=1)
-            
+# clustering (heatmap of samples correlation)
+
+d.clust <- na.omit(d[d.save$padj <= {thresh}, ])
+
+pear <- cor(d.clust, method="pearson")
+palette <-colorRampPalette(c("yellow", "black","blueviolet"))
+path <- file.path("../../output/comparison/{comp}/cor_heatmap_{comp}_report.png")
+
+png(path, width = 1500, height = 1200, res=250)
+levelplot(pear,col.regions=palette, scales=list(cex=0.4))
+
+# clustering (tree)
+
+pear <- as.dist((1-pear)/2)
+hp <- hclust(pear, method="average")
+path <- file.path("../../output/comparison/{comp}/hclust_{comp}_report.png")
+png(path, width = 1500, height = 1200, res=250)
+plot(hp,hang=-1, lab=colnames(d.clust), cex=0.4)
+
+
+find_img_and_dotable(glob="../../output/comparison/{comp}/*_report.png", 
+                    title="Comparison plot",
+                    ncol=3)
+
+
+
 ```
 
 - Data (log2(counts + 1)) together with pvalues, adjusted-pvalues (...) are available here:
 
 ```{{r , echo=FALSE, results='asis'}}
-
-vector2_md_link(c("../../output/comparison/{comp}/maplot.png"), chunknb=5)
+vector2_md_link("../../output/comparison/{comp}/DESeq2_pval_and_norm_count_log2.txt",
+                chunknb=5, 
+                insert=F)
 ```
         """
 
