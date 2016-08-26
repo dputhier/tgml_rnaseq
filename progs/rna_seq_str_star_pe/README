@@ -29,8 +29,10 @@ samtools faidx chr18_mm9.fa
 
 STAR --runThreadN 15 --runMode genomeGenerate --genomeDir . --genomeFastaFiles chr18_mm9.fa
 
-# Start the workflow
+# Check the workflow
 cd ../../../progs/rna_seq_str_star_pe/
+
+# Start the wf
 snakemake -s snakefiles/Snakefile.py  -c 'qsub -V  -q tgml -l nodes=1:ppn={threads}' --rerun-incomplete  -j
 
 
