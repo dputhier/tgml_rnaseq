@@ -57,7 +57,7 @@ workdir: config["workingdir"]
 SAMPLES = config["samples"].split()
 
 for curr_key in config:
-    if "_INFO_" in key:
+    if "_INFO_" in curr_key:
         sys.stderr.write(config[curr_key] + "\n")
 
 COMPARISON = config["comparison"].keys()
