@@ -8,6 +8,7 @@ import sys
 import argparse
 import os
 import pysam
+import re
 
 __version__ = 0.1
 
@@ -72,6 +73,7 @@ def compute_cov(bam=None,
         if not os.path.isfile(bam_fn_test + ".bai"):
                 sys.stderr.write("Can't find any bam index "
                                 "for file : " + bam.name + "\n")
+                sys.exit()
 
     samfile = pysam.Samfile(bam.name, "rb")
 
