@@ -56,12 +56,9 @@ workdir: config["workingdir"]
 
 SAMPLES = config["samples"].split()
 
-sys.stderr.write(config["_INFO_1"] + "\n")
-sys.stderr.write(config["_INFO_2"] + "\n")
-sys.stderr.write(config["_INFO_3"] + "\n")
-sys.stderr.write(config["_INFO_4"] + "\n")
-sys.stderr.write(config["_INFO_5"] + "\n")
-sys.stderr.write(config["_INFO_6"] + "\n")
+for curr_key in config:
+    if "_INFO_" in key:
+        sys.stderr.write(config[key] + "\n")
 
 COMPARISON = config["comparison"].keys()
 

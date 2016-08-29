@@ -11,7 +11,7 @@ rule do_bigwig:
     shell: """
         bam2wig.py -t {params.sf} -i {input.plus} -s {params.chr} -o output/bwig/{wildcards.smp}_plus_norm &> {output.plus_norm}.log
         wigToBigWig -clip output/bwig/{wildcards.smp}_plus_norm.wig {params.chr} {output.plus_norm} 2>&1 >> {output.plus}.log
-        rm -f output/bwig/{wildcards.smp}_plus.wig
+        rm -f output/bwig/{wildcards.smp}_plus_norm.wig
 
 
         bam2wig.py -i {input.plus} -s {params.chr} -o output/bwig/{wildcards.smp}_plus &> {output.plus}.log
@@ -21,7 +21,7 @@ rule do_bigwig:
         
         bam2wig.py -t {params.sf}  -i {input.min} -s {params.chr} -o output/bwig/{wildcards.smp}_min_norm &> {output.min_norm}.log
         wigToBigWig -clip output/bwig/{wildcards.smp}_min_norm.wig {params.chr} {output.min_norm} 2>&1 >> {output.min_norm}.log
-        rm -f output/bwig/{wildcards.smp}_min.wig
+        rm -f output/bwig/{wildcards.smp}_min_norm.wig
         
 
         bam2wig.py  -i {input.min} -s {params.chr} -o output/bwig/{wildcards.smp}_min &> {output.min}.log
