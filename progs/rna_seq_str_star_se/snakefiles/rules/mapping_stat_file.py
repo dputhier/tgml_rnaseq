@@ -12,5 +12,5 @@ rule mapping_stats_R1:
                 grep "Total Sequence" {input.trim}      >> {output.s}
                 echo "MAPPED"                           >> {output.s}
                 samtools flagstat {input.bam}           > {output.fs}
-                grep "read1" {output.fs}                >> {output.s}
+                grep "mapped (" {output.fs}                >> {output.s}
                 """

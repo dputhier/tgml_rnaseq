@@ -3,7 +3,8 @@ rule report:
     Generate a report.
     """
 
-    input:  code="output/code/Snakefile.py"
+    input:  code="output/code/Snakefile.py", dag="output/report/dag.png"
+            
 
     params: wdir=config["workingdir"], \
             user=config["user"], \
@@ -215,7 +216,7 @@ Plot was computed using [geneBody_coverage.py](http://rseqc.sourceforge.net/). S
 A pdf version of the diagram can be found [here](../../output/rseqc_coverage_diag/rseqc_cov.geneBodyCoverage.curves.pdf).
 
 
-```{{r, engine='bash', echo=FALSE}}
+```{{r coverage, engine='bash', echo=FALSE}}
 convert ../../output/rseqc_coverage_diag/rseqc_cov.geneBodyCoverage.curves.pdf ../../output/rseqc_coverage_diag/rseqc_cov.geneBodyCoverage.curves.png
 ``` 
 
@@ -258,7 +259,7 @@ In the current analysis the transcript with class code **{class_code}** have bee
 |11|    s|    An intron of the transfrag overlaps a reference intron on the opposite strand (likely due to read mapping errors)|
 |12|    .|    (.tracking file only, indicates multiple classifications)|
 
-```{{r, echo=FALSE, results='asis'}}
+```{{r novel_tx_stats, echo=FALSE, results='asis'}}
 img <- "../../output/cuffmerge/cuffmerge_stats.png"
 img_html <- vector2_html_img(img, pos=5, width=300)
 
@@ -278,7 +279,7 @@ cat(img_html)
 
 ### Various correlation plots
 
-```{r, echo=FALSE, results='asis'}
+```{r various_correlation, echo=FALSE, results='asis'}
 
 table_list <- list()
 nb_table <- 1
@@ -321,7 +322,7 @@ representative pseudo-sample that is computed from the row (gene) medians.
 **Hint**: Warn with the list of differential expressed genes when no replicates are available. When working with polyA selected RNA, a classical bias is to observed histone genes that are known to be non-polyadenylated and that underline selection issues.
 **Note**: The diagram shows normalized expression data (scaling factor as proposed by DESeq2).
  
-```{r, echo=FALSE, results='asis'}
+```{r maplot, echo=FALSE, results='asis'}
 
 img_list <- list()
 dir.create("../maplot", showWarnings = FALSE)
@@ -355,6 +356,9 @@ if(ncol(d) <= 2){
 
     }
 }
+
+```
+```{r maplot_insert, echo=FALSE, results='asis'}
 
 find_img_and_dotable(glob="../maplot/*.png",
                     title="MA plot",
@@ -437,6 +441,9 @@ if(ncol(acp$li) >= 2){{
    
 }}
 
+```
+
+```{{r pca_insert, results='asis', echo=FALSE}}
 
 find_img_and_dotable(glob="../../output/pca_mds/PCA_ade_g*png", width=250, ncol=2, pos=3, title="PCA with ade4")
 
@@ -463,8 +470,7 @@ suppressMessages(library(ggplot2))
 suppressMessages(library(ggthemes))
 suppressMessages(library(ggrepel))
 
-d <- read.table("../../output/quantification_known_and_novel_genes/gene_counts_known_and_novel_mini.txt",
-                sep="\t",head=T,row=1)
+d <- read.table("../../output/quantification_known_and_novel_genes/gene_counts_known_and_novel_mini.txt", sep="\t",head=T,row=1)
 
 sf <- estimSf(d)
 d <- round(sweep(d, 2, sf, "/"),0)
@@ -473,8 +479,6 @@ d <- log2(d+1)
 pheno <- "{pheno}"
 
 pheno <- strsplit(pheno, ",")[[1]]
-
-
 
 dissimilarity <- 1 - cor(d)
 distance <- as.dist(dissimilarity)
@@ -495,7 +499,10 @@ p <- p + geom_point(size=0.8, alpha=0.5,na.rm=T)
 p <- p + geom_text_repel(data=df, aes(label=name), color = 'gray25')
 png("../../output/pca_mds/MDS.png", width = 1500, height = 1200, res=250)
 print(p)
+dev.off()
+```
 
+```{{r mds_insert, results='asis', echo=FALSE}}
 
 find_img_and_dotable(glob="../../output/pca_mds/MDS.png", 
                 width=250, ncol=2, pos=3, title="MDS")
@@ -547,6 +554,7 @@ p <- maplot_pval(rowMeans(d[,class1]),
 path <- file.path("../../output/comparison/{comp}/maplot_{comp}_report.png")
 png(path, width = 1500, height = 1200, res=250)
 suppressWarnings(print(p))
+dev.off()
 
 # clustering (heatmap of samples correlation)
 
@@ -558,6 +566,7 @@ path <- file.path("../../output/comparison/{comp}/cor_heatmap_{comp}_report.png"
 
 png(path, width = 1500, height = 1200, res=250)
 levelplot(pear,col.regions=palette, scales=list(cex=0.4))
+dev.off()
 
 # clustering (tree)
 
@@ -566,6 +575,12 @@ hp <- hclust(pear, method="average")
 path <- file.path("../../output/comparison/{comp}/hclust_{comp}_report.png")
 png(path, width = 1500, height = 1200, res=250)
 plot(hp,hang=-1, lab=colnames(d.clust), cex=0.4)
+dev.off()
+
+```
+
+
+```{{r, results='asis', echo=FALSE}}
 
 
 find_img_and_dotable(glob="../../output/comparison/{comp}/*_report.png", 
