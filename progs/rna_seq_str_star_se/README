@@ -1,0 +1,33 @@
+# Download the data
+
+cd ../../input/fastq
+wget http://pedagogix-tagc.univ-mrs.fr/courses/data/ngs/dmvspi/DM1_chr18_R1.fq.gz
+wget http://pedagogix-tagc.univ-mrs.fr/courses/data/ngs/dmvspi/DM2_chr18_R1.fq.gz
+wget http://pedagogix-tagc.univ-mrs.fr/courses/data/ngs/dmvspi/DM3_chr18_R1.fq.gz
+wget http://pedagogix-tagc.univ-mrs.fr/courses/data/ngs/dmvspi/PI1_chr18_R1.fq.gz
+wget http://pedagogix-tagc.univ-mrs.fr/courses/data/ngs/dmvspi/PI2_chr18_R1.fq.gz
+wget http://pedagogix-tagc.univ-mrs.fr/courses/data/ngs/dmvspi/PI3_chr18_R1.fq.gz
+
+# Go into indexes dir
+cd ../../input/indexes/
+mkdir chr18
+cd chr18
+
+# Download the genome
+wget http://hgdownload.cse.ucsc.edu/goldenPath/mm9/chromosomes/chr18.fa.gz
+gunzip chr18.fa.gz
+mv chr18.fa  chr18_mm9.fa
+samtools faidx chr18_mm9.fa
+
+# Build star index
+
+STAR --runThreadN 15 --runMode genomeGenerate --genomeDir . --genomeFastaFiles chr18_mm9.fa
+
+# Check the workflow
+cd ../../../progs/rna_seq_str_star_pe/
+snakemake -s snakefiles/Snakefile.py -np
+
+# Start the wf
+snakemake -s snakefiles/Snakefile.py  -c 'qsub -V  -q tgml -l nodes=1:ppn={threads}' --rerun-incomplete  -j
+
+
