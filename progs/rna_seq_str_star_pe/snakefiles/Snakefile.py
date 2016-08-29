@@ -57,12 +57,9 @@ workdir: config["workingdir"]
 
 SAMPLES = config["samples"].split()
 
-sys.stderr.write(config["_INFO_1"] + "\n")
-sys.stderr.write(config["_INFO_2"] + "\n")
-sys.stderr.write(config["_INFO_3"] + "\n")
-sys.stderr.write(config["_INFO_4"] + "\n")
-sys.stderr.write(config["_INFO_5"] + "\n")
-sys.stderr.write(config["_INFO_6"] + "\n")
+for curr_key in config:
+    if "_INFO_" in curr_key:
+        sys.stderr.write(config[curr_key] + "\n")
 
 COMPARISON = config["comparison"].keys()
 
@@ -167,7 +164,7 @@ rule final:
             STAT_CUFFMERGE
 
     output: "output/code/Snakefile.py"
-    params: wdir = config["workingdir"] + "/progs/rna_seq_str_pe/snakefiles/*nake*"
+    params: wdir = config["workingdir"] + "/progs/rna_seq_str_star_pe/snakefiles/*nake*"
     shell: """
     cp {params.wdir} {output}
     """

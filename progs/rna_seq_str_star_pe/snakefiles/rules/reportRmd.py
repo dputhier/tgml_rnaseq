@@ -341,7 +341,7 @@ if(ncol(d) <= 2){
                 gene_names=rownames(d), 
         title=paste(colnames(d)[1], "vs" , colnames(d)[2]))
     print(p)
-    
+    dev.off()
 }else{
 
     B <- apply(d,1,median)
@@ -353,6 +353,7 @@ if(ncol(d) <= 2){
         path <- file.path("../maplot/",nm)
         png(path, width = 1500, height = 1200, res=250)
         print(p)
+        dev.off()
 
     }
 }
@@ -420,12 +421,12 @@ if(ncol(acp$li) >= 2){{
             units = 'in', res = 300, width=6, height=6)
     
     s.label(acp$li, ppoints.col = "red", plabels = list(box = list(draw = FALSE), optim = TRUE), plot = T)
-      
+    dev.off()
     png("../../output/pca_mds/PCA_ade_g_eigen.png", 
             units = 'in', res = 300, width=6, height=6)
         (kip <- 100 * acp$eig/sum(acp$eig))
         barplot(cumsum(kip), xlab="PC", ylab="Cumulative sum (%)")
-
+    dev.off()
 
     png("../../output/pca_mds/PCA_ade_g_corr_circle.png", 
             units = 'in', res = 300, width=6, height=6)
@@ -435,6 +436,7 @@ if(ncol(acp$li) >= 2){{
     l <- rownames(tail(acp$co[order(acp$co$Comp2),],20))
     adegpar(list(plabels.cex=0.5))
     s.corcircle(acp$co[unique(c(i,j,k,l)),])
+    dev.off()
    
 }}
 
@@ -496,7 +498,7 @@ p <- p + geom_point(size=0.8, alpha=0.5,na.rm=T)
 p <- p + geom_text_repel(data=df, aes(label=name), color = 'gray25')
 png("../../output/pca_mds/MDS.png", width = 1500, height = 1200, res=250)
 print(p)
-
+dev.off()
 
 find_img_and_dotable(glob="../../output/pca_mds/MDS.png", 
                 width=250, ncol=2, pos=3, title="MDS")
@@ -548,7 +550,7 @@ p <- maplot_pval(rowMeans(d[,class1]),
 path <- file.path("../../output/comparison/{comp}/maplot_{comp}_report.png")
 png(path, width = 1500, height = 1200, res=250)
 suppressWarnings(print(p))
-
+dev.off()
 # clustering (heatmap of samples correlation)
 
 d.clust <- na.omit(d[d.save$padj <= {thresh}, ])
@@ -559,7 +561,7 @@ path <- file.path("../../output/comparison/{comp}/cor_heatmap_{comp}_report.png"
 
 png(path, width = 1500, height = 1200, res=250)
 levelplot(pear,col.regions=palette, scales=list(cex=0.4))
-
+dev.off()
 # clustering (tree)
 
 pear <- as.dist((1-pear)/2)
@@ -567,7 +569,7 @@ hp <- hclust(pear, method="average")
 path <- file.path("../../output/comparison/{comp}/hclust_{comp}_report.png")
 png(path, width = 1500, height = 1200, res=250)
 plot(hp,hang=-1, lab=colnames(d.clust), cex=0.4)
-
+dev.off()
 
 find_img_and_dotable(glob="../../output/comparison/{comp}/*_report.png", 
                     title="Comparison plot",
