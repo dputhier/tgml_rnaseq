@@ -1,5 +1,5 @@
 rule draw_dag:
-    input: "progs/rna_seq_str_pe/snakefiles/Snakefile.py"
+    input: "progs/rna_seq_str_star_pe/snakefiles/Snakefile.py"
     output: "output/report/dag.png"
     threads: 1
     shell: """
