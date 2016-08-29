@@ -277,6 +277,7 @@ cat(img_html)
         CORRELATION = """
 
 
+
 ### Various correlation plots
 
 ```{r, echo=FALSE, results='asis'}
