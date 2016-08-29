@@ -1,6 +1,6 @@
 rule mapping_stats_R1:
-        input: raw="output/fastqc_raw/{smp}/{smp}.fq_fastqc/fastqc_data.txt", \
-               trim="output/fastqc_trim/{smp}/{smp}_t.fq_fastqc/fastqc_data.txt", \
+        input: raw="output/fastqc_raw/{smp}/{smp}_fastqc/fastqc_data.txt", \
+               trim="output/fastqc_trim/{smp}/{smp}_t_fastqc/fastqc_data.txt", \
                bam="output/bam/{smp}.bam"
         output: s="output/mapping_stats/{smp}.stats", fs="output/mapping_stats/{smp}.flagstat"
         message: """--- Performing some stats about mapping."""
