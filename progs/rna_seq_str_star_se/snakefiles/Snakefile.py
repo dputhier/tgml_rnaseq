@@ -143,7 +143,7 @@ rule final:
             STAT_CUFFMERGE
 
     output: "output/code/Snakefile.py"
-    params: wdir = config["workingdir"] + "/progs/rna_seq_str_pe/snakefiles/*nake*"
+    params: wdir = config["workingdir"] + "/progs/rna_seq_str_star_pe/snakefiles/*nake*"
     shell: """
     cp {params.wdir} {output}
     """
