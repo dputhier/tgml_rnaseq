@@ -58,7 +58,7 @@ SAMPLES = config["samples"].split()
 
 for curr_key in config:
     if "_INFO_" in key:
-        sys.stderr.write(config[key] + "\n")
+        sys.stderr.write(config[curr_key] + "\n")
 
 COMPARISON = config["comparison"].keys()
 
