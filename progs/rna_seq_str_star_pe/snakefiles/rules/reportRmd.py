@@ -144,7 +144,7 @@ More information on diagram interpretation can be obtained [here](http://www.bio
 ```{{r, echo=FALSE, results='asis'}}
 table_list <- list()
 nb_table <- 1
-img <- Sys.glob("../../output/fastqc_raw/{smp}/*{read}.fq*/Images/*.png")
+img <- Sys.glob("../../output/fastqc_raw/{smp}/*{read}_fastqc/Images/*.png")
 img_html <- vector2_html_img(img, pos=3, width=300)
 
 while(length(img_html) >= 3){{
