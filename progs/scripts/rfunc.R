@@ -57,7 +57,7 @@ find_img_and_dotable <- function(glob=NULL, width=300, ncol=3, pos=3, title=NULL
 		}
 }
 
-maplot <- function(R,G, title="bla", M_pts_lim=2, M_txt_lim=2.5, gene_names=NULL){
+maplot <- function(R,G, title="bla", M_pts_lim=2, M_txt_lim=3, gene_names=NULL, cex=5){
 
 	M <- G - R
 	A <- G + R
@@ -75,7 +75,8 @@ maplot <- function(R,G, title="bla", M_pts_lim=2, M_txt_lim=2.5, gene_names=NULL
 	if(any(M_txt_lim)){
 		plot <- plot + geom_text_repel(data=d[M_txt_lim,], 
 										aes(label=gene_names),
-										color = 'gray25')
+										color = 'gray25',
+										size=cex)
 	}
 	plot <- plot + theme_minimal()
 	plot <- plot + theme_bw()
