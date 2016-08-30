@@ -11,8 +11,8 @@ rule hist_mapping_stats:
 
       for(i in 1:length(f)){{
          d <- read.table(f[i], fill=NA)
-         m[1,i] <- d[2,"V3"]
-         m[2,i] <- d[4,"V3"]
+         m[1,i] <- as.numeric(as.character(d[2,"V3"]))
+         m[2,i] <- as.numeric(as.character(d[4,"V3"]))
          m[3,i] <- as.numeric(as.character(d[6,1]))
       }}
      png("{output[0]}", width=6, height=6, units = 'in', res = 300)
