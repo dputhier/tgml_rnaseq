@@ -57,7 +57,7 @@ find_img_and_dotable <- function(glob=NULL, width=300, ncol=3, pos=3, title=NULL
 		}
 }
 
-maplot <- function(R,G, title="bla", M_pts_lim=2, M_txt_lim=3, gene_names=NULL, cex=5){
+maplot <- function(R,G, title="bla", M_pts_lim=2, M_txt_lim=3, gene_names=NULL, cex=1.5){
 
 	M <- G - R
 	A <- G + R
