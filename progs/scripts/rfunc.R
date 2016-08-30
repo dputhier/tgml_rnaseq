@@ -98,9 +98,10 @@ maplot_pval <- function(R,G, title="bla", pval=NULL, thresh=0.05, gene_names=NUL
 	pval <- ifelse(pval < thresh, TRUE,FALSE)
 	pval.save <- pval
 	pval[is.na(pval)] <- "u"
-
+	pvalf <- factor(pval, levels=c("TRUE", "FALSE", "u"))
+	levels(pvalf) <- c("#af8dc3","#7fbf7b", "#999999")
 	d <- data.frame(M=M, A=A, 
-			pval=factor(pval, levels=c("#AF8DC3", "#7B3294", "grey1")), 
+			pval=pvalf, 
 			gene_names=gene_names)
 	plot <- ggplot(data=d, aes(A, M, color=pval))
 	plot <- plot + geom_point(size=0.8, alpha=0.5,na.rm=T) 
