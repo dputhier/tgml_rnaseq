@@ -337,9 +337,7 @@ d <- log2(d+1)
 
 if(ncol(d) <= 2){
 
-    p <- maplot(d[,1], d[,2], 
-                gene_names=rownames(d), 
-        title=paste(colnames(d)[1], "vs" , colnames(d)[2]))
+    p <- maplot(d[,1], d[,2],  gene_names=rownames(d),  title=paste(colnames(d)[1], "vs" , colnames(d)[2]))
     print(p)
     
 }else{
@@ -348,7 +346,9 @@ if(ncol(d) <= 2){
     for(i in 1:ncol(d)){
         p <- maplot(d[,i], B, 
                     gene_names=rownames(d), 
-                    title=paste(colnames(d)[i], "vs reference (median gene expression)"))
+                    title=paste(colnames(d)[i], 
+                    "vs reference (median gene expression)"),
+                    M_txt_lim=4)
         nm <- paste(colnames(d)[i], "vs_reference", ".png", sep="")
         path <- file.path("../maplot/",nm)
         png(path, width = 1500, height = 1200, res=250)
