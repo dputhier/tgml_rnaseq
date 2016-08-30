@@ -421,14 +421,14 @@ if(ncol(acp$li) >= 2){{
 
     png("../../output/pca_mds/PCA_ade_g_label.png", 
             units = 'in', res = 300, width=6, height=6)
-    
+    dev.off()
     s.label(acp$li, ppoints.col = "red", plabels = list(box = list(draw = FALSE), optim = TRUE), plot = T)
       
     png("../../output/pca_mds/PCA_ade_g_eigen.png", 
             units = 'in', res = 300, width=6, height=6)
         (kip <- 100 * acp$eig/sum(acp$eig))
         barplot(cumsum(kip), xlab="PC", ylab="Cumulative sum (%)")
-
+    dev.off()
 
     png("../../output/pca_mds/PCA_ade_g_corr_circle.png", 
             units = 'in', res = 300, width=6, height=6)
@@ -438,7 +438,7 @@ if(ncol(acp$li) >= 2){{
     l <- rownames(tail(acp$co[order(acp$co$Comp2),],20))
     adegpar(list(plabels.cex=0.5))
     s.corcircle(acp$co[unique(c(i,j,k,l)),])
-   
+   dev.off()
 }}
 
 ```
