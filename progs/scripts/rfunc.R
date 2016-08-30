@@ -57,7 +57,7 @@ find_img_and_dotable <- function(glob=NULL, width=300, ncol=3, pos=3, title=NULL
 		}
 }
 
-maplot <- function(R,G, title="bla", M_pts_lim=2, M_txt_lim=3, gene_names=NULL, cex=1.5){
+maplot <- function(R,G, title="bla", M_pts_lim=2, M_txt_lim=4, gene_names=NULL, cex=1.5){
 
 	M <- G - R
 	A <- G + R
@@ -97,9 +97,10 @@ maplot_pval <- function(R,G, title="bla", pval=NULL, thresh=0.05, gene_names=NUL
 	
 	pval <- ifelse(pval < thresh, TRUE,FALSE)
 	pval.save <- pval
+	pval[is.na(pval)] <- "u"
 
 	d <- data.frame(M=M, A=A, 
-			pval=factor(pval, levels=c("TRUE", "FALSE")), 
+			pval=factor(pval, levels=c("#AF8DC3", "#7B3294", "grey1")), 
 			gene_names=gene_names)
 	plot <- ggplot(data=d, aes(A, M, color=pval))
 	plot <- plot + geom_point(size=0.8, alpha=0.5,na.rm=T) 
