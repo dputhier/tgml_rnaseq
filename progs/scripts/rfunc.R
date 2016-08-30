@@ -97,8 +97,9 @@ maplot_pval <- function(R,G, title="bla", pval=NULL, thresh=0.05, gene_names=NUL
 	
 	pval <- ifelse(pval < thresh, TRUE,FALSE)
 	pval.save <- pval
-	pval[is.na(pval)] <- "u"
-	pvalf <- factor(pval, levels=c("TRUE", "FALSE", "u"))
+	pvalf <- pval
+	pvalf[is.na(pvalf)] <- "u"
+	pvalf <- factor(pvalf, levels=c("TRUE", "FALSE", "u"))
 	levels(pvalf) <- c("#af8dc3","#7fbf7b", "#999999")
 	d <- data.frame(M=M, A=A, 
 			pval=pvalf, 
