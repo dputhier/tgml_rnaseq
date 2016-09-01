@@ -65,7 +65,7 @@ suppressMessages(load.fun("RColorBrewer"))
 suppressMessages(load.fun("gplots"))
 suppressMessages(load.fun("ggplot2"))
 suppressMessages(load.bioc("DESeq2"))
-suppressMessages(load.bioc("edgeR"))
+
 
 # output
 if(is.null(opt$outdir))
@@ -193,6 +193,7 @@ write.table(data.frame(out, log2.counts[rownames(out),], check.names = FALSE),
 ## -----------------------------------------------------------------------------
 ## EdgeR
 ## -----------------------------------------------------------------------------
+suppressMessages(load.bioc("edgeR"))
 cat("-- EdgeR analysis")
 y <- DGEList(counts=round(m,0),group=pheno)
 y <- calcNormFactors(y)
