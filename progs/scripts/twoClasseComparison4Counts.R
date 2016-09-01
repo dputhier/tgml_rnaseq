@@ -79,7 +79,6 @@ class2 <- unlist(strsplit(opt$class2, ","))
 pheno <- c(rep("class1", length(class1)),
 			rep("class2", length(class2)))
 
-
 ## Gete selected samples
 
 m  <- read.table(opt$input_file, sep='\t', 
@@ -93,11 +92,12 @@ if(!all(c(class1, class2) %in% colnames(m))){
 
 m <- m[, c(class1, class2)]
 
-cat("Calling differentially expressed genes (DESeq2\n")
+
+cat("Calling differentially expressed genes (DESeq2)\n")
 des <- DESeqDataSetFromMatrix(m, as.data.frame(pheno), design=formula(~pheno))
 dds <- DESeq(des)
 resMLE<- results(dds, addMLE=TRUE)
-res <- results(dds)
+res <- results(dds, cooksCutoff=FALSE)
 
 ## -----------------------------------------------------------------------------
 ## Diagnostic plots
@@ -183,6 +183,7 @@ res <- results(dds)
 resOrdered <- res[order(res$padj),]
 #save.image("image.Rdata")
 out <- as.data.frame(resOrdered)
+colnames(out) <- paste("DESeq2_",colnames(out), sep="")
 
 write.table(data.frame(out, log2.counts[rownames(out),], check.names = FALSE), 
 			file.path(opt$outdir,
@@ -192,16 +193,22 @@ write.table(data.frame(out, log2.counts[rownames(out),], check.names = FALSE),
 ## -----------------------------------------------------------------------------
 ## EdgeR
 ## -----------------------------------------------------------------------------
-
+cat("-- EdgeR analysis")
 y <- DGEList(counts=round(m,0),group=pheno)
 y <- calcNormFactors(y)
 design <- model.matrix(~pheno)
 y <- estimateDisp(y,design)
 fit <- glmQLFit(y,design)
 qlf <- glmQLFTest(fit,coef=2)
-qlf.sort <- qlf$table[rownames(resOrdered),]
+
+# OUtput
+qlf.sort <- qlf$table[rownames(out),]
+tmp    <- sapply(c("BH","BY","holm","bonferroni","fdr"), 
+		function(meth) p.adjust(qlf.sort$PValue, meth))
+colnames(tmp) <- paste("EdgeR_",colnames(tmp), sep="")
 colnames(qlf.sort) <- paste("EdgeR_",colnames(qlf.sort), sep="")
-colnames(out) <- paste("DESeq2_",colnames(out), sep="")
+
+out <- data.frame(out,qlf.sort, tmp, log2.counts[rownames(out),], check.names = FALSE)
 
 write.table(data.frame(out,qlf.sort, log2.counts[rownames(out),], check.names = FALSE), 
 		file.path(opt$outdir,
