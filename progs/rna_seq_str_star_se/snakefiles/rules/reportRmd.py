@@ -559,7 +559,7 @@ dev.off()
 
 # clustering (heatmap of samples correlation)
 
-d.clust <- na.omit(d[d.save$padj <= {thresh}, ])
+d.clust <- na.omit(d[d.save$EdgeR_BH <= {thresh}, ])
 
 pear <- cor(d.clust, method="pearson")
 palette <-colorRampPalette(c("yellow", "black","blueviolet"))
