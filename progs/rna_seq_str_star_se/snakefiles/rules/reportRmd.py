@@ -413,6 +413,7 @@ acp <- dudi.pca(t(d),  scannf=FALSE, nf=3)
 
 
 if(ncol(acp$li) >= 2){{
+    dir.create("../../output/pca_mds", showWarnings = FALSE)
     png("../../output/pca_mds/PCA_ade_g.png", 
             units = 'in', res = 300, width=6, height=6)
     s.class(acp$li, fac = as.factor(pheno), 
