@@ -578,6 +578,12 @@ png(path, width = 1500, height = 1200, res=250)
 plot(hp,hang=-1, lab=colnames(d.clust), cex=0.4)
 dev.off()
 
+## Summary
+a <- length(d.save$EdgeR_BH[d.save$EdgeR_BH < {thresh}])
+b <- length(d.save$DESeq2_padj[d.save$DESeq2_padj < {thresh}])
+
+nbsig <- data.frame(NbSig_DESeq2_padj=b,NbSig_EdgeR_BH=a)
+kable(nbsig)
 ```
 
 
