@@ -521,15 +521,16 @@ find_img_and_dotable(glob="../../output/pca_mds/MDS.png",
     - **class 1 contains**: {cls1}
     - **class 2 contains**: {cls2}
 
-- **P-value threshold**
+- **Corrected p-value threshold (EdgeR_BH)**
     - {thresh}
+
 
 ```{{r , echo=FALSE, results='asis'}}
 
 
 img_list <- list()
 
-d <- read.table("../../output/comparison/{comp}/DESeq2_pval_and_norm_count_log2.txt",
+d <- read.table("../../output/comparison/{comp}/DESeq2_EdgeR_pval_and_norm_count_log2.txt",
                 sep="\t",head=T,row=1,
                 check.names = FALSE)
 d.save <- d
@@ -544,7 +545,7 @@ p <- maplot_pval(rowMeans(d[,class1]),
                  rowMeans(d[,class2]), 
                  gene_names=rownames(d),
                  thresh={thresh},
-                 pval=d.save$padj, 
+                 pval=d.save$EdgeR_BH, 
                  title="{comp}",
                  cex=1.5)
 
@@ -552,6 +553,7 @@ path <- file.path("../../output/comparison/{comp}/maplot_{comp}_report.png")
 png(path, width = 1500, height = 1200, res=250)
 suppressWarnings(print(p))
 dev.off()
+
 # clustering (heatmap of samples correlation)
 
 d.clust <- na.omit(d[d.save$padj <= {thresh}, ])
@@ -563,6 +565,7 @@ path <- file.path("../../output/comparison/{comp}/cor_heatmap_{comp}_report.png"
 png(path, width = 1500, height = 1200, res=250)
 levelplot(pear,col.regions=palette, scales=list(cex=0.4))
 dev.off()
+
 # clustering (tree)
 
 pear <- as.dist((1-pear)/2)
@@ -572,15 +575,16 @@ png(path, width = 1500, height = 1200, res=250)
 plot(hp,hang=-1, lab=colnames(d.clust), cex=0.4)
 dev.off()
 
+```
+
+
+```{{r, results='asis', echo=FALSE}}
 find_img_and_dotable(glob="../../output/comparison/{comp}/*_report.png", 
                     title="Comparison plot",
                     ncol=3)
-
-
-
 ```
 
-- Data (log2(counts + 1)) together with pvalues, adjusted-pvalues (...) are available here:
+- Two types of differential analysis are provided (EdgeR and DESeq2). Data (log2(counts + 1)) together with pvalues, adjusted-pvalues (...) are available here:
 
 ```{{r , echo=FALSE, results='asis'}}
 vector2_md_link("../../output/comparison/{comp}/DESeq2_pval_and_norm_count_log2.txt",
