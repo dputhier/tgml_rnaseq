@@ -413,7 +413,7 @@ acp <- dudi.pca(t(d),  scannf=FALSE, nf=3)
 
 
 if(ncol(acp$li) >= 2){{
-    dir.create("../../output/pca_mds", showWarnings = FALSE)
+
     png("../../output/pca_mds/PCA_ade_g.png", 
             units = 'in', res = 300, width=6, height=6)
     s.class(acp$li, fac = as.factor(pheno), 
@@ -598,7 +598,7 @@ find_img_and_dotable(glob="../../output/comparison/{comp}/*_report.png",
 - Two types of differential analysis are provided (EdgeR and DESeq2). Data (log2(counts + 1)) together with pvalues, adjusted-pvalues (...) are available here:
 
 ```{{r , echo=FALSE, results='asis'}}
-vector2_md_link("../../output/comparison/{comp}/DESeq2_pval_and_norm_count_log2.txt",
+vector2_md_link("../../output/comparison/{comp}/DESeq2_EdgeR_pval_and_norm_count_log2.txt",
                 chunknb=5, 
                 insert=F)
 ```
