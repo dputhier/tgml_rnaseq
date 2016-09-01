@@ -214,7 +214,7 @@ colnames(qlf.sort) <- paste("EdgeR_",colnames(qlf.sort), sep="")
 
 out <- data.frame(out, qlf.sort, log2.counts[rownames(out),], check.names = FALSE)
 
-write.table(out, check.names = FALSE), 
+write.table(out, 
 		file.path(opt$outdir,
 				"DESeq2_EdgeR_pval_and_norm_count_log2.txt"), sep="\t", col.names=NA, quote=F)
 
