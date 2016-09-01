@@ -1,5 +1,5 @@
 import os
-script = os.path.join(config["workingdir"], "progs", "scripts", "twoClasseComparisonWithDeseq2_2.R")
+script = os.path.join(config["workingdir"], "progs", "scripts", "twoClasseComparison4Counts.R")
 
 def getclass1(wildcards):
 
