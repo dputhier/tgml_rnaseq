@@ -201,6 +201,7 @@ fit <- glmQLFit(y,design)
 qlf <- glmQLFTest(fit,coef=2)
 qlf.sort <- qlf$table[rownames(resOrdered),]
 colnames(qlf.sort) <- paste("EdgeR_",colnames(qlf.sort), sep="")
+colnames(out) <- paste("DESeq2_",colnames(out), sep="")
 
 write.table(data.frame(out,qlf.sort, log2.counts[rownames(out),], check.names = FALSE), 
 		file.path(opt$outdir,
