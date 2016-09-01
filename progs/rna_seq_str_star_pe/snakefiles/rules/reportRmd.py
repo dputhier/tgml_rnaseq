@@ -580,7 +580,7 @@ dev.off()
 
 ## Summary
 a <- length(d.save$EdgeR_BH[d.save$EdgeR_BH < {thresh}])
-b <- length(d.save$DESeq2_padj[d.save$DESeq2_padj < {thresh}])
+b <- length(d.save$DESeq2_padj[d.save$DESeq2_padj < {thresh} & !is.na(d.save$DESeq2_padj)])
 
 nbsig <- data.frame(NbSig_DESeq2_padj=b,NbSig_EdgeR_BH=a)
 kable(nbsig)
