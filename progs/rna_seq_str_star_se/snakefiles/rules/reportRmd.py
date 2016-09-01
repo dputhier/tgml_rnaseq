@@ -418,12 +418,13 @@ if(ncol(acp$li) >= 2){{
     s.class(acp$li, fac = as.factor(pheno), 
             pellipses.lwd = 2, pellipses.border = 2:5, 
             pellipses.col = 2:5)
+    dev.off()
 
     png("../../output/pca_mds/PCA_ade_g_label.png", 
             units = 'in', res = 300, width=6, height=6)
-    dev.off()
     s.label(acp$li, ppoints.col = "red", plabels = list(box = list(draw = FALSE), optim = TRUE), plot = T)
-      
+    dev.off()
+
     png("../../output/pca_mds/PCA_ade_g_eigen.png", 
             units = 'in', res = 300, width=6, height=6)
         (kip <- 100 * acp$eig/sum(acp$eig))
