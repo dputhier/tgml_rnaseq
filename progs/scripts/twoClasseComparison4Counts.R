@@ -179,10 +179,12 @@ write.table(vsd,
 		sep='\t', quote=F, 
 		col.names=NA) 
 
-res <- results(dds)
 resOrdered <- res[order(res$padj),]
 #save.image("image.Rdata")
 out <- as.data.frame(resOrdered)
+tmp    <- sapply(c("BH","BY","holm","bonferroni","fdr"), 
+		function(meth) p.adjust(out$pvalue, meth))
+out <- data.frame(out,tmp)
 colnames(out) <- paste("DESeq2_",colnames(out), sep="")
 
 write.table(data.frame(out, log2.counts[rownames(out),], check.names = FALSE), 
@@ -206,12 +208,13 @@ qlf <- glmQLFTest(fit,coef=2)
 qlf.sort <- qlf$table[rownames(out),]
 tmp    <- sapply(c("BH","BY","holm","bonferroni","fdr"), 
 		function(meth) p.adjust(qlf.sort$PValue, meth))
-colnames(tmp) <- paste("EdgeR_",colnames(tmp), sep="")
+qlf.sort <- data.frame(qlf.sort, tmp)
 colnames(qlf.sort) <- paste("EdgeR_",colnames(qlf.sort), sep="")
 
-out <- data.frame(out,qlf.sort, tmp, log2.counts[rownames(out),], check.names = FALSE)
 
-write.table(data.frame(out,qlf.sort, log2.counts[rownames(out),], check.names = FALSE), 
+out <- data.frame(out, qlf.sort, log2.counts[rownames(out),], check.names = FALSE)
+
+write.table(out, check.names = FALSE), 
 		file.path(opt$outdir,
 				"DESeq2_EdgeR_pval_and_norm_count_log2.txt"), sep="\t", col.names=NA, quote=F)
 
