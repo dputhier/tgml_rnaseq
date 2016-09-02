@@ -371,7 +371,7 @@ find_img_and_dotable(glob="../maplot/*.png",
         ALL += MAPLOT 
 
         #-----------------------------------------------------------------------
-        # MA plots by class
+        # PCA
         #-----------------------------------------------------------------------
 
         PCA = """
@@ -412,7 +412,7 @@ acp <- dudi.pca(t(d),  scannf=FALSE, nf=3)
 
 
 if(ncol(acp$li) >= 2){{
-    
+
     png("../../output/pca_mds/PCA_ade_g.png", 
             units = 'in', res = 300, width=6, height=6)
     s.class(acp$li, fac = as.factor(pheno), 
@@ -439,10 +439,12 @@ if(ncol(acp$li) >= 2){{
     l <- rownames(tail(acp$co[order(acp$co$Comp2),],20))
     adegpar(list(plabels.cex=0.5))
     s.corcircle(acp$co[unique(c(i,j,k,l)),])
-    dev.off()
-   
+   dev.off()
 }}
 
+```
+
+```{{r pca_insert, results='asis', echo=FALSE}}
 
 find_img_and_dotable(glob="../../output/pca_mds/PCA_ade_g*png", width=250, ncol=2, pos=3, title="PCA with ade4")
 
