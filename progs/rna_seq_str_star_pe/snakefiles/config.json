@@ -12,6 +12,7 @@
     "_INFO_10": "->>> NOTE: The 'classes' key is used for PCA diagram.",
     "_INFO_11": "->>> NOTE: total_cov_objective should be ~ (expected mapped nbRead) * readSize ",
 	"workingdir": "/Users/puthier/git/dp_worflows/",
+	"python2_path": "",
 	"user": "D. Puthier",
 	"exp_title": "This is a test case.",
 	"total_cov_objective": "5000000000",
