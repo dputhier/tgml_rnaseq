@@ -105,7 +105,10 @@ def reads_per_chrom(bam=None,
         if read.mapq >= mapq:
             # read.rlen is the number of bases in the aligned read
             # excluding soft clipped bases.
-            chr_nb_read[read.reference_name] += 1
+            try:
+                chr_nb_read[read.reference_name] += 1
+            except:
+                chr_nb_read[read.rname] += 1
 
     if show_these_chr is None:
 
