@@ -136,7 +136,7 @@ find_img_and_dotable(glob="../../output/report/dag.png",
         QUALITY = """
 
 
-### Quality control ({read}, {smp})
+### Quality control on raw reads ({read}, {smp})
 
 Quality control of sample: **{smp}**. Statistics were performed using [FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/).
 More information on diagram interpretation can be obtained [here](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/).
