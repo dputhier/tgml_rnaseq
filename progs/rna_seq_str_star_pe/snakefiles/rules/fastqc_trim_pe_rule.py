@@ -1,4 +1,4 @@
-from jupyter_core.tests.test_migrate import touch
+
 rule fastqc_trim_pe:
         input:  fwd="output/trimmed/{smp}_R1_t.fq.gz", rev="output/trimmed/{smp}_R2_t.fq.gz"
         threads: 1
