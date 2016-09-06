@@ -17,6 +17,7 @@ import seaborn as sns
 __version__ = 0.1
 
 def make_parser():
+
     parser = argparse.ArgumentParser()
 
     parser_grp_main = parser.add_argument_group('Arguments')
