@@ -144,7 +144,7 @@ More information on diagram interpretation can be obtained [here](http://www.bio
 ```{{r, echo=FALSE, results='asis'}}
 table_list <- list()
 nb_table <- 1
-img <- Sys.glob("../../output/fastqc_raw/{smp}/*{read}_fastqc/Images/*.png")
+img <- Sys.glob("../../output/fastqc_raw/{smp}/*/Images/*.png")
 img_html <- vector2_html_img(img, pos=3, width=300)
 
 while(length(img_html) >= 3){{
@@ -205,6 +205,39 @@ kable(d, align="l", digits = 2, padding=0)
         for i in SAMPLES:
             ALL +=MAPPING_STATS.format(smp=i)  
 
+
+        #-----------------------------------------------------------------------
+        # Mapping stats by chrom
+        #-----------------------------------------------------------------------
+
+        MAPPING_STATS_BY_CHR = """
+
+
+### Mapping statistics by chromosome ({smp})
+
+Mapping statistics for sample **{smp}**. Statistics are provided by chromosome.
+
+```{{r, echo=FALSE, results='asis'}}
+img <- Sys.glob("../../output/bam_stat_by_chrom/{smp}_bam_stats.png")
+img_html <- vector2_html_img(img, pos=5, width=300)
+
+cat(img_html)
+
+d <- read.table("../../output/bam_stat_by_chrom/{smp}_bam_stats.txt", head=F,row=1)
+colnames(d) <- c("Nb read mapped")
+kable(d, align="l", digits = 2, padding=0)
+
+```
+
+        """
+
+        for i in SAMPLES:
+            ALL += MAPPING_STATS_BY_CHR.format(smp=i)  
+
+
+        #-----------------------------------------------------------------------
+        # Check transcript coverage
+        #-----------------------------------------------------------------------
 
         COVERAGE = """
 
