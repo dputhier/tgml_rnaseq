@@ -11,6 +11,9 @@ import os
 import pysam
 import re
 import pandas as pd
+import matplotlib
+# Force matplotlib to not use any Xwindows backend.
+matplotlib.use('Agg')
 import seaborn as sns
 
 
