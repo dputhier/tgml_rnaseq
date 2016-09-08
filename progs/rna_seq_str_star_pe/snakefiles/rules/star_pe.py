@@ -15,9 +15,11 @@ rule star_pe:
         mkdir -p output/star/{wildcards.smp}
         cd output/star/{wildcards.smp}               
         STAR  --genomeDir {params.index} --readFilesCommand gunzip -c --readFilesIn ../../../{input.fwd} ../../../{input.rev} --runThreadN {threads} --sjdbGTFfile {params.gtf}  {params.args} 
-        samtools index Aligned.sortedByCoord.out.bam
-        samtools view -h -b Aligned.sortedByCoord.out.bam {params.chrom_list} > Aligned.sortedByCoord.out_chr.bam
-        mv Aligned.sortedByCoord.out_chr.bam ../../bam/{wildcards.smp}.bam
+        samtools index Aligned.out.bam
+        samtools view -h -b Aligned.out.bam {params.chrom_list} > Aligned.out_chr.bam
+        samtools sort -@ {threads} Aligned.out_chr.bam Aligned.out_chr_sorted
+        mv Aligned.out_chr_sorted.bam ../../bam/{wildcards.smp}.bam
         samtools index ../../bam/{wildcards.smp}.bam
-        rm -f Aligned.sortedByCoord.out.bam
+        rm -f Aligned.out.bam*
+
             """
