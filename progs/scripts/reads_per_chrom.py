@@ -11,12 +11,16 @@ import os
 import pysam
 import re
 import pandas as pd
+import matplotlib
+# Force matplotlib to not use any Xwindows backend.
+matplotlib.use('Agg')
 import seaborn as sns
 
 
 __version__ = 0.1
 
 def make_parser():
+
     parser = argparse.ArgumentParser()
 
     parser_grp_main = parser.add_argument_group('Arguments')
@@ -31,7 +35,7 @@ def make_parser():
     parser_grp_main.add_argument('-o', '--outputfile',
                           help="output file",
                           default=sys.stdout,
-                          metavar="GTF",
+                          metavar="OUT",
                           type=argparse.FileType('w'))
 
     parser_grp_main.add_argument("-q",
@@ -104,6 +108,7 @@ def reads_per_chrom(bam=None,
         if read.mapq >= mapq:
             # read.rlen is the number of bases in the aligned read
             # excluding soft clipped bases.
+
             chr_nb_read[read.reference_name] += 1
 
     if show_these_chr is None:
@@ -135,7 +140,7 @@ def reads_per_chrom(bam=None,
         sns_plot = sns.barplot(x=chr_name_out,
                                y=chr_nb_read_out,
                                palette="Greys_d")
-
+        matplotlib.pyplot.setp(sns_plot.get_xticklabels(), rotation=45)
         sns_plot.figure.savefig(diagram_path)
     close_properly(outputfile, bam)
 

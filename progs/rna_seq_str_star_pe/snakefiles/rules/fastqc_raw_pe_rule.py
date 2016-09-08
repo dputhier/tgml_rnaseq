@@ -4,4 +4,7 @@ rule fastqc_raw:
         output: fwd="output/fastqc_raw/{smp}/{smp}_R1_fastqc/fastqc_data.txt", \
                 rev="output/fastqc_raw/{smp}/{smp}_R2_fastqc/fastqc_data.txt"
         message: """--- Quality check of raw data with Fastqc."""
-        shell: "fastqc --outdir  output/fastqc_raw/{wildcards.smp} --extract  -f fastq {input.fwd} {input.rev} &> {output.fwd}.log "
+        shell: """
+            fastqc --outdir  output/fastqc_raw/{wildcards.smp} --extract  -f fastq {input.fwd} {input.rev} &> {output.fwd}.log 
+            touch {output.fwd} {output.rev}
+                """

@@ -47,6 +47,7 @@ include: "rules/pca_rule.py"
 include: "rules/cor_plot_rule.py"
 include: "rules/stat_cuffmerge_rule.py"
 include: "rules/prep_stat_cuffmerge_rule.py"
+include: "rules/bam_stat_by_chrom.py"
 include: "rules/reportRmd.py"
 
 #================================================================#
@@ -67,9 +68,9 @@ COMPARISON = config["comparison"].keys()
 #                         Workflow                               #
 #================================================================#
 
-FASTQC_RAW = expand("output/fastqc_raw/{smp}/{smp}_R1_fastqc/fastqc_data.txt", smp=SAMPLES)
-
 TRIMMING =  expand("output/trimmed/{smp}_R1_t.fq.gz", smp=SAMPLES)
+
+FASTQC_RAW = expand("output/fastqc_raw/{smp}/{smp}_R1_fastqc/fastqc_data.txt", smp=SAMPLES)
 
 FASTQC_TRIM = expand("output/fastqc_trim/{smp}/{smp}_R1_t_fastqc/fastqc_data.txt", smp=SAMPLES)
 
@@ -111,6 +112,8 @@ MAPPING_STATS_R1 = expand("output/mapping_stats/{smp}_R1.stats", smp=SAMPLES)
 MAPPING_STATS_R2 = expand("output/mapping_stats/{smp}_R2.stats", smp=SAMPLES)
 
 MAPPING_STAT_PLOT = expand("output/mapping_stats/{smp}.stats.png", smp=SAMPLES)
+
+BAM_STAT_BY_CHROM = expand("output/bam_stat_by_chrom/{smp}_bam_stats.png", smp=SAMPLES)
 
 DESEQ2 = expand("output/comparison/{comp}/DESeq2_pval_and_norm_count_log2.txt", 
                 comp=COMPARISON)
@@ -158,6 +161,7 @@ rule final:
             MAPPING_STATS_R1,               \
             MAPPING_STATS_R2,               \
             MAPPING_STAT_PLOT,              \
+            BAM_STAT_BY_CHROM, \
             DESEQ2,                         \
             #PCA_MDS,                        \
             CORR_PLOT,                      \
