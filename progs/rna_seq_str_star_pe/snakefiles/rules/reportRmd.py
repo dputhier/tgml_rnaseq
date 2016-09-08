@@ -13,7 +13,8 @@ rule report:
             house = config["housekeeping"],
             class_code = config["cuffmerge"]["selected_class_code"],
             classes = config["classes"],
-            threshold_maplot = config["report"]["threshold_maplot"]
+            threshold_maplot = config["report"]["threshold_maplot"],
+            chrom=config["chrom_list"]
 
     output: html="output/report/report.html",
             rmd="output/report/report.html"
@@ -115,6 +116,22 @@ find_img_and_dotable(glob="../../output/report/dag.png",
         """
         
         ALL += WF_2
+
+
+        #-----------------------------------------------------------------------
+        # Info
+        #-----------------------------------------------------------------------
+
+        INFO= """
+### Selected chromosome for analysis
+
+To avoid mapping biases, reads were mapped to all chromosomes (this may included haplotype variants unassigned sequence...). 
+The subsequent analysis (after mapping) will concentrate on chromosomes:
+
+- {chrom}
+        """.format(chrom=params.chrom.replace(","," "))
+        
+        ALL += INFO
 
 
         #-----------------------------------------------------------------------
