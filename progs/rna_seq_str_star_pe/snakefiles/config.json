@@ -11,7 +11,7 @@
     "_INFO_9": "->>> CHECK: Better to set gene_name attribute of gtf file to 'gene_id|gene_name'.",
     "_INFO_10": "->>> NOTE: The 'classes' key is used for PCA diagram.",
     "_INFO_11": "->>> NOTE: total_cov_objective should be ~ (expected mapped nbRead) * readSize ",
-    "_INFO_12": "->>> CHECK: chrom_list is intended to select only chromosome of interest for the subsequent analysis. Check it !!",
+    "_INFO_12": "->>> CHECK: chrom_list is intended to select only chromosome of interest for the subsequent analysis. Check it !! (IT IS FOR MOUSE BY DEFAULT)",
 	"workingdir": "/Users/puthier/git/dp_worflows/",
 	"python2_path": "",
 	"user": "D. Puthier",
