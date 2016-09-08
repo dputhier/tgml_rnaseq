@@ -35,7 +35,7 @@
 
     "star": {
         "index": "/Users/puthier/git/dp_worflows/input/indexes/chr18",
-        "args": " --outFilterMismatchNoverLmax 0.08 --outSAMtype BAM SortedByCoordinate  --outFilterMultimapNmax 1 --genomeLoad NoSharedMemory ",
+        "args": " --outFilterMismatchNoverLmax 0.08 --outSAMtype BAM SortedByCoordinate --outFilterMultimapNmax 1 --genomeLoad NoSharedMemory ",
         "threads": 7
     },
 
