@@ -140,7 +140,7 @@ def reads_per_chrom(bam=None,
         sns_plot = sns.barplot(x=chr_name_out,
                                y=chr_nb_read_out,
                                palette="Greys_d")
-
+        matplotlib.pyplot.setp(sns_plot.get_xticklabels(), rotation=45)
         sns_plot.figure.savefig(diagram_path)
     close_properly(outputfile, bam)
 
