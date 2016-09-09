@@ -12,6 +12,7 @@
     "_INFO_10": "->>> NOTE: The 'classes' key is used for PCA diagram.",
     "_INFO_11": "->>> NOTE: total_cov_objective should be ~ (expected mapped nbRead) * readSize ",
 	"workingdir": "/Users/puthier/git/dp_worflows/",
+	"python2_path": "",
 	"user": "D. Puthier",
 	"exp_title": "This is a test case.",
 	"total_cov_objective": "5000000000",
@@ -21,6 +22,7 @@
 	    "DMvsPI": "DM2_chr18,DM1_chr18,DM3_chr18 PI1_chr18,PI2_chr18,PI3_chr18",
 	    "DMvsPI_2": "PI1_chr18,PI2_chr18,PI3_chr18 DM2_chr18,DM1_chr18,DM3_chr18"
 	},
+	"chrom_list": "chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chrX,chrY",
 	"qsub": "-V -m a -d /Users/puthier/git/dp_worflows/",
 	"gtf": "/Users/puthier/git/dp_worflows/input/annotations/chr18_20M-50M_gencode_vM1.gtf",
 	"chr_size": "/Users/puthier/git/dp_worflows/input/annotations/mm9_chr_size.txt",
