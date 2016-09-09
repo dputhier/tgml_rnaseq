@@ -1,4 +1,14 @@
-# Download the data
+
+
+# The following script can be used to create a dataset that will be compatible 
+# With the snakefiles/config.json file.
+# Note that you can simply run it through two command lines:
+# qsub -I -V -q myQueueName -l nodes=1:ppn=15
+# bash README
+
+# The adapt all path con config.json (i.e change all occurrences of 
+
+### Download the data
 
 cd ../../input/fastq
 wget http://pedagogix-tagc.univ-mrs.fr/courses/data/ngs/dmvspi/DM1_chr18_R1.fq.gz
@@ -34,6 +44,8 @@ cd ../../../progs/rna_seq_str_star_pe/
 snakemake -s snakefiles/Snakefile.py -np
 
 # Start the wf
-snakemake -s snakefiles/Snakefile.py  -c 'qsub -V  -q tgml -l nodes=1:ppn={threads}' --rerun-incomplete  -j
+# NOT RUN:
+# snakemake -s snakefiles/Snakefile.py  -c 'qsub -V  -q myQueueName -l nodes=1:ppn={threads}' --rerun-incomplete  -j
 
-
+# TODO:
+# Select corresponding chromosomes in GTF (see chrom_list in config.json)
