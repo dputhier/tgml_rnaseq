@@ -39,6 +39,8 @@ samtools faidx chr18_mm9.fa
 
 STAR --runThreadN 15 --runMode genomeGenerate --genomeDir . --genomeFastaFiles chr18_mm9.fa
 
+# Replace /Users/puthier/git/dp_worflows by your working directory inside snakefiles/config.json
+
 # Check the workflow
 cd ../../../progs/rna_seq_str_star_pe/
 snakemake -s snakefiles/Snakefile.py -np
