@@ -510,7 +510,6 @@ find_img_and_dotable(glob="../../output/pca_mds/PCA_ade_g*png", width=250, ncol=
         #-----------------------------------------------------------------------
 
         MDS = """
-        
 ### Multidimensionnal scaling
 
 ```{{r mds, echo=FALSE, results='asis'}}
@@ -610,25 +609,29 @@ dev.off()
 
 # clustering (heatmap of samples correlation)
 
+
 d.clust <- na.omit(d[d.save$EdgeR_BH <= {thresh}, ])
+if(nrow(d.clust) == 0){
+        print("No significant genes were found.")
+}else{
+        pear <- cor(d.clust, method="pearson")
+        palette <-colorRampPalette(c("yellow", "black","blueviolet"))
+        path <- file.path("../../output/comparison/{comp}/cor_heatmap_{comp}_report.png")
 
-pear <- cor(d.clust, method="pearson")
-palette <-colorRampPalette(c("yellow", "black","blueviolet"))
-path <- file.path("../../output/comparison/{comp}/cor_heatmap_{comp}_report.png")
+        png(path, width = 1500, height = 1200, res=250)
+        levelplot(pear,col.regions=palette, scales=list(cex=0.4))
+        dev.off()
+        
+        # clustering (tree)
 
-png(path, width = 1500, height = 1200, res=250)
-levelplot(pear,col.regions=palette, scales=list(cex=0.4))
-dev.off()
+        pear <- as.dist((1-pear)/2)
+        hp <- hclust(pear, method="average")
+        path <- file.path("../../output/comparison/{comp}/hclust_{comp}_report.png")
+        png(path, width = 1500, height = 1200, res=250)
+        plot(hp,hang=-1, lab=colnames(d.clust), cex=0.4)
+        dev.off()
 
-# clustering (tree)
-
-pear <- as.dist((1-pear)/2)
-hp <- hclust(pear, method="average")
-path <- file.path("../../output/comparison/{comp}/hclust_{comp}_report.png")
-png(path, width = 1500, height = 1200, res=250)
-plot(hp,hang=-1, lab=colnames(d.clust), cex=0.4)
-dev.off()
-
+}
 
 ## Summary
 a <- length(d.save$EdgeR_BH[d.save$EdgeR_BH < {thresh}])
