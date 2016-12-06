@@ -611,9 +611,9 @@ dev.off()
 
 
 d.clust <- na.omit(d[d.save$EdgeR_BH <= {thresh}, ])
-if(nrow(d.clust) == 0){
+if(nrow(d.clust) == 0){{
         print("No significant genes were found.")
-}else{
+}}else{{
         pear <- cor(d.clust, method="pearson")
         palette <-colorRampPalette(c("yellow", "black","blueviolet"))
         path <- file.path("../../output/comparison/{comp}/cor_heatmap_{comp}_report.png")
@@ -631,7 +631,7 @@ if(nrow(d.clust) == 0){
         plot(hp,hang=-1, lab=colnames(d.clust), cex=0.4)
         dev.off()
 
-}
+}}
 
 ## Summary
 a <- length(d.save$EdgeR_BH[d.save$EdgeR_BH < {thresh}])
