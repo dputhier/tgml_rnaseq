@@ -26,7 +26,7 @@ load.bioc <- function(x) {
 	if(isTRUE(x %in% .packages(all.available=TRUE))) { 
 		eval(parse(text=paste("require(", x, ")", sep=""))) 
 	} else { 
-		eval(parse(text="source('http://bioconductor.org/biocLite.R'"))
+		eval(parse(text="source('http://bioconductor.org/biocLite.R')"))
 		eval(parse(text=paste("biocLite('", x, "')", sep="")))
 	} 
 } 
