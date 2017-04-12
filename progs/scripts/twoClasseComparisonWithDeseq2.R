@@ -91,8 +91,8 @@ if(!is.null(opt$del)){
 cat("Calling differentially expressed genes (DESeq2\n")
 des <- DESeqDataSetFromMatrix(m, as.data.frame(pheno), design=formula(~pheno))
 dds <- DESeq(des, fitType='local')
-resMLE<- results(dds, addMLE=TRUE)
-res <- results(dds)
+resMLE<- results(dds, addMLE=TRUE, cooksCutoff=FALSE)
+res <- results(dds, cooksCutoff=FALSE)
 
 ## -----------------------------------------------------------------------------
 ## Diagnostic plots
