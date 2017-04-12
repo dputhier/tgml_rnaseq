@@ -181,7 +181,7 @@ write.table(vsd,
 		sep='\t', quote=F, 
 		col.names=NA) 
 
-res <- results(dds)
+res <- results(dds, cooksCutoff=FALSE)
 resOrdered <- res[order(res$padj),]
 #save.image("image.Rdata")
 out <- as.data.frame(resOrdered)
