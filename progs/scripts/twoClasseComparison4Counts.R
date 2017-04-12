@@ -96,7 +96,7 @@ m <- m[, c(class1, class2)]
 cat("Calling differentially expressed genes (DESeq2)\n")
 des <- DESeqDataSetFromMatrix(m, as.data.frame(pheno), design=formula(~pheno))
 dds <- DESeq(des)
-resMLE<- results(dds, addMLE=TRUE)
+resMLE<- results(dds, addMLE=TRUE, cooksCutoff=FALSE)
 res <- results(dds, cooksCutoff=FALSE)
 
 ## -----------------------------------------------------------------------------
