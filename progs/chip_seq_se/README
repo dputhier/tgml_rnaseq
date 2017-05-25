@@ -16,3 +16,8 @@ Go to dp_worflows/progs/chip_seq_se
 
 
     - snakemake -s snakefiles/Snakefile.py
+
+
+### Notes
+
+You will end up with lot of errors as the workflow needs several tools and has no rule/target/step for installation... Sorry.
