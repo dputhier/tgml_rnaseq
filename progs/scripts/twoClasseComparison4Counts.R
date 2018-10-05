@@ -31,7 +31,7 @@ load.bioc <- function(x) {
 	} 
 } 
 
-suppressMessages(load.fun("getopt"))
+load.fun("getopt")
 
 ## -----------------------------------------------------------------------------
 ## Command line args
@@ -61,10 +61,10 @@ if ( !is.null(opt$help) | is.null(opt$class1) | is.null(opt$class2)) {
 ## Processing data
 ## -----------------------------------------------------------------------------
 
-suppressMessages(load.fun("RColorBrewer"))
-suppressMessages(load.fun("gplots"))
-suppressMessages(load.fun("ggplot2"))
-suppressMessages(load.bioc("DESeq2"))
+load.fun("RColorBrewer")
+load.fun("gplots")
+load.fun("ggplot2")
+load.bioc("DESeq2")
 
 
 # output
@@ -96,7 +96,6 @@ m <- m[, c(class1, class2)]
 cat("Calling differentially expressed genes (DESeq2)\n")
 des <- DESeqDataSetFromMatrix(m, as.data.frame(pheno), design=formula(~pheno))
 dds <- DESeq(des)
-resMLE<- results(dds, addMLE=TRUE, cooksCutoff=FALSE)
 res <- results(dds, cooksCutoff=FALSE)
 
 ## -----------------------------------------------------------------------------
@@ -124,11 +123,6 @@ plotMA(	res,
 dev.off()
 
 
-df <- data.frame(	resMLE$baseMean, 
-					resMLE$lfcMLE, 
-					ifelse(is.na(res$padj), 
-					FALSE, res$padj < .1)
-	)
 
 
 ## -----------------------------------------------------------------------------
