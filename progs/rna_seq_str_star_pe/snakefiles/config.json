@@ -11,7 +11,8 @@
     "_INFO_9": "->>> CHECK: Better to set gene_name attribute of gtf file to 'gene_id|gene_name'.",
     "_INFO_10": "->>> NOTE: The 'classes' key is used for PCA diagram.",
     "_INFO_11": "->>> NOTE: total_cov_objective should be ~ (expected mapped nbRead) * readSize ",
-	"workingdir": "/Users/puthier/git/dp_worflows/",
+	"_INFO_12": "->>> Set paths in config.json relative to workingdir.",
+	"workingdir": "/Users/puthier/git/project_dev/dp_worflows",
 	"python2_path": " LD_LIBRARY_PATH=/Softs/tagc/denis/conda/conda/envs/default/lib/ /Softs/tagc/denis/conda/conda/envs/default/bin/python2.7 ",
 	"user": "D. Puthier",
 	"exp_title": "This is a test case.",
@@ -24,10 +25,10 @@
 	},
 	"chrom_list": "chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chrX,chrY",
 	"qsub": "-V -m a -d /Users/puthier/git/dp_worflows/",
-	"gtf": "/Users/puthier/git/dp_worflows/input/annotations/chr18_20M-50M_gencode_vM1.gtf",
-	"chr_size": "/Users/puthier/git/dp_worflows/input/annotations/mm9_chr_size.txt",
-	"fasta": "/Users/puthier/git/dp_worflows/input/indexes/chr18/chr18_mm9.fa",
-	"housekeeping": "/Users/puthier/git/dp_worflows/input/housekeeping/mm9.HouseKeepingGenes.bed",
+	"gtf": "input/annotations/chr18_20M-50M_gencode_vM1.gtf",
+	"chr_size": "input/annotations/mm9_chr_size.txt",
+	"fasta": "input/indexes/chr18/chr18_mm9.fa",
+	"housekeeping": "input/housekeeping/mm9.HouseKeepingGenes.bed",
 	"sickle": { 
         "threshold": "20",
         "length": "25",
@@ -36,7 +37,7 @@
 	},
 
     "star": {
-        "index": "/Users/puthier/git/dp_worflows/input/indexes/chr18",
+        "index": "input/indexes/chr18",
         "args": " --outFilterMismatchNoverLmax 0.08 --outSAMtype BAM SortedByCoordinate --outFilterMultimapNmax 1 --genomeLoad NoSharedMemory ",
         "threads": 7
     },

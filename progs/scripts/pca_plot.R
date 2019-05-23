@@ -32,22 +32,8 @@ options:
 ## -----------------------------------------------------------------------------
 ## Libraries
 ## -----------------------------------------------------------------------------
-# http://r.789695.n4.nabble.com/Install-package-automatically-if-not-there-td2267532.html
 
-load.fun <- function(x) { 
-	x <- as.character(substitute(x)) 
-	if(isTRUE(x %in% .packages(all.available=TRUE))) { 
-		suppressWarnings(eval(parse(text=paste("require(", x, ")", sep=""))))
-	} else { 
-		eval(parse(text=paste("install.packages('", x, "', repos = 'http://cran.us.r-project.org')", sep=""))) 
-	} 
-} 
-
-## -----------------------------------------------------------------------------
-## Arg parsing
-## -----------------------------------------------------------------------------
-
-suppressMessages(load.fun("docopt"))
+library("docopt")
 
 my_opts <- docopt(doc)
 
@@ -55,15 +41,15 @@ my_opts <- docopt(doc)
 ## -----------------------------------------------------------------------------
 ## Loading libs
 ## -----------------------------------------------------------------------------
-suppressMessages(library(affy))
+library(affy)
 
-suppressMessages(load.fun(ade4))
-suppressMessages(load.fun(rgl))
-suppressMessages(load.fun(ggplot2))
-suppressMessages(load.fun(proto))
-suppressMessages(load.fun(grid))
-suppressMessages(load.fun(ellipse))
-suppressMessages(load.fun(plyr))
+library(ade4)
+library(rgl)
+library(ggplot2)
+library(proto)
+library(grid)
+library(ellipse)
+library(plyr)
 
 
 ## -----------------------------------------------------------------------------

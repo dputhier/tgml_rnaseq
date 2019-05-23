@@ -22,35 +22,12 @@
 
 
 ## -----------------------------------------------------------------------------
-## Libraries
+## Loading libs
 ## -----------------------------------------------------------------------------
-# http://r.789695.n4.nabble.com/Install-package-automatically-if-not-there-td2267532.html
-
-load.fun <- function(x) { 
-	x <- as.character(substitute(x)) 
-	if(isTRUE(x %in% .packages(all.available=TRUE))) { 
-		suppressWarnings(eval(parse(text=paste("require(", x, ")", sep=""))))
-	} else { 
-		eval(parse(text=paste("install.packages('", x, "', repos = 'http://cran.us.r-project.org')", sep=""))) 
-		suppressWarnings(eval(parse(text=paste("require(", x, ")", sep=""))))
-	} 
-} 
-
-load.bioc <- function(x) { 
-	x <- as.character(substitute(x)) 
-	if(isTRUE(x %in% .packages(all.available=TRUE))) { 
-		eval(parse(text=paste("require(", x, ")", sep=""))) 
-	} else { 
-		eval(parse(text="source('http://bioconductor.org/biocLite.R'"))
-		eval(parse(text=paste("biocLite('", x, "')", sep="")))
-		suppressWarnings(eval(parse(text=paste("require(", x, ")", sep=""))))
-	} 
-} 
-
-suppressMessages(load.bioc("geneplotter"))
-
-suppressMessages(load.fun("docopt"))
-suppressMessages(load.fun("lattice"))
+library("corrplot")
+library("geneplotter")
+library("docopt")
+library("lattice")
 
 
 ## -----------------------------------------------------------------------------
@@ -69,10 +46,7 @@ if(length(commandArgs()) < 5 ){
 }
 
 
-## -----------------------------------------------------------------------------
-## Loading libs
-## -----------------------------------------------------------------------------
-suppressMessages(load.fun(corrplot))
+
 
 ## -----------------------------------------------------------------------------
 ## Parsing args

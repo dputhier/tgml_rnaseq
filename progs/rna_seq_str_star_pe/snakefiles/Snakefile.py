@@ -18,6 +18,18 @@ from snakemake.utils import R
 configfile: "snakefiles/config.json"
 
 #================================================================#
+#                        Set path in config file relative to     #
+#                        workdir                                 #
+#================================================================#
+
+
+for i in ["gtf", "chr_size", "fasta", "housekeeping"]:
+    config[i] = os.path.join(config['workingdir'],config[i])
+
+config['star']['index'] = os.path.join(config['workingdir'],config['star']['index'])
+
+
+#================================================================#
 #                         Includes                               #
 #================================================================#
 

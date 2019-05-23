@@ -1,10 +1,11 @@
+import os
+
 rule report:
     """
     Generate a report.
     """
 
     input:  code="output/code/Snakefile.py"
-
     params: wdir=config["workingdir"], \
             user=config["user"], \
             title = config["exp_title"],
@@ -17,7 +18,7 @@ rule report:
             chrom=config["chrom_list"]
 
     output: html="output/report/report.html",
-            rmd="output/report/report.html"
+            rmd="output/report/report.Rmd"
     run:
         import os
         import itertools

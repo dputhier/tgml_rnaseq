@@ -1,0 +1,11 @@
+channels:
+ - defaults
+ - anaconda
+ - bioconda
+ - conda-forge
+dependencies:
+ - pysam
+ - pandas
+ - matplotlib
+ - rseqc
+ - ucsc-wigtobigwig

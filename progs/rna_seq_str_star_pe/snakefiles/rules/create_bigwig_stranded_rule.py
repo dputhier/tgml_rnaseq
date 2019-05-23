@@ -1,7 +1,10 @@
+import os
+
 rule create_bigwig:
     input: min="output/bam/{smp}_min.bam", plus="output/bam/{smp}_plus.bam"
     output: min="output/bwig/{smp}_min.bw", plus="output/bwig/{smp}_plus.bw"
     threads: 1
+    conda: os.path.join(config["workingdir"], "conda", "python.yaml")
     params: chr=CHR
     shell: """
         bam2wig.py-i {input.plus} -s {params.chr} -o output/bwig/{wildcards.smp}_plus &> {output.plus}.log

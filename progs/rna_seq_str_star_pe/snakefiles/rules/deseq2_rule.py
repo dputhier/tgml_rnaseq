@@ -21,6 +21,7 @@ rule deseq2:
     input:  "output/quantification_known_and_novel_genes/gene_counts_known_and_novel_mini.txt"
     output: "output/comparison/{comp}/DESeq2_pval_and_norm_count_log2.txt"
     params: class1=getclass1, class2=getclass2, script=script
+    conda: os.path.join(config["workingdir"], "conda", "R.yaml")
     threads: 1
     message: "-- Performing DESeq analysis --"
     shell:  """

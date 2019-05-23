@@ -1,3 +1,4 @@
+
 rule merge_novel_and_known:
     input: novel="output/cuffmerge/selected_novel_transcript_class_code_" + config["cuffmerge"]["selected_class_code"] + "_with_gene_name.gtf", \
     known=config["gtf"]

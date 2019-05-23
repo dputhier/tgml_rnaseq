@@ -1,3 +1,4 @@
+import os
 
 def getchr(wildcards):
     cnf = config["chrom_list"]
@@ -10,8 +11,10 @@ rule star_pe:
   output:   "output/bam/{smp}.bam"
   params:   index=config["star"]["index"], args=config["star"]["args"], gtf=config["gtf"], chrom_list=getchr
   threads:  config["star"]["threads"]
+  conda: os.path.join(config["workingdir"], "conda", "rnaseq.yaml")
   message:  """--- mapping with star (pe)."""
   shell:    """
+        echo "STAR threads: {threads}"
         mkdir -p output/star/{wildcards.smp}
         cd output/star/{wildcards.smp}               
         STAR  --genomeDir {params.index} --readFilesCommand gunzip -c --readFilesIn ../../../{input.fwd} ../../../{input.rev} --runThreadN {threads} --sjdbGTFfile {params.gtf}  {params.args} 

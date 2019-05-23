@@ -1,19 +1,11 @@
+import os
+
 rule diagnostic_plot:
         input: "output/quantification_known_genes/gene_counts_known_and_novel_mini.txt"
         output: "output/diagnostic_plot/diagnostic.pdf"
         threads: 1
+        conda: os.path.join(config["workingdir"], "conda", "R.yaml")
         run: R("""
-            load.bioc <- function(x) {{ 
-                x <- as.character(substitute(x)) 
-                if(isTRUE(x %in% .packages(all.available=TRUE))) {{ 
-                    eval(parse(text=paste("require(", x, ")", sep=""))) 
-                }} else {{ 
-                    eval(parse(text="source('http://bioconductor.org/biocLite.R'"))
-                    eval(parse(text=paste("biocLite('", x, "')", sep="")))
-                }} 
-            }} 
-            
-            suppressWarnings(suppressMessages(load.bioc(geneplotter)))
 
             library(geneplotter)
 

@@ -9,29 +9,12 @@
 ## -----------------------------------------------------------------------------
 ## Libraries
 ## -----------------------------------------------------------------------------
-# http://stackoverflow.com/questions/4090169/elegant-way-to-check-for-missing-packages-and-install-them
-
-load.fun <- function(x) { 
-	x <- as.character(substitute(x)) 
-	if(isTRUE(x %in% .packages(all.available=TRUE))) { 
-		eval(parse(text=paste("require(", x, ")", sep=""))) 
-	} else { 
-		eval(parse(text=paste("install.packages('", x, "', repos = 'http://cran.us.r-project.org')", sep=""))) 
-		eval(parse(text=paste("require(", x, ")", sep=""))) 
-	} 
-} 
-
-load.bioc <- function(x) { 
-	x <- as.character(substitute(x)) 
-	if(isTRUE(x %in% .packages(all.available=TRUE))) { 
-		eval(parse(text=paste("require(", x, ")", sep=""))) 
-	} else { 
-		eval(parse(text="source('http://bioconductor.org/biocLite.R'"))
-		eval(parse(text=paste("biocLite('", x, "')", sep="")))
-	} 
-} 
-
-suppressMessages(load.fun("getopt"))
+library("getopt")
+library("RColorBrewer")
+library("gplots")
+library("ggplot2")
+library("DESeq2")
+library("edgeR")
 
 ## -----------------------------------------------------------------------------
 ## Command line args
@@ -63,10 +46,6 @@ if ( !is.null(opt$help) | is.null(opt$class1) | is.null(opt$class2)) {
 ## Processing data
 ## -----------------------------------------------------------------------------
 
-suppressMessages(load.fun("RColorBrewer"))
-suppressMessages(load.fun("gplots"))
-suppressMessages(load.fun("ggplot2"))
-suppressMessages(load.bioc("DESeq2"))
 
 # output
 if(is.null(opt$outdir))

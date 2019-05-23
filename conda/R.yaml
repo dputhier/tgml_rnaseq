@@ -1,0 +1,27 @@
+channels:
+ - bioconda
+ - r
+ - conda-forge
+ - bioconda/label/broken
+dependencies:
+ - bioconductor-geneplotter
+ - r-docopt
+ - r-lattice
+ - r-corrplot
+ - r-rcolorbrewer
+ - r-ade4
+ - r-adegraphics
+ - r-rgl
+ - r-ggplot2
+ - r-proto
+ - r-gridgraphics
+ - r-ellipse
+ - r-plyr
+ - r-ggthemes
+ - r-ggrepel
+ - r-knitr
+ - r-getopt
+ - bioconductor-deseq2
+ - bioconductor-edger
+ - subread
+ - pandoc

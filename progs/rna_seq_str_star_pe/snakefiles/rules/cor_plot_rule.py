@@ -11,7 +11,9 @@ rule corrplot:
             "output/corr_plot/CoorPlot_square.png", \
             "output/corr_plot/Pairs_plot.png"
     params: smp=",".join(config["samples"].split(" ")), script=script
+    conda: os.path.join(config["workingdir"], "conda", "R.yaml")
     threads: 1
+    conda: os.path.join(config["workingdir"], "conda", "R.yaml")
     message: "--- Producing correlation plots."
     shell:  """
         {params.script} -i {input} -o output/corr_plot  -t 1 2> {output[0]}.log

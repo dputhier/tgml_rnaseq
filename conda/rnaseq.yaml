@@ -1,0 +1,11 @@
+channels:
+ - bioconda
+ - anaconda
+
+dependencies:
+ - star=2.7.1a
+ - cufflinks
+ - samtools
+ - gawk
+ - tophat
+ - sickle-trim

@@ -20,22 +20,14 @@ pheno=",".join(pheno)
 
 rule pca_mds:
     input:  "output/quantification_known_and_novel_genes/gene_counts_known_and_novel_mini.txt"
-    output: "output/pca_mds/PCA_dim_genes_2D_samples.png",\
-            "output/pca_mds/PCA_dim_genes_2D_classes.png",\
-            "output/pca_mds/PCA_dim_genes_2D_overlay.png",\
-            "output/pca_mds/PCA_Eigen_val.png",\
-            "output/pca_mds/PCA_ggplot_sampleName.png",\
-            "output/pca_mds/PCA_ggplot_ClassName.png",\
-            "output/pca_mds/MDS_ggplot_sampleName.png",\
-            "output/pca_mds/MDS_ggplot_ClassName.png",\
-            "output/pca_mds/PCA_dim_genes_2D_samples.png",\
-            "output/pca_mds/PCA_dim_genes_2D_classes.png",\
-            "output/pca_mds/PCA_dim_genes_2D_overlay.png",\
-            "output/pca_mds/PCA_Eigen_val.png",\
-            "output/pca_mds/PCA_ggplot_sampleName.png",\
-            "output/pca_mds/PCA_ggplot_ClassName.png",\
-            "output/pca_mds/MDS_ggplot_sampleName.png",\
-            "output/pca_mds/MDS_ggplot_ClassName.png"
+    output: 'output/pca_mds/MDS_ggplot_ClassName.png', \
+            'output/pca_mds/MDS_ggplot_sampleName.png', \
+            'output/pca_mds/PCA_Eigen_val.png', \
+            'output/pca_mds/PCA_dim_genes_2D_classes.png', \
+            'output/pca_mds/PCA_dim_genes_2D_overlay.png', \
+            'output/pca_mds/PCA_dim_genes_2D_samples.png', \
+            'output/pca_mds/PCA_ggplot_ClassName.png', \
+            'output/pca_mds/PCA_ggplot_sampleName.png'
     params: script=script, pheno=pheno_file.name 
     threads: 1
     message: "--- Performing PCA and MDS analysis."

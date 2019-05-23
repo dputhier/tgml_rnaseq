@@ -1,5 +1,4 @@
-source("progs/scripts/install_from_cran.R")
-suppressMessages(load.fun("RColorBrewer"))
+library("RColorBrewer")
 
 
 #' barplot from a dataframe (single column)

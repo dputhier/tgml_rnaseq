@@ -1,6 +1,9 @@
+import os
+
 rule select_reads_by_strand:
     input:  "output/bam/{smp}.bam"
     output: min="output/bam/{smp}_min.bam", plus="output/bam/{smp}_plus.bam"
+    conda: os.path.join(config["workingdir"], "conda", "rnaseq.yaml")
     threads: 1
     shell: """
         samtools view -f99 -hb {input} > {output.min}_99.bam

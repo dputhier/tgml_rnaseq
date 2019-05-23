@@ -7,6 +7,7 @@ rule do_bigwig:
     output: min="output/bwig/{smp}_min.bw", plus="output/bwig/{smp}_plus.bw", \
             min_norm="output/bwig/{smp}_min_norm.bw", plus_norm="output/bwig/{smp}_plus_norm.bw"
     params: chr=config["chr_size"], bs=total_bam_sum, sf=config["total_cov_objective"]
+    conda: os.path.join(config["workingdir"], "conda", "python.yaml")
     threads: 1
     shell: """
         bam2wig.py -t {params.sf} -i {input.plus} -s {params.chr} -o output/bwig/{wildcards.smp}_plus_norm &> {output.plus_norm}.log
