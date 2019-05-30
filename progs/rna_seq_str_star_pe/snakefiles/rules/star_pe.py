@@ -22,7 +22,7 @@ rule star_pe:
         samtools index Aligned.sortedByCoord.out.bam
         samtools view -h -b Aligned.sortedByCoord.out.bam {params.chrom_list} > Aligned.out_chr.bam
         mkdir -p tmp_sort
-        samtools sort -@ {threads} -T tmp_sort/aln.sorted -o Aligned.out_chr_sorted Aligned.out_chr.bam
+        samtools sort -@ {threads} -T tmp_sort/aln.sorted -o Aligned.out_chr_sorted.bam Aligned.out_chr.bam
         mv Aligned.out_chr_sorted.bam ../../bam/{wildcards.smp}.bam
         samtools index ../../bam/{wildcards.smp}.bam
         rm -f Aligned.out.bam* Aligned.sortedByCoord.out.bam* tmp_sort
