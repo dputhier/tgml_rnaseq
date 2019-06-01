@@ -10,3 +10,4 @@ dependencies:
  - rseqc
  - ucsc-wigtobigwig
  - seaborn
+ - rpy2
