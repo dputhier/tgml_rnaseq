@@ -16,13 +16,15 @@ rule star_pe:
   shell:    """
         echo "STAR threads: {threads}"
         mkdir -p output/star/{wildcards.smp}
-        cd output/star/{wildcards.smp}               
+        cd output/star/{wildcards.smp}
+        ulimit -n 4096
         STAR  --genomeDir {params.index} --readFilesCommand gunzip -c --readFilesIn ../../../{input.fwd} ../../../{input.rev} --runThreadN {threads} --sjdbGTFfile {params.gtf}  {params.args} 
         samtools index Aligned.sortedByCoord.out.bam
         samtools view -h -b Aligned.sortedByCoord.out.bam {params.chrom_list} > Aligned.out_chr.bam
-        samtools sort -@ {threads} Aligned.out_chr.bam Aligned.out_chr_sorted
+        mkdir -p tmp_sort
+        samtools sort -@ {threads} -T tmp_sort/aln.sorted -o Aligned.out_chr_sorted.bam Aligned.out_chr.bam
         mv Aligned.out_chr_sorted.bam ../../bam/{wildcards.smp}.bam
         samtools index ../../bam/{wildcards.smp}.bam
-        rm -f Aligned.out.bam* Aligned.sortedByCoord.out.bam*
+        rm -Rf Aligned.out.bam* Aligned.sortedByCoord.out.bam* tmp_sort
 
             """
