@@ -11,18 +11,18 @@
 ### Download the data
 
 cd ../../input/fastq
-wget http://pedagogix-tagc.univ-mrs.fr/courses/data/ngs/dmvspi/DM1_chr18_R1.fq.gz
-wget http://pedagogix-tagc.univ-mrs.fr/courses/data/ngs/dmvspi/DM1_chr18_R2.fq.gz
-wget http://pedagogix-tagc.univ-mrs.fr/courses/data/ngs/dmvspi/DM2_chr18_R1.fq.gz
-wget http://pedagogix-tagc.univ-mrs.fr/courses/data/ngs/dmvspi/DM2_chr18_R2.fq.gz
-wget http://pedagogix-tagc.univ-mrs.fr/courses/data/ngs/dmvspi/DM3_chr18_R1.fq.gz
-wget http://pedagogix-tagc.univ-mrs.fr/courses/data/ngs/dmvspi/DM3_chr18_R2.fq.gz
-wget http://pedagogix-tagc.univ-mrs.fr/courses/data/ngs/dmvspi/PI1_chr18_R1.fq.gz
-wget http://pedagogix-tagc.univ-mrs.fr/courses/data/ngs/dmvspi/PI1_chr18_R2.fq.gz
-wget http://pedagogix-tagc.univ-mrs.fr/courses/data/ngs/dmvspi/PI2_chr18_R1.fq.gz
-wget http://pedagogix-tagc.univ-mrs.fr/courses/data/ngs/dmvspi/PI2_chr18_R2.fq.gz
-wget http://pedagogix-tagc.univ-mrs.fr/courses/data/ngs/dmvspi/PI3_chr18_R1.fq.gz
-wget http://pedagogix-tagc.univ-mrs.fr/courses/data/ngs/dmvspi/PI3_chr18_R2.fq.gz
+wget https://zenodo.org/records/7112912/files/DM1_R1.fq.gz
+wget https://zenodo.org/records/7112912/files/DM1_R2.fq.gz
+wget https://zenodo.org/records/7112912/files/DM2_R1.fq.gz
+wget https://zenodo.org/records/7112912/files/DM2_R2.fq.gz
+wget https://zenodo.org/records/7112912/files/DM3_R1.fq.gz
+wget https://zenodo.org/records/7112912/files/DM3_R2.fq.gz
+wget https://zenodo.org/records/7112912/files/PI1_R1.fq.gz
+wget https://zenodo.org/records/7112912/files/PI1_R2.fq.gz
+wget https://zenodo.org/records/7112912/files/PI2_R1.fq.gz
+wget https://zenodo.org/records/7112912/files/PI2_R2.fq.gz
+wget https://zenodo.org/records/7112912/files/PI3_R1.fq.gz
+wget https://zenodo.org/records/7112912/files/PI3_R2.fq.gz
 
 # Go into indexes dir
 cd ../../input/indexes/
