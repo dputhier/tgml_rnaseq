@@ -1,6 +1,0 @@
-
-rule flagstat:
-        input: "results/mapped/{samples_type}/{samples}_{stat_type}.bam"
-        output:"results/stat/{samples_type}/{samples}_{stat_type}.txt"
-        message: """--- Running samtools flagstat."""
-        shell: "samtools flagstat {input} > {output}"  
