@@ -11,21 +11,24 @@
     "_INFO_9": "->>> CHECK: Better to set gene_name attribute of gtf file to 'gene_id|gene_name'.",
     "_INFO_10": "->>> NOTE: The 'classes' key is used for PCA diagram.",
     "_INFO_11": "->>> NOTE: total_cov_objective should be ~ (expected mapped nbRead) * readSize. Used for BigWig normalization.",
-	"workingdir": "/Users/puthier/git/dp_worflows/",
+	"workingdir": "/shared/projects/project_dputhier/043_irla_elife_2022",
 	"user": "D. Puthier",
 	"total_cov_objective": "5000000000",
-	"exp_title": "This is a test case.",
-	"samples": "DM2_chr18_R1 DM1_chr18_R1 DM3_chr18_R1 PI1_chr18_R1 PI2_chr18_R1 PI3_chr18_R1",
-	"classes": "DM DM DM PI PI PI",
+	"exp_title": "Irla_Elife_2022",
+	"samples": "CIITAKO~mTEClo~int~SRR11000295 CIITAKO~mTEClo~int~rep~SRR11000296 K14~mTEClo~int~SRR11000297 K14~mTEClo~int~SRR11000298 OTII~mTEClo~int~SRR11000301 OTII~mTEClo~int~rep~SRR11000302 RipmOVA~mTEClo-int~SRR11000299 RipmOVA~mTEClo~int~rep~SRR11000300 mTEClo~int~SRR11000293 mTEClo~int~rep~SRR11000294",
+	"classes": "CIITAKO CIITAKO K14 K14 OTII OTII RipmOVA RipmOVA WT WT",
 	"comparison": {
-	    "DMvsPI": "DM2_chr18_R1,DM1_chr18_R1,DM3_chr18_R1 PI1_chr18_R1,PI2_chr18_R1,PI3_chr18_R1",
-	    "DMvsPI_2": "PI1_chr18_R1,PI2_chr18_R1,PI3_chr18_R1 DM2_chr18_R1,DM1_chr18_R1,DM3_chr18_R1"
+	    "CIITAKOvsWT": "CIITAKO~mTEClo~int~SRR11000295,CIITAKO~mTEClo~int~rep~SRR11000296 mTEClo~int~SRR11000293,mTEClo~int~rep~SRR11000294",
+	    "K14vsWT": "K14~mTEClo~int~SRR11000297,K14~mTEClo~int~SRR11000298 mTEClo~int~SRR11000293,mTEClo~int~rep~SRR11000294",
+	    "OTIIvsWT": "OTII~mTEClo~int~SRR11000301,OTII~mTEClo~int~rep~SRR11000302 mTEClo~int~SRR11000293,mTEClo~int~rep~SRR11000294",
+		"RipmOVAvsWT": "RipmOVA~mTEClo-int~SRR11000299,RipmOVA~mTEClo~int~rep~SRR11000300 mTEClo~int~SRR11000293,mTEClo~int~rep~SRR11000294",
+		"RipmOVAvsOTII": "RipmOVA~mTEClo-int~SRR11000299,RipmOVA~mTEClo~int~rep~SRR11000300 OTII~mTEClo~int~SRR11000301,OTII~mTEClo~int~rep~SRR11000302"
 	},
-	"qsub": "-V -m a -d /Users/puthier/git/dp_worflows/",
-	"gtf": "/Users/puthier/git/dp_worflows/input/annotations/chr18_20M-50M_gencode_vM1.gtf",
-	"chr_size": "/Users/puthier/git/dp_worflows/input/annotations/mm9_chr_size.txt",
-	"fasta": "/Users/puthier/git/dp_worflows/input/indexes/chr18/chr18_mm9.fa",
-	"housekeeping": "/Users/puthier/git/dp_worflows/input/housekeeping/mm9.HouseKeepingGenes.bed",
+	"slurm": " ",
+	"gtf": "/shared/projects/project_dputhier/043_irla_elife_2022/input/gtf/Mus_musculus.GRCm38.97.gtf",
+	"chr_size": "/shared/projects/project_dputhier/043_irla_elife_2022/input/annotations/chromInfo_mm10.txt",
+	"fasta": "/shared/projects/project_dputhier/043_irla_elife_2022/input/fasta/mm10.fa",
+	"housekeeping": "/shared/projects/project_dputhier/043_irla_elife_2022/input/house_keeping/mm10.HouseKeepingGenes.bed",
 	"sickle": { 
         "threshold": "20",
         "length": "25",
@@ -34,19 +37,24 @@
 	},
 
     "star": {
-        "index": "/Users/puthier/git/dp_worflows/input/indexes/chr18",
+        "index": "/shared/projects/project_dputhier/043_irla_elife_2022/input/indexes",
         "args": " --outFilterMismatchNoverLmax 0.08 --outSAMtype BAM SortedByCoordinate --outFilterMultimapNmax 1 --genomeLoad NoSharedMemory ",
-        "threads": 7
+        "threads": 12
     },
 
     "cufflinks": {
         "args": " --library-type fr-firststrand ",
-        "threads": 7
+        "threads": 12
+    },
+
+    "cuffdiff": {
+        "args": " --library-type fr-firststrand ",
+        "threads": 30
     },
     
     "cuffmerge": {
         "selected_class_code": "u",
-        "threads": 7
+        "threads": 12
     },
     "report": {
         "threshold_maplot": "0.001"
