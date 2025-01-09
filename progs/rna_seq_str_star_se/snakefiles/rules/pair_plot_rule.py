@@ -2,6 +2,7 @@ rule diagnostic_plot:
         input: "output/quantification_known_genes/gene_counts_known_and_novel_mini.txt"
         output: "output/diagnostic_plot/diagnostic.pdf"
         threads: 1
+        params: mem="4G"
         run: R("""
             load.bioc <- function(x) {{ 
                 x <- as.character(substitute(x)) 

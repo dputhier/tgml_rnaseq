@@ -6,9 +6,12 @@ rule do_bigwig:
             minbai="output/bam/{smp}_min.bam.bai", plusbai="output/bam/{smp}_plus.bam.bai"
     output: min="output/bwig/{smp}_min.bw", plus="output/bwig/{smp}_plus.bw", \
             min_norm="output/bwig/{smp}_min_norm.bw", plus_norm="output/bwig/{smp}_plus_norm.bw"
-    params: chr=config["chr_size"], bs=total_bam_sum, sf=config["total_cov_objective"]
+    params: chr=config["chr_size"], bs=total_bam_sum, sf=config["total_cov_objective"], mem="5G"
     threads: 1
     shell: """
+        module load rseqc/2.6.4
+        module load ucsc-wigtobigwig/377
+
         bam2wig.py -t {params.sf} -i {input.plus} -s {params.chr} -o output/bwig/{wildcards.smp}_plus_norm &> {output.plus_norm}.log
         wigToBigWig -clip output/bwig/{wildcards.smp}_plus_norm.wig {params.chr} {output.plus_norm} 2>&1 >> {output.plus}.log
         rm -f output/bwig/{wildcards.smp}_plus_norm.wig

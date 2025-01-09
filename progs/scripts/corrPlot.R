@@ -24,8 +24,17 @@
 ## -----------------------------------------------------------------------------
 ## Loading libs
 ## -----------------------------------------------------------------------------
+dir.create(Sys.getenv("R_LIBS_USER"), showWarnings=FALSE, recursive = TRUE)  # create personal library
+.libPaths(Sys.getenv("R_LIBS_USER"))  # add to the path
+cat('starting analysis')
+install.packages(c("corrplot", "docopt", "lattice"), repos = "http://cran.us.r-project.org")
+
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager", repos = "http://cran.us.r-project.org")
+BiocManager::install("geneplotter")
+
+ 
 library("corrplot")
-library("geneplotter")
 library("docopt")
 library("lattice")
 

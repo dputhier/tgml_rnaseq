@@ -1,4 +1,5 @@
+Run:
+prepare_data.sh
 
-# dp_worflows
+The run the workflow using:
 
-My workflows for RNA-Seq and ChIP-Seq. See README files inside individual subdirectories of progs/.

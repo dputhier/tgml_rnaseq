@@ -18,6 +18,7 @@ rule report:
 
     output: html="output/report/report.html",
             rmd="output/report/report.html"
+    params: mem="4G"
     run:
         import os
         import itertools

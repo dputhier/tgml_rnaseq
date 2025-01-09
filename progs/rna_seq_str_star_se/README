@@ -1,5 +1,7 @@
 # Download the data
 
+mkdir -p ../../input/fastq
+
 cd ../../input/fastq
 wget http://pedagogix-tagc.univ-mrs.fr/courses/data/ngs/dmvspi/DM1_chr18_R1.fq.gz
 wget http://pedagogix-tagc.univ-mrs.fr/courses/data/ngs/dmvspi/DM2_chr18_R1.fq.gz
@@ -9,6 +11,7 @@ wget http://pedagogix-tagc.univ-mrs.fr/courses/data/ngs/dmvspi/PI2_chr18_R1.fq.g
 wget http://pedagogix-tagc.univ-mrs.fr/courses/data/ngs/dmvspi/PI3_chr18_R1.fq.gz
 
 # Go into indexes dir
+mkdir -p ../../input/indexes/
 cd ../../input/indexes/
 mkdir chr18
 cd chr18
@@ -28,6 +31,6 @@ cd ../../../progs/rna_seq_str_star_pe/
 snakemake -s snakefiles/Snakefile.py -np
 
 # Start the wf
-snakemake -s snakefiles/Snakefile.py  -c 'qsub -V  -q tgml -l nodes=1:ppn={threads}' --rerun-incomplete  -j
-
+module load snakemake/7.25.0
+snakemake -s snakefiles/Snakefile.py --cluster 'sbatch -c {threads} --mem {params.mem} --partition=fast --account=2427_data_master' -c 3000 -j  500  --rerun-incomplete --rerun-trigger mtime
 

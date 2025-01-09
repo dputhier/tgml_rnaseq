@@ -2,6 +2,7 @@ rule add_gene_name_to_unknown:
     input: "output/cuffmerge/selected_novel_transcript_class_code_" + config["cuffmerge"]["selected_class_code"] + ".gtf"
     output: "output/cuffmerge/selected_novel_transcript_class_code_" + config["cuffmerge"]["selected_class_code"] + "_with_gene_name.gtf"
     threads: 1
+    params: mem="2G"
     message: "--- Adding gene name to novel transcript."
     run:
         import re 

@@ -1,7 +1,7 @@
 rule cuffmerge:
     input: config["fasta"] + ".fai", expand("output/cufflinks/{smp}/transcripts.gtf", smp=config["samples"].split())
     output: "output/cuffmerge/merged.gtf"
-    params: gtf=config["gtf"], fa=config["fasta"]
+    params: gtf=config["gtf"], fa=config["fasta"], mem="40G"
     threads: config["cuffmerge"]["threads"]
     message: "--- Comparing transcript to the reference."
     shell:"""

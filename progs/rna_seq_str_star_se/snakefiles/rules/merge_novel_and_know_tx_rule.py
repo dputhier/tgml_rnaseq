@@ -3,6 +3,7 @@ rule merge_novel_and_known:
     known=config["gtf"]
     output: "output/inferred_gene_annotation/known_transcripts_and_selected_class_code_" + config["cuffmerge"]["selected_class_code"] + ".gtf"
     threads: 1
+    params: mem="4G"
     message: "--- Merging known and novel transcripts."
     shell:"""
     cat {input.novel} {input.known} > {output}
