@@ -42,6 +42,7 @@ include: "rules/pca_rule.py"
 include: "rules/cor_plot_rule.py"
 include: "rules/deseq2_rule.py"
 include: "rules/cuffdiff.py"
+include: "rules/normalize_counts.py"
 """
 
 
@@ -110,6 +111,9 @@ DESEQ2 = expand("output/comparison/{comp}/DESeq2_pval_and_norm_count_log2.txt", 
 DAG_PNG = "output/report/dag.png"
 
 CUFFDIFF = "output/cuffdiff/RipmOVA_OTII.done"
+
+NORMCOUNTS = "output/normalize_counts/gene_counts_known_and_novel_mini_log2_pseudocount_norm.txt"
+
 """
 
 
@@ -157,8 +161,9 @@ rule final:
             MAPPING_STATS, \
             MAPPING_STAT_PLOT, \
             CORR_PLOT, \
-			DESEQ2 , \
-			CUFFDIFF
+            DESEQ2 , \
+            CUFFDIFF, 
+            NORMCOUNTS
     output: "output/code/Snakefile.py"
     params: wdir = config["workingdir"] + "/progs/rna_seq_str_star_se/snakefiles/*nake*", mem="2G"
     shell: """
