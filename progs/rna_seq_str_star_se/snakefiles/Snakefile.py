@@ -43,6 +43,7 @@ include: "rules/cor_plot_rule.py"
 include: "rules/deseq2_rule.py"
 include: "rules/cuffdiff.py"
 include: "rules/normalize_counts.py"
+
 """
 
 
@@ -72,7 +73,7 @@ for curr_key in config:
 
 COMPARISON = config["comparison"].keys()
 FASTA_INDEX = config["fasta"] + ".fai"
-print(COMPARISON)
+
 
 #================================================================#
 #                         Workflow                               #
@@ -106,34 +107,24 @@ CORR_PLOT= [ "output/corr_plot/CoorPlot_circle.png", \
              "output/corr_plot/CoorPlot_square.png", \
              "output/corr_plot/Pairs_plot.png"]
 
-DESEQ2 = expand("output/comparison/{comp}/DESeq2_pval_and_norm_count_log2.txt", comp=COMPARISON)
+DESEQ2 = expand("output/comparison/{comp}/{comp}_DESeq2_pval_and_norm_count_log2.txt", comp=COMPARISON)
 
 DAG_PNG = "output/report/dag.png"
 
-CUFFDIFF = "output/cuffdiff/RipmOVA_OTII.done"
+CUFFDIFF = expand("output/cuffdiff/{comp}/{comp}_gene_exp.diff",comp=COMPARISON)
 
 NORMCOUNTS = "output/normalize_counts/gene_counts_known_and_novel_mini_log2_pseudocount_norm.txt"
 
+INSTALL_CLUSTER3 = "output/progs/bin/cluster-1.59/bin/cluster"
+
 """
-
-
- 
 
 #DIAGNOSIS_PLOT = "output/diagnostic_plot/diagnostic.pdf"
 
-
-
-
-
-
-
 REPORT = "output/report/report.html"
-
 
 rule all:
     input: REPORT
-
-
 
 , FASTQC_TRIM,        \  
             BAM_BY_STRAND, BIGWIG,          \
@@ -162,8 +153,9 @@ rule final:
             MAPPING_STAT_PLOT, \
             CORR_PLOT, \
             DESEQ2 , \
-            CUFFDIFF, 
+            CUFFDIFF, \
             NORMCOUNTS
+            
     output: "output/code/Snakefile.py"
     params: wdir = config["workingdir"] + "/progs/rna_seq_str_star_se/snakefiles/*nake*", mem="2G"
     shell: """
