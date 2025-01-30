@@ -1,4 +1,4 @@
-rule fastqc_trim_pe:
+rule fastqc_trim:
         input:  fwd="output/trimmed/{smp}.fq.gz"
         threads: 1
         params: mem="5G"
