@@ -1,4 +1,4 @@
-rule hist_mapping_stats:
+rule barplot_stats:
     input: "output/mapping_stats/{smp}.stats"
     output: "output/mapping_stats/{smp}.stats.png", "output/mapping_stats/{smp}.stats.pdf"
     params: mem="4G"

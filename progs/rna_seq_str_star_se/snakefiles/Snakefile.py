@@ -43,7 +43,8 @@ include: "rules/cor_plot_rule.py"
 include: "rules/deseq2_rule.py"
 include: "rules/cuffdiff.py"
 include: "rules/normalize_counts.py"
-
+include: "rules/funcEnrich.py"
+include: "rules/EnrichWList.py"
 """
 
 
@@ -73,6 +74,7 @@ for curr_key in config:
 
 COMPARISON = config["comparison"].keys()
 FASTA_INDEX = config["fasta"] + ".fai"
+COMPARAISON_CUFFDIFF = [x for x in COMPARISON if x not in ["ALL" , "RipmOVAvsOTII_2" , "ALL_2"]]
 
 
 #================================================================#
@@ -111,11 +113,15 @@ DESEQ2 = expand("output/comparison/{comp}/{comp}_DESeq2_pval_and_norm_count_log2
 
 DAG_PNG = "output/report/dag.png"
 
-CUFFDIFF = expand("output/cuffdiff/{comp}/{comp}_gene_exp.diff",comp=COMPARISON)
+CUFFDIFF = expand("output/cuffdiff/{comp}/{comp}_gene_exp.diff",comp=COMPARAISON_CUFFDIFF)
 
 NORMCOUNTS = "output/normalize_counts/gene_counts_known_and_novel_mini_log2_pseudocount_norm.txt"
 
+FUNCENRICH = expand("output/comparison/{comp}/FuncEnrich/barplot_up.png", comp=COMPARISON)
+
 INSTALL_CLUSTER3 = "output/progs/bin/cluster-1.59/bin/cluster"
+
+ENRICHLIST = expand("output/cuffdiff/{comp}/FuncEnrichWithList/barplot.png", comp=["CIITAKOvsWT","K14vsWT","RipmOVAvsOTII"])
 
 """
 
@@ -154,8 +160,9 @@ rule final:
             CORR_PLOT, \
             DESEQ2 , \
             CUFFDIFF, \
-            NORMCOUNTS
-            
+            NORMCOUNTS, \
+            FUNCENRICH, \
+			#ENRICHLIST
     output: "output/code/Snakefile.py"
     params: wdir = config["workingdir"] + "/progs/rna_seq_str_star_se/snakefiles/*nake*", mem="2G"
     shell: """

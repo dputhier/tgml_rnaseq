@@ -30,6 +30,15 @@ STAR --runThreadN 15 --runMode genomeGenerate --genomeDir . --genomeFastaFiles c
 cd ../../../progs/rna_seq_str_star_pe/
 snakemake -s snakefiles/Snakefile.py -np
 
+
+# Start the wf with makefile
+make run  #for run
+make dry  #for dry run
+make clean #for cleaning the slurm.out files
+make queue  #check current slurm job in queue
+make help  #for help
+
+
 # Start the wf
 module load snakemake/7.25.0
 snakemake -s snakefiles/Snakefile.py --cluster 'sbatch -c {threads} --mem {params.mem} --partition=fast --account=2427_data_master' -c 3000 -j  500  --rerun-incomplete --rerun-trigger mtime

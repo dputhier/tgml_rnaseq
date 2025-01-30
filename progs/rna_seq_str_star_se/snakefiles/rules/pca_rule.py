@@ -1,9 +1,12 @@
 from __future__ import print_function
 import os
-dir_base = os.path.join(config["workingdir"], "output")
-if not os.path.exists(dir_base):
-    os.makedirs(dir_base)
-pheno_file = open(os.path.join(dir_base, "pheno.txt"), "w")
+
+dir_pca = os.path.join(config["workingdir"], "output", "pca_mds")
+
+if not os.path.exists(dir_pca):
+    os.makedirs(dir_pca)
+
+pheno_file = open(os.path.join(dir_pca, "pheno.txt"), "w")
 
 cfg_pheno = config["classes"].split(" ")
 cfg_smp = config["samples"].split(" ")

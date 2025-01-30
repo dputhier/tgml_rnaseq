@@ -1,7 +1,7 @@
 import os
 total_bam_sum = os.path.join(config["workingdir"], "progs", "scripts", "total_bam_sum.py")
 
-rule do_bigwig:
+rule BigWig:
     input:  min="output/bam/{smp}_min.bam", plus="output/bam/{smp}_plus.bam", \
             minbai="output/bam/{smp}_min.bam.bai", plusbai="output/bam/{smp}_plus.bam.bai"
     output: min="output/bwig/{smp}_min.bw", plus="output/bwig/{smp}_plus.bw", \

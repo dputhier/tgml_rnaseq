@@ -1,4 +1,4 @@
-#!/usr/bin/Rscript 
+#!/usr/bin/env Rscript
 
 ##------------------------------------------------------------------------------
 ## D puthier
@@ -46,7 +46,6 @@ library(affy)
 library(ade4)
 library(rgl)
 library(ggplot2)
-library(proto)
 library(grid)
 library(ellipse)
 library(plyr)
@@ -152,6 +151,7 @@ if(my_opts$"-q"){
 ## Parameters
 ## -----------------------------------------------------------------------------
 
+cat(" --> Checking Parameters\n")
 
 if(my_opts$"-t" == FALSE | is.null(my_opts$"-t") == FALSE){
 	
@@ -175,6 +175,7 @@ if(my_opts$"-t" == FALSE | is.null(my_opts$"-t") == FALSE){
 	}
 }
 
+cat(" --> Checking colors\n")
 
 nb <- length(levels(as.factor(mypheno)))
 
@@ -217,6 +218,7 @@ names(mycolor) <- mypheno
 ## Redefine ADE4 functions
 ## -----------------------------------------------------------------------------
 
+cat(" --> Preparing  ADE4 function.\n")
 scatterutil.eti2 <- function (x, y, label, clabel, boxes = TRUE, coul = rep(1, length(x)), 
 		horizontal = TRUE, bg = "white") 
 {
@@ -264,7 +266,9 @@ fac2disj<- function(fac, drop = FALSE) {
 	dimnames(x) <- list(names(fac), as.character(levels(fac)))
 	return(data.frame(x, check.names = FALSE))
 }
+
 #-------------------------------------------------------------------------------
+
 s.class2 <- function (dfxy, fac, wt = rep(1, length(fac)), xax = 1, yax = 2, 
 		cstar = 1, cellipse = 1.5, axesell = TRUE, label = levels(fac), 
 		clabel = 1, cpoint = 1, pch = 20, col = rep(1, length(levels(fac))), 
@@ -417,7 +421,8 @@ if(ncol(acp$li) >= 2){
 		barplot(cumsum(acp$eig)/sum(acp$eig))
 	devnull <- dev.off()
 
-
+	cat(" --> End PCA with ADE4.\n")
+	
 	## -----------------------------------------------------------------------------
 	## Defining function for PCA with ggplot2
 	## -----------------------------------------------------------------------------
@@ -444,7 +449,7 @@ if(ncol(acp$li) >= 2){
 		gTree(children=gList(rg, tg), vp=vp, gp=gp, name=name)
 	}
 	
-	GeomTextbox <- proto(ggplot2:::GeomText, {
+	GeomTextbox <- ggproto(ggplot2:::GeomText, expr={
 				objname <- "textbox"
 				
 				draw <- function(., data, scales, coordinates, ..., parse = FALSE, na.rm = FALSE,
@@ -474,12 +479,9 @@ if(ncol(acp$li) >= 2){
 				parse = parse, ...)
 	}
 	
-	
-	suppressMessages(load.fun(proto))
 	suppressMessages(load.fun(ggplot2))
 	
-	StatEllipse <- proto(ggplot2:::Stat,
-			{
+	StatEllipse <- ggproto(ggplot2:::Stat, expr={
 				required_aes <- c("x", "y")
 				default_geom <- function(.) GeomPath
 				objname <- "ellipse"
@@ -519,6 +521,7 @@ if(ncol(acp$li) >= 2){
 	## PCA with ggplot2
 	## -----------------------------------------------------------------------------
 	
+	cat(" --> Preparing PCA with ggplot2\n")
 	
 	colnames(acp$li) <- c("x","y")
 	
@@ -776,7 +779,3 @@ if(ncol(acp$li) >= 2){
 	text(0.5,0.5, "not enough sample")
 	dev.off()	
 }
-
-#tsne marche très bien sur les gènes.
-# ici on l'applique aux échantillons
-#tsne_iris = tsne(t(d),  perplexity=50)

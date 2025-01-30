@@ -1,4 +1,4 @@
-rule trimming_pe:
+rule trimming:
   input:  fwd="input/fastq/{smp}.fq.gz"
   output: fwd="output/trimmed/{smp}.fq.gz"
   params: qual=config["sickle"]["threshold"], len=config["sickle"]["length"], qt=config["sickle"]["qualtype"], mem="5G"

@@ -1,4 +1,4 @@
-rule star_pe:
+rule STAR:
   input:    fwd="output/trimmed/{smp}.fq.gz"
   output:   "output/bam/{smp}.bam"
   params:   index=config["star"]["index"], args=config["star"]["args"], gtf=config["gtf"], mem="40G"

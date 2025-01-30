@@ -1,4 +1,4 @@
-rule mapping_stats_R1:
+rule mapping_stats:
         input: raw="output/fastqc_raw/{smp}/{smp}_fastqc/fastqc_data.txt", \
                trim="output/fastqc_trim/{smp}/{smp}_fastqc/fastqc_data.txt", \
                bam="output/bam/{smp}.bam"

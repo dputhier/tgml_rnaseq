@@ -17,12 +17,16 @@
 	"exp_title": "Irla_Elife_2022",
 	"samples": "CIITAKO~mTEClo~int~SRR11000295 CIITAKO~mTEClo~int~rep~SRR11000296 K14~mTEClo~int~SRR11000297 K14~mTEClo~int~SRR11000298 OTII~mTEClo~int~SRR11000301 OTII~mTEClo~int~rep~SRR11000302 RipmOVA~mTEClo-int~SRR11000299 RipmOVA~mTEClo~int~rep~SRR11000300 mTEClo~int~SRR11000293 mTEClo~int~rep~SRR11000294",
 	"classes": "CIITAKO CIITAKO K14 K14 OTII OTII RipmOVA RipmOVA WT WT",
+	"classes_color": "#2A9D8F #2A9D8F #E76F51 #E76F51 #264653 #264653 #F4A261 #F4A261 #E9C46A #E9C46A",
 	"comparison": {
 	    "CIITAKOvsWT": "CIITAKO~mTEClo~int~SRR11000295,CIITAKO~mTEClo~int~rep~SRR11000296 mTEClo~int~SRR11000293,mTEClo~int~rep~SRR11000294",
 	    "K14vsWT": "K14~mTEClo~int~SRR11000297,K14~mTEClo~int~SRR11000298 mTEClo~int~SRR11000293,mTEClo~int~rep~SRR11000294",
 	    "OTIIvsWT": "OTII~mTEClo~int~SRR11000301,OTII~mTEClo~int~rep~SRR11000302 mTEClo~int~SRR11000293,mTEClo~int~rep~SRR11000294",
 		"RipmOVAvsWT": "RipmOVA~mTEClo-int~SRR11000299,RipmOVA~mTEClo~int~rep~SRR11000300 mTEClo~int~SRR11000293,mTEClo~int~rep~SRR11000294",
-		"RipmOVAvsOTII": "RipmOVA~mTEClo-int~SRR11000299,RipmOVA~mTEClo~int~rep~SRR11000300 OTII~mTEClo~int~SRR11000301,OTII~mTEClo~int~rep~SRR11000302"
+		"RipmOVAvsOTII": "RipmOVA~mTEClo-int~SRR11000299,RipmOVA~mTEClo~int~rep~SRR11000300 OTII~mTEClo~int~SRR11000301,OTII~mTEClo~int~rep~SRR11000302",
+		"RipmOVAvsOTII_2":"RipmOVA~mTEClo-int~SRR11000299 OTII~mTEClo~int~SRR11000301,OTII~mTEClo~int~rep~SRR11000302",
+		"ALL":"CIITAKO~mTEClo~int~SRR11000295,CIITAKO~mTEClo~int~rep~SRR11000296 K14~mTEClo~int~SRR11000297,K14~mTEClo~int~SRR11000298,OTII~mTEClo~int~SRR11000301,OTII~mTEClo~int~rep~SRR11000302,RipmOVA~mTEClo-int~SRR11000299,RipmOVA~mTEClo~int~rep~SRR11000300,mTEClo~int~SRR11000293,mTEClo~int~rep~SRR11000294",
+		"ALL_2":"RipmOVA~mTEClo-int~SRR11000299,CIITAKO~mTEClo~int~SRR11000295,mTEClo~int~SRR11000293 CIITAKO~mTEClo~int~rep~SRR11000296,K14~mTEClo~int~SRR11000297,K14~mTEClo~int~SRR11000298,OTII~mTEClo~int~SRR11000301,OTII~mTEClo~int~rep~SRR11000302,mTEClo~int~rep~SRR11000294,RipmOVA~mTEClo~int~rep~SRR11000300"
 	},
 	"slurm": " ",
 	"gtf": "/shared/projects/project_dputhier/043_irla_elife_2022/input/gtf/Mus_musculus.GRCm38.97.gtf",
@@ -43,21 +47,32 @@
     },
 
     "cufflinks": {
-        "args": " --library-type fr-firststrand ",
-        "threads": 12
+        "args": " --library-type fr-unstranded ",
+        "threads": 30
+    },
+	
+    "featureCounts": {
+        "strand": " -s 0 ",
+        "threads": 30
     },
 
     "cuffdiff": {
-        "args": " --library-type fr-firststrand ",
+        "args": " --library-type fr-unstranded ",
         "threads": 30
     },
     
     "cuffmerge": {
         "selected_class_code": "u",
-        "threads": 12
+        "threads": 30
     },
     "report": {
         "threshold_maplot": "0.001"
-    }            
+    },
+
+	"list": {
+		"RipmOVAvsOTII":"shared/projects/project_dputhier/043_irla_elife_2022/output/LIST_RipmOVAvsOTII.xlsx",
+		"K14vsWT":"shared/projects/project_dputhier/043_irla_elife_2022/output/LIST_K14vsWT.xlsx",
+		"CIITAKOvsWT":"shared/projects/project_dputhier/043_irla_elife_2022/output/LIST_CIITAKOvsWT.xlsx"
+	}
 }
 
