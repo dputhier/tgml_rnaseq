@@ -12,7 +12,7 @@ doc <- '
 Usage: funcEnrich.R -i <input> 
 
 Options:
-  -i <INFILE>    the input file (gene expression matrix from Cuffdiff/Deseq2)
+  -i <INFILE>    the input file (gene expression matrix from Deseq2)
   -h --help      Show this help message.
 '
 
@@ -25,7 +25,7 @@ dir.create(Sys.getenv("R_LIBS_USER"), showWarnings=FALSE, recursive = TRUE)  # c
 .libPaths(Sys.getenv("R_LIBS_USER"))  # add to the path
 
 
-install.packages("docopt", repos = "http://cran.us.r-project.org" , quiet=TRUE)
+install.packages( "docopt", repos = "http://cran.us.r-project.org")
 library("docopt")
 
 # Installez Bioconductor si nécessaire
@@ -88,15 +88,15 @@ cat('starting analysis')
 dat<- read.table(geneList)
 dat <- na.omit(dat)
 
-up<- rownames(dat[dat$DESeq2_log2FoldChange > 1 & dat$DESeq2_padj <0.05 ,])
+up<- rownames(dat[dat$DESeq2_log2FoldChange > 0 & dat$DESeq2_padj <0.05 ,])
 up <- sort(up)
 
-down<- rownames(dat[dat$DESeq2_log2FoldChange < -1 & dat$DESeq2_padj <0.05 ,])
+down<- rownames(dat[dat$DESeq2_log2FoldChange < 0 & dat$DESeq2_padj <0.05 ,])
 down <- sort (down)
 
 
-write.csv(up , file= file.path(output_dir ,"Upregulated_genes.txt") , row.names= FALSE , quote =FALSE )
-write.csv(down , file= file.path(output_dir ,"Downregulated_genes.txt") , row.names= FALSE , quote =FALSE)
+write.csv(up , file = file.path(output_dir,paste0(basename(parent_dir),"_UP_REGULATED.txt")) , row.names= FALSE , quote =FALSE )
+write.csv(down , file = file.path(output_dir,paste0(basename(parent_dir),"_DOWN_REGULATED.txt")) , row.names= FALSE , quote =FALSE)
 
 # Enrichissement fonctionnel
 
@@ -118,8 +118,7 @@ edo_up <- enrichGO(gene = up,
 #Barplot
 
 barplot_down <- barplot(edo_down,showCategory = 10 )
-barplot_up <- barplot(edo_up,showCategory = 10 )
-
+barplot_up <- DOSE::barplot(edo_up,showCategory = 10 )
 #Dotplot
 dotplot_down <- dotplot(edo_down,showCategory=10)
 dotplot_up <- dotplot(edo_up,showCategory=10)
@@ -147,7 +146,7 @@ upset_up <- upsetplot(edo_up, showCategory=10)
 plots <- list(barplot_down=barplot_down,barplot_up=barplot_up, dotplot_down=dotplot_down,dotplot_up=dotplot_up ,upsetplot_down=upset_down,upsetplot_up=upset_up)
 
 for (plot_name in names(plots)) {
-  output_file <- file.path(output_dir, paste0(plot_name, ".png"))
+  output_file <- file.path(output_dir, paste0(basename(parent_dir),"_",plot_name, ".png"))
   
   # Ouvrir le périphérique graphique PNG avec une résolution élevée
   png(output_file, width = 2493, height = 1413 , res=300)
@@ -166,7 +165,7 @@ for (plot_name in names(plots)) {
 }
 
 
-write.csv(edo_up@result , file = file.path(output_dir,"GENE_ONTOLOGY_UPREGULATED_RAW.txt") , row.names = FALSE , quote=FALSE)
+write.csv(edo_up@result , file = file.path(output_dir,paste0(basename(parent_dir),"_GENE_ONTOLOGY_UPREGULATED_RAW.txt")) , row.names = FALSE , quote=FALSE)
 
 
-write.csv(edo_down@result , file =file.path(output_dir, "GENE_ONTOLOGY_DOWNREGULATED_RAW.txt") , row.names = FALSE , quote = FALSE)
+write.csv(edo_down@result , file = file.path(output_dir,paste0(basename(parent_dir),"_GENE_ONTOLOGY_DOWNREGULATED_RAW.txt")) , row.names = FALSE , quote = FALSE)

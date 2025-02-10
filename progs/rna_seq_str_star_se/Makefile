@@ -23,5 +23,8 @@ dry:
 clean:
 	rm /shared/projects/project_dputhier/043_irla_elife_2022/slurm*.out
 
+scancel:
+	scancel `squeue -u $USER | perl -npe 's/^\s+//' | grep -v JOBID | perl -npe 's/\s+.*//'`
+
 queue:
 	@squeue -u $$USER

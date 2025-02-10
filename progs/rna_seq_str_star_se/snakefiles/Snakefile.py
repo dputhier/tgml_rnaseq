@@ -45,20 +45,11 @@ include: "rules/cuffdiff.py"
 include: "rules/normalize_counts.py"
 include: "rules/funcEnrich.py"
 include: "rules/EnrichWList.py"
-"""
-
-
-
-include: "rules/fasta_index_rule.py"
-
-include: "rules/dag_rule.py"
-#include: "rules/pair_plot_rule.py"
+include: "rules/gtftk_get_biotypes.py"
 
 
 
 
-include: "rules/reportRmd.py"
-"""
 
 #================================================================#
 #     Global variables                                           #
@@ -74,7 +65,7 @@ for curr_key in config:
 
 COMPARISON = config["comparison"].keys()
 FASTA_INDEX = config["fasta"] + ".fai"
-COMPARAISON_CUFFDIFF = [x for x in COMPARISON if x not in ["ALL" , "RipmOVAvsOTII_2" , "ALL_2"]]
+COMPARAISON_CUFFDIFF = [x for x in COMPARISON if x not in ["ALL" , "RipmOVAvsOTII_2" , "ALL_2" , "PC1","PC2"]]
 
 
 #================================================================#
@@ -117,34 +108,13 @@ CUFFDIFF = expand("output/cuffdiff/{comp}/{comp}_gene_exp.diff",comp=COMPARAISON
 
 NORMCOUNTS = "output/normalize_counts/gene_counts_known_and_novel_mini_log2_pseudocount_norm.txt"
 
-FUNCENRICH = expand("output/comparison/{comp}/FuncEnrich/barplot_up.png", comp=COMPARISON)
+FUNCENRICH = expand("output/comparison/{comp}/FuncEnrich/{comp}_barplot_up.png", comp=COMPARISON)
 
 INSTALL_CLUSTER3 = "output/progs/bin/cluster-1.59/bin/cluster"
 
 ENRICHLIST = expand("output/cuffdiff/{comp}/FuncEnrichWithList/barplot.png", comp=["CIITAKOvsWT","K14vsWT","RipmOVAvsOTII"])
 
-"""
-
-#DIAGNOSIS_PLOT = "output/diagnostic_plot/diagnostic.pdf"
-
-REPORT = "output/report/report.html"
-
-rule all:
-    input: REPORT
-
-, FASTQC_TRIM,        \  
-            BAM_BY_STRAND, BIGWIG,          \
-            QUANTIF_KNOWN_GENES,            \
-            QUANTIF_KNOWN_AND_NOVEL_GENES,  \
-            KNOWN_AND_NOVEL_TX,             \
-            DAG_PNG,                        \
-            RSEQC_COV,                      \
-            MAPPING_STATS,               \
-            MAPPING_STAT_PLOT,              \
-            DESEQ2,                         \
-            CORR_PLOT,                      \
-            STAT_CUFFMERGE
-"""
+GENE_INFO = ["output/gene_info/biotypes.tsv", "output/gene_info/all_gene_coord.bed"]
 
 rule final:
     input:  FASTQC_RAW, \
@@ -162,6 +132,7 @@ rule final:
             CUFFDIFF, \
             NORMCOUNTS, \
             FUNCENRICH, \
+            GENE_INFO
 			#ENRICHLIST
     output: "output/code/Snakefile.py"
     params: wdir = config["workingdir"] + "/progs/rna_seq_str_star_se/snakefiles/*nake*", mem="2G"
