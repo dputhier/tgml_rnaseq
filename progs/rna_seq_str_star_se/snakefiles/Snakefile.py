@@ -133,7 +133,7 @@ rule final:
             NORMCOUNTS, \
             FUNCENRICH, \
             GENE_INFO
-			#ENRICHLIST
+            #ENRICHLIST
     output: "output/code/Snakefile.py"
     params: wdir = config["workingdir"] + "/progs/rna_seq_str_star_se/snakefiles/*nake*", mem="2G"
     shell: """

@@ -55,7 +55,7 @@ all <- rbind(biotypes, df_neg, df_pos)
 ggplot(data=all, mapping=aes(x=Context, fill=gene_biotype))  +
   geom_bar(position="fill") + 
   theme_minimal() + 
-  theme(panel.grid = element_blank()) +
+  theme(panel.grid = element_blank(), axis.text = element_text(size=10)) +
   scale_fill_manual(values=ggsci::pal_bmj()(length(table(biotypes$gene_biotype)))) +
-  labs(x="Gene set", legend="Gene\nBiotype")
+  labs(x="", legend="Gene\nBiotype") 
 
